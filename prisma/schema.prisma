@@ -1,14 +1,61 @@
 generator client {
   provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+  output   = "./"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model User { 
-  id    Int     @id @default(autoincrement()) 
-  email String  @unique
-  name  String?
-} 
+// Auth
+model User {
+  id String @id @default(cuid())
+  name String
+  email String @unique
+
+  documents KnowledgeDocument[]
+}
+
+// RAG & Knowledge Base
+enum KnowledgeDocumentType {
+  PDF
+  DOCX
+  PPTX
+  TEXT
+}
+
+enum KnowledgeDocumentStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
+model KnowledgeDocument {
+  id String @id @default(cuid())
+  title String
+  status KnowledgeDocumentStatus @default(PENDING)
+  type KnowledgeDocumentType
+  authorId String
+  uri String
+  aiUsable Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chunks KnowledgeDocumentChunk[]
+
+  author User @relation(fields: [authorId], references: [id])
+}
+
+model KnowledgeDocumentChunk {
+  id String @id @default(cuid())
+  documentId String
+  index Int
+  text String
+
+  embedding Float[]
+  createdAt DateTime @default(now())
+
+  document KnowledgeDocument @relation(fields: [documentId], references: [id])
+}
