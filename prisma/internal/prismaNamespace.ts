@@ -578,18 +578,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
           args: Prisma.KnowledgeDocumentChunkFindManyArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeDocumentChunkPayload>[]
         }
-        create: {
-          args: Prisma.KnowledgeDocumentChunkCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeDocumentChunkPayload>
-        }
-        createMany: {
-          args: Prisma.KnowledgeDocumentChunkCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.KnowledgeDocumentChunkCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeDocumentChunkPayload>[]
-        }
         delete: {
           args: Prisma.KnowledgeDocumentChunkDeleteArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeDocumentChunkPayload>
@@ -609,10 +597,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         updateManyAndReturn: {
           args: Prisma.KnowledgeDocumentChunkUpdateManyAndReturnArgs<ExtArgs>
           result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeDocumentChunkPayload>[]
-        }
-        upsert: {
-          args: Prisma.KnowledgeDocumentChunkUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeDocumentChunkPayload>
         }
         aggregate: {
           args: Prisma.KnowledgeDocumentChunkAggregateArgs<ExtArgs>
@@ -696,7 +680,6 @@ export const KnowledgeDocumentChunkScalarFieldEnum = {
   documentId: 'documentId',
   index: 'index',
   text: 'text',
-  embedding: 'embedding',
   createdAt: 'createdAt'
 } as const
 
@@ -803,16 +786,16 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'Float[]'
+ * Reference to a field of type 'Float'
  */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
 /**
- * Reference to a field of type 'Float'
+ * Reference to a field of type 'Float[]'
  */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**

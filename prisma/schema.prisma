@@ -1,10 +1,12 @@
 generator client {
   provider = "prisma-client"
   output   = "./"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
+  extensions = [vector]
 }
 
 // Auth
@@ -54,7 +56,7 @@ model KnowledgeDocumentChunk {
   index Int
   text String
 
-  embedding Float[]
+  embedding Unsupported("vector(768)")
   createdAt DateTime @default(now())
 
   document KnowledgeDocument @relation(fields: [documentId], references: [id])

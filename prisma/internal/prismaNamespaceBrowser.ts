@@ -101,7 +101,6 @@ export const KnowledgeDocumentChunkScalarFieldEnum = {
   documentId: 'documentId',
   index: 'index',
   text: 'text',
-  embedding: 'embedding',
   createdAt: 'createdAt'
 } as const
 

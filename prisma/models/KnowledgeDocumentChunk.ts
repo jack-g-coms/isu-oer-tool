@@ -28,12 +28,10 @@ export type AggregateKnowledgeDocumentChunk = {
 
 export type KnowledgeDocumentChunkAvgAggregateOutputType = {
   index: number | null
-  embedding: number | null
 }
 
 export type KnowledgeDocumentChunkSumAggregateOutputType = {
   index: number | null
-  embedding: number[]
 }
 
 export type KnowledgeDocumentChunkMinAggregateOutputType = {
@@ -57,7 +55,6 @@ export type KnowledgeDocumentChunkCountAggregateOutputType = {
   documentId: number
   index: number
   text: number
-  embedding: number
   createdAt: number
   _all: number
 }
@@ -65,12 +62,10 @@ export type KnowledgeDocumentChunkCountAggregateOutputType = {
 
 export type KnowledgeDocumentChunkAvgAggregateInputType = {
   index?: true
-  embedding?: true
 }
 
 export type KnowledgeDocumentChunkSumAggregateInputType = {
   index?: true
-  embedding?: true
 }
 
 export type KnowledgeDocumentChunkMinAggregateInputType = {
@@ -94,7 +89,6 @@ export type KnowledgeDocumentChunkCountAggregateInputType = {
   documentId?: true
   index?: true
   text?: true
-  embedding?: true
   createdAt?: true
   _all?: true
 }
@@ -190,7 +184,6 @@ export type KnowledgeDocumentChunkGroupByOutputType = {
   documentId: string
   index: number
   text: string
-  embedding: number[]
   createdAt: Date
   _count: KnowledgeDocumentChunkCountAggregateOutputType | null
   _avg: KnowledgeDocumentChunkAvgAggregateOutputType | null
@@ -222,7 +215,6 @@ export type KnowledgeDocumentChunkWhereInput = {
   documentId?: Prisma.StringFilter<"KnowledgeDocumentChunk"> | string
   index?: Prisma.IntFilter<"KnowledgeDocumentChunk"> | number
   text?: Prisma.StringFilter<"KnowledgeDocumentChunk"> | string
-  embedding?: Prisma.FloatNullableListFilter<"KnowledgeDocumentChunk">
   createdAt?: Prisma.DateTimeFilter<"KnowledgeDocumentChunk"> | Date | string
   document?: Prisma.XOR<Prisma.KnowledgeDocumentScalarRelationFilter, Prisma.KnowledgeDocumentWhereInput>
 }
@@ -232,7 +224,6 @@ export type KnowledgeDocumentChunkOrderByWithRelationInput = {
   documentId?: Prisma.SortOrder
   index?: Prisma.SortOrder
   text?: Prisma.SortOrder
-  embedding?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   document?: Prisma.KnowledgeDocumentOrderByWithRelationInput
 }
@@ -245,7 +236,6 @@ export type KnowledgeDocumentChunkWhereUniqueInput = Prisma.AtLeast<{
   documentId?: Prisma.StringFilter<"KnowledgeDocumentChunk"> | string
   index?: Prisma.IntFilter<"KnowledgeDocumentChunk"> | number
   text?: Prisma.StringFilter<"KnowledgeDocumentChunk"> | string
-  embedding?: Prisma.FloatNullableListFilter<"KnowledgeDocumentChunk">
   createdAt?: Prisma.DateTimeFilter<"KnowledgeDocumentChunk"> | Date | string
   document?: Prisma.XOR<Prisma.KnowledgeDocumentScalarRelationFilter, Prisma.KnowledgeDocumentWhereInput>
 }, "id">
@@ -255,7 +245,6 @@ export type KnowledgeDocumentChunkOrderByWithAggregationInput = {
   documentId?: Prisma.SortOrder
   index?: Prisma.SortOrder
   text?: Prisma.SortOrder
-  embedding?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.KnowledgeDocumentChunkCountOrderByAggregateInput
   _avg?: Prisma.KnowledgeDocumentChunkAvgOrderByAggregateInput
@@ -272,33 +261,13 @@ export type KnowledgeDocumentChunkScalarWhereWithAggregatesInput = {
   documentId?: Prisma.StringWithAggregatesFilter<"KnowledgeDocumentChunk"> | string
   index?: Prisma.IntWithAggregatesFilter<"KnowledgeDocumentChunk"> | number
   text?: Prisma.StringWithAggregatesFilter<"KnowledgeDocumentChunk"> | string
-  embedding?: Prisma.FloatNullableListFilter<"KnowledgeDocumentChunk">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"KnowledgeDocumentChunk"> | Date | string
-}
-
-export type KnowledgeDocumentChunkCreateInput = {
-  id?: string
-  index: number
-  text: string
-  embedding?: Prisma.KnowledgeDocumentChunkCreateembeddingInput | number[]
-  createdAt?: Date | string
-  document: Prisma.KnowledgeDocumentCreateNestedOneWithoutChunksInput
-}
-
-export type KnowledgeDocumentChunkUncheckedCreateInput = {
-  id?: string
-  documentId: string
-  index: number
-  text: string
-  embedding?: Prisma.KnowledgeDocumentChunkCreateembeddingInput | number[]
-  createdAt?: Date | string
 }
 
 export type KnowledgeDocumentChunkUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   index?: Prisma.IntFieldUpdateOperationsInput | number
   text?: Prisma.StringFieldUpdateOperationsInput | string
-  embedding?: Prisma.KnowledgeDocumentChunkUpdateembeddingInput | number[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   document?: Prisma.KnowledgeDocumentUpdateOneRequiredWithoutChunksNestedInput
 }
@@ -308,24 +277,13 @@ export type KnowledgeDocumentChunkUncheckedUpdateInput = {
   documentId?: Prisma.StringFieldUpdateOperationsInput | string
   index?: Prisma.IntFieldUpdateOperationsInput | number
   text?: Prisma.StringFieldUpdateOperationsInput | string
-  embedding?: Prisma.KnowledgeDocumentChunkUpdateembeddingInput | number[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type KnowledgeDocumentChunkCreateManyInput = {
-  id?: string
-  documentId: string
-  index: number
-  text: string
-  embedding?: Prisma.KnowledgeDocumentChunkCreateembeddingInput | number[]
-  createdAt?: Date | string
 }
 
 export type KnowledgeDocumentChunkUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   index?: Prisma.IntFieldUpdateOperationsInput | number
   text?: Prisma.StringFieldUpdateOperationsInput | string
-  embedding?: Prisma.KnowledgeDocumentChunkUpdateembeddingInput | number[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -334,7 +292,6 @@ export type KnowledgeDocumentChunkUncheckedUpdateManyInput = {
   documentId?: Prisma.StringFieldUpdateOperationsInput | string
   index?: Prisma.IntFieldUpdateOperationsInput | number
   text?: Prisma.StringFieldUpdateOperationsInput | string
-  embedding?: Prisma.KnowledgeDocumentChunkUpdateembeddingInput | number[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -348,26 +305,16 @@ export type KnowledgeDocumentChunkOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type FloatNullableListFilter<$PrismaModel = never> = {
-  equals?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
-  has?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null
-  hasEvery?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
-  hasSome?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
-  isEmpty?: boolean
-}
-
 export type KnowledgeDocumentChunkCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   documentId?: Prisma.SortOrder
   index?: Prisma.SortOrder
   text?: Prisma.SortOrder
-  embedding?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type KnowledgeDocumentChunkAvgOrderByAggregateInput = {
   index?: Prisma.SortOrder
-  embedding?: Prisma.SortOrder
 }
 
 export type KnowledgeDocumentChunkMaxOrderByAggregateInput = {
@@ -388,28 +335,17 @@ export type KnowledgeDocumentChunkMinOrderByAggregateInput = {
 
 export type KnowledgeDocumentChunkSumOrderByAggregateInput = {
   index?: Prisma.SortOrder
-  embedding?: Prisma.SortOrder
 }
 
 export type KnowledgeDocumentChunkCreateNestedManyWithoutDocumentInput = {
-  create?: Prisma.XOR<Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput, Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput> | Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput[] | Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput[]
-  connectOrCreate?: Prisma.KnowledgeDocumentChunkCreateOrConnectWithoutDocumentInput | Prisma.KnowledgeDocumentChunkCreateOrConnectWithoutDocumentInput[]
-  createMany?: Prisma.KnowledgeDocumentChunkCreateManyDocumentInputEnvelope
   connect?: Prisma.KnowledgeDocumentChunkWhereUniqueInput | Prisma.KnowledgeDocumentChunkWhereUniqueInput[]
 }
 
 export type KnowledgeDocumentChunkUncheckedCreateNestedManyWithoutDocumentInput = {
-  create?: Prisma.XOR<Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput, Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput> | Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput[] | Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput[]
-  connectOrCreate?: Prisma.KnowledgeDocumentChunkCreateOrConnectWithoutDocumentInput | Prisma.KnowledgeDocumentChunkCreateOrConnectWithoutDocumentInput[]
-  createMany?: Prisma.KnowledgeDocumentChunkCreateManyDocumentInputEnvelope
   connect?: Prisma.KnowledgeDocumentChunkWhereUniqueInput | Prisma.KnowledgeDocumentChunkWhereUniqueInput[]
 }
 
 export type KnowledgeDocumentChunkUpdateManyWithoutDocumentNestedInput = {
-  create?: Prisma.XOR<Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput, Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput> | Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput[] | Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput[]
-  connectOrCreate?: Prisma.KnowledgeDocumentChunkCreateOrConnectWithoutDocumentInput | Prisma.KnowledgeDocumentChunkCreateOrConnectWithoutDocumentInput[]
-  upsert?: Prisma.KnowledgeDocumentChunkUpsertWithWhereUniqueWithoutDocumentInput | Prisma.KnowledgeDocumentChunkUpsertWithWhereUniqueWithoutDocumentInput[]
-  createMany?: Prisma.KnowledgeDocumentChunkCreateManyDocumentInputEnvelope
   set?: Prisma.KnowledgeDocumentChunkWhereUniqueInput | Prisma.KnowledgeDocumentChunkWhereUniqueInput[]
   disconnect?: Prisma.KnowledgeDocumentChunkWhereUniqueInput | Prisma.KnowledgeDocumentChunkWhereUniqueInput[]
   delete?: Prisma.KnowledgeDocumentChunkWhereUniqueInput | Prisma.KnowledgeDocumentChunkWhereUniqueInput[]
@@ -420,10 +356,6 @@ export type KnowledgeDocumentChunkUpdateManyWithoutDocumentNestedInput = {
 }
 
 export type KnowledgeDocumentChunkUncheckedUpdateManyWithoutDocumentNestedInput = {
-  create?: Prisma.XOR<Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput, Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput> | Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput[] | Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput[]
-  connectOrCreate?: Prisma.KnowledgeDocumentChunkCreateOrConnectWithoutDocumentInput | Prisma.KnowledgeDocumentChunkCreateOrConnectWithoutDocumentInput[]
-  upsert?: Prisma.KnowledgeDocumentChunkUpsertWithWhereUniqueWithoutDocumentInput | Prisma.KnowledgeDocumentChunkUpsertWithWhereUniqueWithoutDocumentInput[]
-  createMany?: Prisma.KnowledgeDocumentChunkCreateManyDocumentInputEnvelope
   set?: Prisma.KnowledgeDocumentChunkWhereUniqueInput | Prisma.KnowledgeDocumentChunkWhereUniqueInput[]
   disconnect?: Prisma.KnowledgeDocumentChunkWhereUniqueInput | Prisma.KnowledgeDocumentChunkWhereUniqueInput[]
   delete?: Prisma.KnowledgeDocumentChunkWhereUniqueInput | Prisma.KnowledgeDocumentChunkWhereUniqueInput[]
@@ -433,53 +365,12 @@ export type KnowledgeDocumentChunkUncheckedUpdateManyWithoutDocumentNestedInput 
   deleteMany?: Prisma.KnowledgeDocumentChunkScalarWhereInput | Prisma.KnowledgeDocumentChunkScalarWhereInput[]
 }
 
-export type KnowledgeDocumentChunkCreateembeddingInput = {
-  set: number[]
-}
-
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type KnowledgeDocumentChunkUpdateembeddingInput = {
-  set?: number[]
-  push?: number | number[]
-}
-
-export type KnowledgeDocumentChunkCreateWithoutDocumentInput = {
-  id?: string
-  index: number
-  text: string
-  embedding?: Prisma.KnowledgeDocumentChunkCreateembeddingInput | number[]
-  createdAt?: Date | string
-}
-
-export type KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput = {
-  id?: string
-  index: number
-  text: string
-  embedding?: Prisma.KnowledgeDocumentChunkCreateembeddingInput | number[]
-  createdAt?: Date | string
-}
-
-export type KnowledgeDocumentChunkCreateOrConnectWithoutDocumentInput = {
-  where: Prisma.KnowledgeDocumentChunkWhereUniqueInput
-  create: Prisma.XOR<Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput, Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput>
-}
-
-export type KnowledgeDocumentChunkCreateManyDocumentInputEnvelope = {
-  data: Prisma.KnowledgeDocumentChunkCreateManyDocumentInput | Prisma.KnowledgeDocumentChunkCreateManyDocumentInput[]
-  skipDuplicates?: boolean
-}
-
-export type KnowledgeDocumentChunkUpsertWithWhereUniqueWithoutDocumentInput = {
-  where: Prisma.KnowledgeDocumentChunkWhereUniqueInput
-  update: Prisma.XOR<Prisma.KnowledgeDocumentChunkUpdateWithoutDocumentInput, Prisma.KnowledgeDocumentChunkUncheckedUpdateWithoutDocumentInput>
-  create: Prisma.XOR<Prisma.KnowledgeDocumentChunkCreateWithoutDocumentInput, Prisma.KnowledgeDocumentChunkUncheckedCreateWithoutDocumentInput>
 }
 
 export type KnowledgeDocumentChunkUpdateWithWhereUniqueWithoutDocumentInput = {
@@ -500,23 +391,13 @@ export type KnowledgeDocumentChunkScalarWhereInput = {
   documentId?: Prisma.StringFilter<"KnowledgeDocumentChunk"> | string
   index?: Prisma.IntFilter<"KnowledgeDocumentChunk"> | number
   text?: Prisma.StringFilter<"KnowledgeDocumentChunk"> | string
-  embedding?: Prisma.FloatNullableListFilter<"KnowledgeDocumentChunk">
   createdAt?: Prisma.DateTimeFilter<"KnowledgeDocumentChunk"> | Date | string
-}
-
-export type KnowledgeDocumentChunkCreateManyDocumentInput = {
-  id?: string
-  index: number
-  text: string
-  embedding?: Prisma.KnowledgeDocumentChunkCreateembeddingInput | number[]
-  createdAt?: Date | string
 }
 
 export type KnowledgeDocumentChunkUpdateWithoutDocumentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   index?: Prisma.IntFieldUpdateOperationsInput | number
   text?: Prisma.StringFieldUpdateOperationsInput | string
-  embedding?: Prisma.KnowledgeDocumentChunkUpdateembeddingInput | number[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -524,7 +405,6 @@ export type KnowledgeDocumentChunkUncheckedUpdateWithoutDocumentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   index?: Prisma.IntFieldUpdateOperationsInput | number
   text?: Prisma.StringFieldUpdateOperationsInput | string
-  embedding?: Prisma.KnowledgeDocumentChunkUpdateembeddingInput | number[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -532,7 +412,6 @@ export type KnowledgeDocumentChunkUncheckedUpdateManyWithoutDocumentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   index?: Prisma.IntFieldUpdateOperationsInput | number
   text?: Prisma.StringFieldUpdateOperationsInput | string
-  embedding?: Prisma.KnowledgeDocumentChunkUpdateembeddingInput | number[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -543,27 +422,16 @@ export type KnowledgeDocumentChunkSelect<ExtArgs extends runtime.Types.Extension
   documentId?: boolean
   index?: boolean
   text?: boolean
-  embedding?: boolean
   createdAt?: boolean
   document?: boolean | Prisma.KnowledgeDocumentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["knowledgeDocumentChunk"]>
 
-export type KnowledgeDocumentChunkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  documentId?: boolean
-  index?: boolean
-  text?: boolean
-  embedding?: boolean
-  createdAt?: boolean
-  document?: boolean | Prisma.KnowledgeDocumentDefaultArgs<ExtArgs>
-}, ExtArgs["result"]["knowledgeDocumentChunk"]>
 
 export type KnowledgeDocumentChunkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   documentId?: boolean
   index?: boolean
   text?: boolean
-  embedding?: boolean
   createdAt?: boolean
   document?: boolean | Prisma.KnowledgeDocumentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["knowledgeDocumentChunk"]>
@@ -573,15 +441,11 @@ export type KnowledgeDocumentChunkSelectScalar = {
   documentId?: boolean
   index?: boolean
   text?: boolean
-  embedding?: boolean
   createdAt?: boolean
 }
 
-export type KnowledgeDocumentChunkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "documentId" | "index" | "text" | "embedding" | "createdAt", ExtArgs["result"]["knowledgeDocumentChunk"]>
+export type KnowledgeDocumentChunkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "documentId" | "index" | "text" | "createdAt", ExtArgs["result"]["knowledgeDocumentChunk"]>
 export type KnowledgeDocumentChunkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  document?: boolean | Prisma.KnowledgeDocumentDefaultArgs<ExtArgs>
-}
-export type KnowledgeDocumentChunkIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   document?: boolean | Prisma.KnowledgeDocumentDefaultArgs<ExtArgs>
 }
 export type KnowledgeDocumentChunkIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -598,7 +462,6 @@ export type $KnowledgeDocumentChunkPayload<ExtArgs extends runtime.Types.Extensi
     documentId: string
     index: number
     text: string
-    embedding: number[]
     createdAt: Date
   }, ExtArgs["result"]["knowledgeDocumentChunk"]>
   composites: {}
@@ -688,58 +551,6 @@ export interface KnowledgeDocumentChunkDelegate<ExtArgs extends runtime.Types.Ex
    * 
    */
   findMany<T extends KnowledgeDocumentChunkFindManyArgs>(args?: Prisma.SelectSubset<T, KnowledgeDocumentChunkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-  /**
-   * Create a KnowledgeDocumentChunk.
-   * @param {KnowledgeDocumentChunkCreateArgs} args - Arguments to create a KnowledgeDocumentChunk.
-   * @example
-   * // Create one KnowledgeDocumentChunk
-   * const KnowledgeDocumentChunk = await prisma.knowledgeDocumentChunk.create({
-   *   data: {
-   *     // ... data to create a KnowledgeDocumentChunk
-   *   }
-   * })
-   * 
-   */
-  create<T extends KnowledgeDocumentChunkCreateArgs>(args: Prisma.SelectSubset<T, KnowledgeDocumentChunkCreateArgs<ExtArgs>>): Prisma.Prisma__KnowledgeDocumentChunkClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentChunkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Create many KnowledgeDocumentChunks.
-   * @param {KnowledgeDocumentChunkCreateManyArgs} args - Arguments to create many KnowledgeDocumentChunks.
-   * @example
-   * // Create many KnowledgeDocumentChunks
-   * const knowledgeDocumentChunk = await prisma.knowledgeDocumentChunk.createMany({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   *     
-   */
-  createMany<T extends KnowledgeDocumentChunkCreateManyArgs>(args?: Prisma.SelectSubset<T, KnowledgeDocumentChunkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
-
-  /**
-   * Create many KnowledgeDocumentChunks and returns the data saved in the database.
-   * @param {KnowledgeDocumentChunkCreateManyAndReturnArgs} args - Arguments to create many KnowledgeDocumentChunks.
-   * @example
-   * // Create many KnowledgeDocumentChunks
-   * const knowledgeDocumentChunk = await prisma.knowledgeDocumentChunk.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many KnowledgeDocumentChunks and only return the `id`
-   * const knowledgeDocumentChunkWithIdOnly = await prisma.knowledgeDocumentChunk.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends KnowledgeDocumentChunkCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, KnowledgeDocumentChunkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentChunkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
   /**
    * Delete a KnowledgeDocumentChunk.
@@ -834,25 +645,6 @@ export interface KnowledgeDocumentChunkDelegate<ExtArgs extends runtime.Types.Ex
    * 
    */
   updateManyAndReturn<T extends KnowledgeDocumentChunkUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, KnowledgeDocumentChunkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentChunkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-  /**
-   * Create or update one KnowledgeDocumentChunk.
-   * @param {KnowledgeDocumentChunkUpsertArgs} args - Arguments to update or create a KnowledgeDocumentChunk.
-   * @example
-   * // Update or create a KnowledgeDocumentChunk
-   * const knowledgeDocumentChunk = await prisma.knowledgeDocumentChunk.upsert({
-   *   create: {
-   *     // ... data to create a KnowledgeDocumentChunk
-   *   },
-   *   update: {
-   *     // ... in case it already exists, update
-   *   },
-   *   where: {
-   *     // ... the filter for the KnowledgeDocumentChunk we want to update
-   *   }
-   * })
-   */
-  upsert<T extends KnowledgeDocumentChunkUpsertArgs>(args: Prisma.SelectSubset<T, KnowledgeDocumentChunkUpsertArgs<ExtArgs>>): Prisma.Prisma__KnowledgeDocumentChunkClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentChunkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
   /**
@@ -1028,7 +820,6 @@ export interface KnowledgeDocumentChunkFieldRefs {
   readonly documentId: Prisma.FieldRef<"KnowledgeDocumentChunk", 'String'>
   readonly index: Prisma.FieldRef<"KnowledgeDocumentChunk", 'Int'>
   readonly text: Prisma.FieldRef<"KnowledgeDocumentChunk", 'String'>
-  readonly embedding: Prisma.FieldRef<"KnowledgeDocumentChunk", 'Float[]'>
   readonly createdAt: Prisma.FieldRef<"KnowledgeDocumentChunk", 'DateTime'>
 }
     
@@ -1235,62 +1026,6 @@ export type KnowledgeDocumentChunkFindManyArgs<ExtArgs extends runtime.Types.Ext
 }
 
 /**
- * KnowledgeDocumentChunk create
- */
-export type KnowledgeDocumentChunkCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the KnowledgeDocumentChunk
-   */
-  select?: Prisma.KnowledgeDocumentChunkSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the KnowledgeDocumentChunk
-   */
-  omit?: Prisma.KnowledgeDocumentChunkOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.KnowledgeDocumentChunkInclude<ExtArgs> | null
-  /**
-   * The data needed to create a KnowledgeDocumentChunk.
-   */
-  data: Prisma.XOR<Prisma.KnowledgeDocumentChunkCreateInput, Prisma.KnowledgeDocumentChunkUncheckedCreateInput>
-}
-
-/**
- * KnowledgeDocumentChunk createMany
- */
-export type KnowledgeDocumentChunkCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to create many KnowledgeDocumentChunks.
-   */
-  data: Prisma.KnowledgeDocumentChunkCreateManyInput | Prisma.KnowledgeDocumentChunkCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
- * KnowledgeDocumentChunk createManyAndReturn
- */
-export type KnowledgeDocumentChunkCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the KnowledgeDocumentChunk
-   */
-  select?: Prisma.KnowledgeDocumentChunkSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the KnowledgeDocumentChunk
-   */
-  omit?: Prisma.KnowledgeDocumentChunkOmit<ExtArgs> | null
-  /**
-   * The data used to create many KnowledgeDocumentChunks.
-   */
-  data: Prisma.KnowledgeDocumentChunkCreateManyInput | Prisma.KnowledgeDocumentChunkCreateManyInput[]
-  skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.KnowledgeDocumentChunkIncludeCreateManyAndReturn<ExtArgs> | null
-}
-
-/**
  * KnowledgeDocumentChunk update
  */
 export type KnowledgeDocumentChunkUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1362,36 +1097,6 @@ export type KnowledgeDocumentChunkUpdateManyAndReturnArgs<ExtArgs extends runtim
    * Choose, which related nodes to fetch as well
    */
   include?: Prisma.KnowledgeDocumentChunkIncludeUpdateManyAndReturn<ExtArgs> | null
-}
-
-/**
- * KnowledgeDocumentChunk upsert
- */
-export type KnowledgeDocumentChunkUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the KnowledgeDocumentChunk
-   */
-  select?: Prisma.KnowledgeDocumentChunkSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the KnowledgeDocumentChunk
-   */
-  omit?: Prisma.KnowledgeDocumentChunkOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.KnowledgeDocumentChunkInclude<ExtArgs> | null
-  /**
-   * The filter to search for the KnowledgeDocumentChunk to update in case it exists.
-   */
-  where: Prisma.KnowledgeDocumentChunkWhereUniqueInput
-  /**
-   * In case the KnowledgeDocumentChunk found by the `where` argument doesn't exist, create a new KnowledgeDocumentChunk with this data.
-   */
-  create: Prisma.XOR<Prisma.KnowledgeDocumentChunkCreateInput, Prisma.KnowledgeDocumentChunkUncheckedCreateInput>
-  /**
-   * In case the KnowledgeDocumentChunk was found with the provided `where` argument, update it with this data.
-   */
-  update: Prisma.XOR<Prisma.KnowledgeDocumentChunkUpdateInput, Prisma.KnowledgeDocumentChunkUncheckedUpdateInput>
 }
 
 /**

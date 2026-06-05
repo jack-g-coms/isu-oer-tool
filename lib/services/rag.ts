@@ -1,13 +1,19 @@
-import { KnowledgeDocumentType, KnowledgeDocument, KnowledgeDocumentChunk, KnowledgeDocumentStatus } from "@/prisma/client";
+import { KnowledgeDocumentType, KnowledgeDocument, KnowledgeDocumentChunk, KnowledgeDocumentStatus, Prisma } from "@/prisma/client";
+
 import KnowledgeDocumentProperties from "@/shared/types/KnowledgeDocumentProperties";
+import KnowledgeChunkWithDoc from "@/shared/types/KnowledgeChunkWithDoc";
+
 import prisma from "@/lib/db/prisma";
+import pgvector from "pgvector";
 import { generateChunkEmbedding } from "./ai";
-import { uploadFile } from "./uploads";
+import { uploadFile, getFile } from "./uploads";
+
+import { OfficeConverter, OfficeChunk } from "officeparser";
 
 // Configuration
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-const CHUNK_SIZE = 1500; // 500 characters
-const CHUNK_OVERLAP = 200; // 200 characters
+const CHUNK_SIZE = 1500;
+const CHUNK_OVERLAP = 200;
 
 // Private
 function getKnowledgeDocumentType(file: File): KnowledgeDocumentType {
@@ -25,15 +31,23 @@ function getKnowledgeDocumentType(file: File): KnowledgeDocumentType {
     }
 }
 
-async function getText(document: KnowledgeDocument, file: File): Promise<string> {
-    if (document.type == KnowledgeDocumentType.TEXT) {
-        return await file.text();
-    } else {
-        throw new Error(`Unsupported document type for text extraction: ${document.type}`);
-    }
+async function insertChunk(text: string, document: KnowledgeDocument, index: number): Promise<KnowledgeDocumentChunk> {
+    const embedding = await generateChunkEmbedding(text);
+    const chunk = await prisma.$queryRaw<KnowledgeDocumentChunk>`
+        INSERT INTO "KnowledgeDocumentChunk" ("id", "documentId", "index", "text", "embedding") VALUES (
+            ${crypto.randomUUID()},
+            ${document.id},
+            ${index},
+            ${text},
+            ${pgvector.toSql(embedding)}::vector
+        )
+        RETURNING *;
+    `;
+
+    return chunk;
 }
 
-async function chunkText(text: string, document: KnowledgeDocument): Promise<KnowledgeDocumentChunk[]> {
+async function chunkText(document: KnowledgeDocument): Promise<KnowledgeDocumentChunk[]> {
     await prisma.knowledgeDocument.update({
         where: { id: document.id },
         data: {
@@ -41,27 +55,42 @@ async function chunkText(text: string, document: KnowledgeDocument): Promise<Kno
         }
     });
 
+    const fileBuffer = await getFile(document.uri);
     const chunks: KnowledgeDocumentChunk[] = [];
-    const cleaned = text
-        .replace(/\r\n/g, "\n")
-        .replace(/[ \t]+/g, " ")
-        .trim();
 
-    for (let i = 0; i < cleaned.length; i += CHUNK_SIZE) {
-        const start = Math.max(0, i - CHUNK_OVERLAP);
-        const end = Math.min(cleaned.length, i + CHUNK_SIZE);
+    if (document.type == KnowledgeDocumentType.TEXT) {
+        const text = fileBuffer.toString("utf-8")
+            .replace(/\0/g, "")
+            .replace(/[\x00-\x08]/g, "")
+            .replace(/\r\n/g, "\n")
+            .replace(/\r/g, "\n")
+            .trim();
 
-        const chunkContent = cleaned.slice(start, end).trim();
-        const chunk = await prisma.knowledgeDocumentChunk.create({
-            data: {
-                documentId: document.id,
-                index: i / CHUNK_SIZE,
-                text: chunkContent,
-                embedding: await generateChunkEmbedding(chunkContent)
+        for (let i = 0; i < text.length; i += CHUNK_SIZE - CHUNK_OVERLAP) {
+            const chunkText = text.slice(i, i + CHUNK_SIZE);
+            const chunk = await insertChunk(chunkText, document, i);
+            chunks.push(chunk);
+        }
+    } else {
+        const { value: officeChunks } = await OfficeConverter.convert(fileBuffer, "chunks", {
+            generatorConfig: {
+                chunksConfig: {
+                    strategy: "fixed-size",
+                    chunkSize: CHUNK_SIZE,
+                    chunkOverlap: CHUNK_OVERLAP
+                }
             }
         });
 
-        chunks.push(chunk);
+        for (let i = 0; i < officeChunks.length; i++) {
+            const officeChunk = (officeChunks as OfficeChunk[])[i];
+            const text = officeChunk.text
+                .replace(/\0/g, "")
+                .trim();
+
+            const chunk = await insertChunk(text, document, i);
+            chunks.push(chunk);
+        }
     }
 
     await prisma.knowledgeDocument.update({
@@ -96,9 +125,20 @@ export async function createKnowledgeDocument(file: File, properties: KnowledgeD
     return knowledgeDoc;
 }
 
-export async function insertToKnowledgeBase(knowledgeDoc: KnowledgeDocument, file: File): Promise<KnowledgeDocument> {
-    const rawTxt = await getText(knowledgeDoc, file);
-    await chunkText(rawTxt, knowledgeDoc);
+export async function getRelevantChunks(knowledgeDocIds: string[], query: string): Promise<KnowledgeChunkWithDoc[]> {
+    const embedding = await generateChunkEmbedding(query);
+    const embeddingVector = pgvector.toSql(embedding);
 
-    return knowledgeDoc;
+    return await prisma.$queryRaw<KnowledgeChunkWithDoc[]>`
+        SELECT c.id AS "chunkId", c.text, d.id as "documentId", d.title, d.type, d.uri as "documentURI"
+        FROM "KnowledgeDocumentChunk" c
+        JOIN "KnowledgeDocument" d ON c."documentId" = d.id
+        WHERE c."documentId" IN (${Prisma.join(knowledgeDocIds)}) AND d."aiUsable" = true AND d.status = ${KnowledgeDocumentStatus.READY} 
+        ORDER BY c.embedding <-> ${embeddingVector}::vector
+        LIMIT 5;
+    `
+}
+
+export async function ingestToKnowledgeBase(knowledgeDoc: KnowledgeDocument): Promise<void> {
+    await chunkText(knowledgeDoc);
 }

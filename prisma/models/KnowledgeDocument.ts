@@ -475,12 +475,6 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type KnowledgeDocumentCreateNestedOneWithoutChunksInput = {
-  create?: Prisma.XOR<Prisma.KnowledgeDocumentCreateWithoutChunksInput, Prisma.KnowledgeDocumentUncheckedCreateWithoutChunksInput>
-  connectOrCreate?: Prisma.KnowledgeDocumentCreateOrConnectWithoutChunksInput
-  connect?: Prisma.KnowledgeDocumentWhereUniqueInput
-}
-
 export type KnowledgeDocumentUpdateOneRequiredWithoutChunksNestedInput = {
   create?: Prisma.XOR<Prisma.KnowledgeDocumentCreateWithoutChunksInput, Prisma.KnowledgeDocumentUncheckedCreateWithoutChunksInput>
   connectOrCreate?: Prisma.KnowledgeDocumentCreateOrConnectWithoutChunksInput

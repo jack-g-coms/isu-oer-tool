@@ -6,14 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "worker-ingestion": "npx tsx lib/workers/ingestion.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "next": "16.2.6",
+    "officeparser": "^7.2.0",
     "ollama": "^0.6.3",
     "pg": "^8.21.0",
+    "pgvector": "^0.3.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16
+    image: ankane/pgvector:latest
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -11,5 +11,27 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  worker-ingestion:
+    build: .
+    container_name: worker-ingestion
+    command: ["npm", "run", "worker-ingestion"]
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/oer_dev
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - db
+      - redis
+      
 volumes:
   pgdata:
+  redis-data:

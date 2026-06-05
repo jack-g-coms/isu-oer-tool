@@ -12,3 +12,7 @@ export async function uploadFile(file: File): Promise<string> {
 
     return filePath;
 }
+
+export async function getFile(uri: string): Promise<Buffer> {
+    return await fs.readFile(uri);
+}
