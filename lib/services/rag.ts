@@ -14,6 +14,7 @@ import { OfficeConverter, OfficeChunk } from "officeparser";
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const CHUNK_SIZE = 1500;
 const CHUNK_OVERLAP = 200;
+const MAX_TOTAL_CHUNKS_PER_QUERY = 15;
 
 // Private
 function getKnowledgeDocumentType(file: File): KnowledgeDocumentType {
@@ -86,6 +87,9 @@ async function chunkText(document: KnowledgeDocument): Promise<KnowledgeDocument
             const officeChunk = (officeChunks as OfficeChunk[])[i];
             const text = officeChunk.text
                 .replace(/\0/g, "")
+                .replace(/[\x00-\x08]/g, "")
+                .replace(/\r\n/g, "\n")
+                .replace(/\r/g, "\n")
                 .trim();
 
             const chunk = await insertChunk(text, document, i);
@@ -135,8 +139,29 @@ export async function getRelevantChunks(knowledgeDocIds: string[], query: string
         JOIN "KnowledgeDocument" d ON c."documentId" = d.id
         WHERE c."documentId" IN (${Prisma.join(knowledgeDocIds)}) AND d."aiUsable" = true AND d.status = ${KnowledgeDocumentStatus.READY} 
         ORDER BY c.embedding <-> ${embeddingVector}::vector
-        LIMIT 5;
+        LIMIT ${MAX_TOTAL_CHUNKS_PER_QUERY};
     `
+}
+
+export async function getKnowledgeDoc(knowledgeDocId: string) {
+    return await prisma.knowledgeDocument.findFirstOrThrow({
+        where: { id: knowledgeDocId },
+        include: {
+            chunks: true,
+            author: true
+        }
+    });
+}
+
+export async function getFullDocumentText(knowledgeDocId: string): Promise<string> {
+    const knowledgeDoc = await getKnowledgeDoc(knowledgeDocId);
+    knowledgeDoc.chunks.sort((a, b) => a.index - b.index);
+
+    let result = knowledgeDoc.chunks[0].text;
+    for (let i = 1; i < knowledgeDoc.chunks.length; i++) {
+        result += knowledgeDoc.chunks[i].text.slice(CHUNK_OVERLAP);
+    }
+    return result;
 }
 
 export async function ingestToKnowledgeBase(knowledgeDoc: KnowledgeDocument): Promise<void> {
