@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "@/lib/db/prisma";
 
-import { DevSSOUser } from "@/shared/types/NextAuth";
+import { DevSSOUser } from "@/lib/types/NextAuth";
 
 const handler = NextAuth({
     providers: [
@@ -14,6 +14,7 @@ const handler = NextAuth({
             async authorize(credentials) {
                 if (!credentials?.email) return null;
 
+                // Simulate a SSO User
                 return {
                     id: `dev-${credentials.email}`,
                     name: "Dr. Professor",
@@ -25,11 +26,13 @@ const handler = NextAuth({
     ],
     callbacks: {
         async jwt({ token, user }) {
+            // SSO User is given by a provider, we now interpret it and set up the token as well as update our personal DB.
             if (user) {
                 const ssoUser = user as DevSSOUser;
                 const dbUser = await prisma.user.upsert({
                     where: { email: ssoUser.email },
                     update: {
+                        image: "/images/jack-img.jpg",
                         name: ssoUser.name,
                         department: ssoUser.department
                     },
@@ -39,8 +42,6 @@ const handler = NextAuth({
                         department: ssoUser.department
                     }
                 });
-
-                console.log(dbUser.department + " a")
 
                 token.id = dbUser.id;
                 token.name = dbUser.name;
@@ -52,6 +53,7 @@ const handler = NextAuth({
         },
 
         async session({ session, token }) {
+            // Token is set up, what needs to be revealed to the frontend?
             session.user.id = token.id as string;
             session.user.name = token.name as string;
             session.user.email = token.email as string;

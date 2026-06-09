@@ -22,12 +22,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className={`${inter.className} min-h-screen flex flex-col`}>
+      <body className={`${inter.className} min-h-screen`}>
         <AuthProvider>
-          <Toaster/>
-          <main className="flex-1 mx-auto w-full max-w-6xl px-8 py-8">
-            {children}
-          </main>
+          <Toaster
+            toastOptions={{
+              style: {
+                whiteSpace: "nowrap",
+                minWidth: "320px",
+                maxWidth: "500px"
+              }
+            }}
+          />
+          {children}
         </AuthProvider>
       </body>
     </html>

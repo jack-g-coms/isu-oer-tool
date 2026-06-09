@@ -1,14 +1,13 @@
 import { KnowledgeDocumentType, KnowledgeDocument, KnowledgeDocumentChunk, KnowledgeDocumentStatus, Prisma } from "@/prisma/client";
+import { OfficeConverter, OfficeChunk } from "officeparser";
 
-import KnowledgeDocumentProperties from "@/shared/types/KnowledgeDocumentProperties";
-import KnowledgeChunkWithDoc from "@/shared/types/KnowledgeChunkWithDoc";
+import KnowledgeDocumentProperties from "@/lib/types/KnowledgeDocumentProperties";
+import KnowledgeChunkWithDoc from "@/lib/types/KnowledgeChunkWithDoc";
 
 import prisma from "@/lib/db/prisma";
 import pgvector from "pgvector";
 import { generateChunkEmbedding } from "./ai";
 import { uploadFile, getFile } from "./uploads";
-
-import { OfficeConverter, OfficeChunk } from "officeparser";
 
 // Configuration
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -149,6 +148,15 @@ export async function getKnowledgeDoc(knowledgeDocId: string) {
         include: {
             chunks: true,
             author: true
+        }
+    });
+}
+
+export async function getUserKnowledgeBase(userId: string, includeChunks: boolean=false) {
+    return await prisma.knowledgeDocument.findMany({
+        where: { authorId: userId },
+        include: {
+            chunks: includeChunks
         }
     });
 }
