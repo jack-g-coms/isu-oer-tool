@@ -142,11 +142,11 @@ export async function getRelevantChunks(knowledgeDocIds: string[], query: string
     `
 }
 
-export async function getKnowledgeDoc(knowledgeDocId: string) {
+export async function getKnowledgeDoc(knowledgeDocId: string, includeChunks: boolean=false) {
     return await prisma.knowledgeDocument.findFirstOrThrow({
         where: { id: knowledgeDocId },
         include: {
-            chunks: true,
+            chunks: includeChunks,
             author: true
         }
     });
@@ -156,7 +156,8 @@ export async function getUserKnowledgeBase(userId: string, includeChunks: boolea
     return await prisma.knowledgeDocument.findMany({
         where: { authorId: userId },
         include: {
-            chunks: includeChunks
+            chunks: includeChunks,
+            author: true
         }
     });
 }
@@ -174,4 +175,15 @@ export async function getFullDocumentText(knowledgeDocId: string): Promise<strin
 
 export async function ingestToKnowledgeBase(knowledgeDoc: KnowledgeDocument): Promise<void> {
     await chunkText(knowledgeDoc);
+}
+
+export async function markIngestionFailure(knowledgeDocId: string): Promise<void> {
+    await prisma.knowledgeDocument.update({
+        where: {
+            id: knowledgeDocId 
+        },
+        data: {
+            status: KnowledgeDocumentStatus.FAILED
+        }
+    });
 }

@@ -10,7 +10,7 @@ export default function AppLayout({
     <main className="min-h-screen flex flex-col lg:flex-row">
       <AuthLoader requiredStatus="authenticated" fallbackRoute="/">
         <NavigationBar/>
-        <div className="mx-auto w-full max-w-6xl px-8 py-8">
+        <div className="mx-auto w-full max-w-8xl px-10 py-8">
           {children}
         </div>
       </AuthLoader>
