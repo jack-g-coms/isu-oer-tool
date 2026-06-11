@@ -17,7 +17,7 @@ export default async function AppLayout({
   return (
     <main className="min-h-screen flex flex-col lg:flex-row">
       <NavigationBar/>
-      <div className="mx-auto w-full max-w-8xl px-10 py-8">
+      <div className="mx-auto w-full max-w-8xl px-6 lg:px-10 py-8">
         {children}
       </div>
 
