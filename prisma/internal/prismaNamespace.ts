@@ -669,7 +669,7 @@ export const KnowledgeDocumentScalarFieldEnum = {
   type: 'type',
   authorId: 'authorId',
   uri: 'uri',
-  aiUsable: 'aiUsable',
+  class: 'class',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -757,13 +757,6 @@ export type EnumKnowledgeDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInput
  * Reference to a field of type 'KnowledgeDocumentType[]'
  */
 export type ListEnumKnowledgeDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KnowledgeDocumentType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

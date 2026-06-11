@@ -10,9 +10,16 @@ export async function uploadFile(file: File): Promise<string> {
     const buffer = Buffer.from(await file.arrayBuffer());
     await fs.writeFile(filePath, buffer);
 
-    return filePath;
+    return `http://host.docker.internal:3000/uploads/${fileName}`;
 }
 
 export async function getFile(uri: string): Promise<Buffer> {
-    return await fs.readFile(uri);
+    const res = await fetch(uri);
+
+    if (!res.ok) {
+        throw new Error(`Failed to fetch file: ${res.status} ${res.statusText}`);
+    }
+
+    const arrayBuffer = await res.arrayBuffer();
+    return Buffer.from(arrayBuffer);
 }

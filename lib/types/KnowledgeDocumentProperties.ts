@@ -1,7 +1,7 @@
 type KnowledgeDocumentProperties = {
     title: string,
     authorId: string,
-    aiUsable: boolean
+    class: string
 }
 
 export default KnowledgeDocumentProperties;

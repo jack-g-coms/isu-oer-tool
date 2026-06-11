@@ -121,7 +121,7 @@ export async function createKnowledgeDocument(file: File, properties: KnowledgeD
             authorId: properties.authorId,
             type: knowledgeDocType,
             uri: filePath,
-            aiUsable: properties.aiUsable
+            class: properties.class
         }
     });
 
@@ -136,7 +136,7 @@ export async function getRelevantChunks(knowledgeDocIds: string[], query: string
         SELECT c.id AS "chunkId", c.text, d.id as "documentId", d.title, d.type, d.uri as "documentURI"
         FROM "KnowledgeDocumentChunk" c
         JOIN "KnowledgeDocument" d ON c."documentId" = d.id
-        WHERE c."documentId" IN (${Prisma.join(knowledgeDocIds)}) AND d."aiUsable" = true AND d.status = ${KnowledgeDocumentStatus.READY} 
+        WHERE c."documentId" IN (${Prisma.join(knowledgeDocIds)}) AND d.status = ${KnowledgeDocumentStatus.READY} 
         ORDER BY c.embedding <-> ${embeddingVector}::vector
         LIMIT ${MAX_TOTAL_CHUNKS_PER_QUERY};
     `
@@ -158,6 +158,18 @@ export async function getUserKnowledgeBase(userId: string, includeChunks: boolea
         include: {
             chunks: includeChunks,
             author: true
+        },
+        orderBy: {
+            updatedAt: "desc"
+        }
+    });
+}
+
+export async function requeueKnowledgeDoc(knowledgeDocId: string) {
+    return await prisma.knowledgeDocument.update({
+        where: { id: knowledgeDocId },
+        data: {
+            status: KnowledgeDocumentStatus.QUEUED
         }
     });
 }
@@ -184,6 +196,12 @@ export async function markIngestionFailure(knowledgeDocId: string): Promise<void
         },
         data: {
             status: KnowledgeDocumentStatus.FAILED
+        }
+    });
+
+    await prisma.knowledgeDocumentChunk.deleteMany({
+        where: {
+            documentId: knowledgeDocId
         }
     });
 }

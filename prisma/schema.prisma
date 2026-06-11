@@ -29,7 +29,7 @@ enum KnowledgeDocumentType {
 }
 
 enum KnowledgeDocumentStatus {
-  PENDING
+  QUEUED
   PROCESSING
   READY
   FAILED
@@ -38,11 +38,11 @@ enum KnowledgeDocumentStatus {
 model KnowledgeDocument {
   id String @id @default(cuid())
   title String
-  status KnowledgeDocumentStatus @default(PENDING)
+  status KnowledgeDocumentStatus @default(QUEUED)
   type KnowledgeDocumentType
   authorId String
   uri String
-  aiUsable Boolean @default(true)
+  class String @default("None")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

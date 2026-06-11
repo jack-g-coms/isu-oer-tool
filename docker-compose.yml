@@ -28,6 +28,7 @@ services:
       DATABASE_URL: postgres://postgres:postgres@db:5432/oer_dev
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      OLLAMA_HOST: http://host.docker.internal:11434
     depends_on:
       - db
       - redis

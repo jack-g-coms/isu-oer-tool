@@ -11,10 +11,10 @@ async function secretPOST(req: NextRequest) {
         const session = await auth();
 
         const title = formData.get("title") as string;
-        const aiUsable = formData.get("aiUsable") as string;
+        const className = formData.get("class") as string;
         const file = formData.get("file") as File;
 
-        if (!title || !aiUsable || !file) {
+        if (!title || !className || !file) {
             return Response.json(
                 { error: "Missing information" },
                 { status: 400 }
@@ -24,15 +24,21 @@ async function secretPOST(req: NextRequest) {
         const knowledgeDoc = await createKnowledgeDocument(file, {
             title,
             authorId: session?.user.id as string,
-            aiUsable: true
+            class: className
         });
 
         await ingestionQueue.add("ingest-document", {
-            knowledgeDocumentId: knowledgeDoc.id
+            knowledgeDocumentId: knowledgeDoc.id,
+        }, {
+            attempts: 3,
+            backoff: {
+                type: "exponential",
+                delay: 2000
+            }
         });
 
         return Response.json(
-            knowledgeDoc,
+            { success: true, data: knowledgeDoc },
             { status: 201 }
         );
     } catch (err) {

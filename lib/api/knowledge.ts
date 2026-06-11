@@ -1,13 +1,27 @@
 import { apiUrl } from "@/lib/constants/urls";
+import type { KnowledgeDocument } from "@/prisma/client";
 
-export async function createKnowledgeDocument(data: FormData) {
+export async function createKnowledgeDocument(data: FormData): Promise<{ success: boolean, data: KnowledgeDocument }> {
     const response = await fetch(`${apiUrl}/knowledge`, {
         method: "POST",
         body: data
     });
 
     const res = await response.json();
-    if (!res.ok) {
+    if (!response.ok) {
+        throw new Error(res.error);
+    } else {
+        return res;
+    }
+}
+
+export async function retryIngest(knowledgeDocId: string): Promise<{ success: boolean }> {
+    const response = await fetch(`${apiUrl}/knowledge/${knowledgeDocId}/reingest`, {
+        method: "POST",
+    });
+
+    const res = await response.json();
+    if (!response.ok) {
         throw new Error(res.error);
     } else {
         return res;

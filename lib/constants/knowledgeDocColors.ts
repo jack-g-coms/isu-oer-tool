@@ -18,3 +18,17 @@ export const knowledgeDocBadgeColors = {
     PPTX: "bg-orange-500/50",
     TEXT: "bg-gray-400/50"
 }
+
+export const knowledgeDocStatusBadgeColors = {
+    QUEUED: "bg-gray-400/50",
+    PROCESSING: "bg-blue-500/50",
+    READY: "bg-green-500/50",
+    FAILED: "bg-red-500/50"
+}
+
+export const knowledgeDocStatusBadgeTextColors = {
+    QUEUED: "text-gray-600",
+    PROCESSING: "text-blue-700",
+    READY: "text-green-700",
+    FAILED: "text-red-700"
+}

@@ -20,7 +20,7 @@ export type KnowledgeDocumentType = (typeof KnowledgeDocumentType)[keyof typeof 
 
 
 export const KnowledgeDocumentStatus = {
-  PENDING: 'PENDING',
+  QUEUED: 'QUEUED',
   PROCESSING: 'PROCESSING',
   READY: 'READY',
   FAILED: 'FAILED'

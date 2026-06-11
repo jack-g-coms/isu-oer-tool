@@ -90,7 +90,7 @@ export const KnowledgeDocumentScalarFieldEnum = {
   type: 'type',
   authorId: 'authorId',
   uri: 'uri',
-  aiUsable: 'aiUsable',
+  class: 'class',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -13,6 +13,9 @@ const worker = new Worker("ingestion", async(job: Job) => {
 });
 
 worker.on("failed", (job, err) => {
-    console.error(`Failed ${job?.id}: ${err.message}`);
-    markIngestionFailure(job?.data.knowledgeDocumentId);
+    console.log(`Failed ${job?.id}: ${err.message}`);
+    console.error(err);
+    if (job && job.attemptsMade >= (job.opts.attempts ?? 1)) {
+        markIngestionFailure(job.data.knowledgeDocumentId);
+    }
 });
