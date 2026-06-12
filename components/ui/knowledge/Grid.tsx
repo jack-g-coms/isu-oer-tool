@@ -8,10 +8,11 @@ import { Rocket } from "lucide-react";
 import Card from "./Card";
 
 type GridProps = {
-    data: KnowledgeDocument[]
+    data: KnowledgeDocument[],
+    search?: boolean
 }
 
-export default function Grid({ data }: GridProps) {
+export default function Grid({ data, search=false }: GridProps) {
     const router = useRouter();
     const hasActiveJobs = data.some(
         d => d.status == "QUEUED" || d.status == "PROCESSING"
@@ -40,8 +41,14 @@ export default function Grid({ data }: GridProps) {
                 </div>
             :
                 <div className="flex flex-col gap-6 items-center bg-white p-8 rounded-lg border border-gray-200 bg-white shadow-lg">
-                    <Rocket height={150} width={150} className="text-[var(--isu-gold)]"/>
-                    <h2 className="text-2xl font-semibold text-center">Start uploading documents to build your AI knowledge base.</h2>
+                    <Rocket height={175} width={175} className="text-[var(--isu-gold)]"/>
+                    <h2 className="text-xl md:text-2xl font-semibold text-center">
+                        {search ? 
+                            "We couldn't find anything with these filters, try searching something different."
+                        :
+                            "Start uploading documents to build your AI knowledge base."
+                        }
+                    </h2>
                 </div>
             }
         </>

@@ -1,4 +1,5 @@
 import { KnowledgeDocumentType, KnowledgeDocument, KnowledgeDocumentChunk, KnowledgeDocumentStatus, Prisma } from "@/prisma/client";
+import { KnowledgeDocumentWhereInput } from "@/prisma/models";
 import { OfficeConverter, OfficeChunk } from "officeparser";
 
 import KnowledgeDocumentProperties from "@/lib/types/KnowledgeDocumentProperties";
@@ -153,17 +154,58 @@ export async function getKnowledgeDoc(knowledgeDocId: string, includeChunks: boo
     });
 }
 
-export async function getUserKnowledgeBase(userId: string, includeChunks: boolean=false) {
-    return await prisma.knowledgeDocument.findMany({
-        where: { authorId: userId },
-        include: {
-            chunks: includeChunks,
-            author: true
-        },
-        orderBy: {
-            updatedAt: "desc"
-        }
-    });
+export async function getUserKnowledgeBase(
+    userId: string, 
+    includeChunks: boolean=false, 
+    search?: string, 
+    fileType?: KnowledgeDocumentType, 
+    status?: KnowledgeDocumentStatus,
+    page: number=1,
+    limit: number=12
+): Promise<{ data: KnowledgeDocument[], total: number }> {
+    const where: KnowledgeDocumentWhereInput = { 
+        authorId: userId,
+        ...(fileType && {
+            type: fileType
+        }),
+        ...(status && {
+            status: status
+        }),
+        ...(search && {
+            OR: [
+                { title: { contains: search, mode: "insensitive" } },
+                { class: { contains: search, mode: "insensitive" } },
+            ]
+        })
+    };
+
+    const [docs, total] = await prisma.$transaction([
+        prisma.knowledgeDocument.findMany({
+            where,
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+                chunks: includeChunks,
+                author: true
+            },
+            orderBy: {
+                updatedAt: "desc"
+            }
+        }),
+
+        prisma.knowledgeDocument.count({
+            where
+        })
+    ]);
+
+    return {
+        data: docs.sort((a, b) => {
+            if (a.status == KnowledgeDocumentStatus.FAILED && b.status != KnowledgeDocumentStatus.FAILED) return -1;
+            if (a.status != KnowledgeDocumentStatus.FAILED && b.status == KnowledgeDocumentStatus.FAILED) return 1;
+            return 0;
+        }),
+        total: total
+    }
 }
 
 export async function requeueKnowledgeDoc(knowledgeDocId: string): Promise<KnowledgeDocument> {

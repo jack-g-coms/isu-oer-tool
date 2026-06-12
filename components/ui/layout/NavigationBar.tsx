@@ -49,7 +49,7 @@ export default function NavigationBar() {
                 </div>
             </div>
 
-            <div className={`${mobileMenuOpen ? "block w-full" : "hidden"} lg:flex flex-col lg:w-full lg:max-w-xs lg:h-screen bg-white border-b border-r border-gray-200`}>
+            <div className={`${mobileMenuOpen ? "fixed top-14 z-50 w-full" : "hidden"} lg:flex flex-col lg:w-full lg:max-w-xs min-h-screen bg-white border-b border-r border-gray-200`}>
                 <div className="hidden lg:flex flex-row gap-4 border-b border-gray-200 px-6 pb-2">
                     <Image 
                         src="/images/isu-logo.png"

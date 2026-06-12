@@ -116,7 +116,7 @@ export default function Card({ data }: CardProps) {
                     <div className="flex flex-row flex-wrap gap-1">
                         <span title="Document Format" className={`text-xs w-fit p-1.5 tracking-tight rounded-xl font-semibold ${knowledgeDocBadgeColors[data.type]} ${knowledgeDocBadgeTextColors[data.type]}`} >{data.type}</span>
                         <span title="Status" className={`inline-flex items-center gap-1 text-xs w-fit p-1.5 tracking-tight rounded-xl font-semibold ${knowledgeDocStatusBadgeColors[data.status]} ${knowledgeDocStatusBadgeTextColors[data.status]}`} ><Info width={15} height={15}/>{data.status}</span>
-                        <span title="Class" className={`inline-flex items-center max-w-[145px] gap-1 text-xs p-1.5 tracking-tight rounded-xl font-semibold overflow-hidden whitespace-nowrap text-ellipsis ${knowledgeDocBadgeColors["TEXT"]} ${knowledgeDocBadgeTextColors["TEXT"]}`} >
+                        <span title="Class" className={`inline-flex items-center max-w-[140px] gap-1 text-xs p-1.5 tracking-tight rounded-xl font-semibold overflow-hidden whitespace-nowrap text-ellipsis ${knowledgeDocBadgeColors["TEXT"]} ${knowledgeDocBadgeTextColors["TEXT"]}`} >
                             <School width={15} height={15} className="shrink-0"/>
                             <span className="truncate">{data.class}</span>
                         </span>
