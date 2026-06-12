@@ -4,6 +4,7 @@ import { NextRequest } from "next/server";
 import { createKnowledgeDocument } from "@/lib/services/rag";
 import withAuth from "@/lib/api/authMiddleware";
 import { ingestionQueue } from "@/lib/queues/ingestion";
+import { MAX_CLASS_LENGTH, MAX_DOC_TITLE_LENGTH, MAX_FILE_SIZE } from "@/lib/constants/sanity";
 
 async function secretPOST(req: NextRequest) {
     try {
@@ -17,6 +18,30 @@ async function secretPOST(req: NextRequest) {
         if (!title || !className || !file) {
             return Response.json(
                 { error: "Missing information" },
+                { status: 400 }
+            );
+        }
+        if (className.length > MAX_CLASS_LENGTH) {
+            return Response.json(
+                { error: "Class is too long" },
+                { status: 400 }
+            );
+        }
+        if (title.trim().length == 0) {
+            return Response.json(
+                { error: "Title can't be empty" },
+                { status: 400 }
+            );
+        }
+        if (title.length > MAX_DOC_TITLE_LENGTH) {
+            return Response.json(
+                { error: "Title is too long" },
+                { status: 400 }
+            );
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            return Response.json(
+                { error: `File is too large, ${MAX_FILE_SIZE} MB is the limit` },
                 { status: 400 }
             );
         }

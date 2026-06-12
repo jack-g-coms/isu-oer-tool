@@ -30,7 +30,7 @@ export type KnowledgeDocumentMinAggregateOutputType = {
   status: $Enums.KnowledgeDocumentStatus | null
   type: $Enums.KnowledgeDocumentType | null
   authorId: string | null
-  uri: string | null
+  uploadKey: string | null
   class: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -42,7 +42,7 @@ export type KnowledgeDocumentMaxAggregateOutputType = {
   status: $Enums.KnowledgeDocumentStatus | null
   type: $Enums.KnowledgeDocumentType | null
   authorId: string | null
-  uri: string | null
+  uploadKey: string | null
   class: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -54,7 +54,7 @@ export type KnowledgeDocumentCountAggregateOutputType = {
   status: number
   type: number
   authorId: number
-  uri: number
+  uploadKey: number
   class: number
   createdAt: number
   updatedAt: number
@@ -68,7 +68,7 @@ export type KnowledgeDocumentMinAggregateInputType = {
   status?: true
   type?: true
   authorId?: true
-  uri?: true
+  uploadKey?: true
   class?: true
   createdAt?: true
   updatedAt?: true
@@ -80,7 +80,7 @@ export type KnowledgeDocumentMaxAggregateInputType = {
   status?: true
   type?: true
   authorId?: true
-  uri?: true
+  uploadKey?: true
   class?: true
   createdAt?: true
   updatedAt?: true
@@ -92,7 +92,7 @@ export type KnowledgeDocumentCountAggregateInputType = {
   status?: true
   type?: true
   authorId?: true
-  uri?: true
+  uploadKey?: true
   class?: true
   createdAt?: true
   updatedAt?: true
@@ -177,7 +177,7 @@ export type KnowledgeDocumentGroupByOutputType = {
   status: $Enums.KnowledgeDocumentStatus
   type: $Enums.KnowledgeDocumentType
   authorId: string
-  uri: string
+  uploadKey: string
   class: string
   createdAt: Date
   updatedAt: Date
@@ -210,7 +210,7 @@ export type KnowledgeDocumentWhereInput = {
   status?: Prisma.EnumKnowledgeDocumentStatusFilter<"KnowledgeDocument"> | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFilter<"KnowledgeDocument"> | $Enums.KnowledgeDocumentType
   authorId?: Prisma.StringFilter<"KnowledgeDocument"> | string
-  uri?: Prisma.StringFilter<"KnowledgeDocument"> | string
+  uploadKey?: Prisma.StringFilter<"KnowledgeDocument"> | string
   class?: Prisma.StringFilter<"KnowledgeDocument"> | string
   createdAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
@@ -224,7 +224,7 @@ export type KnowledgeDocumentOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
-  uri?: Prisma.SortOrder
+  uploadKey?: Prisma.SortOrder
   class?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -241,7 +241,7 @@ export type KnowledgeDocumentWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumKnowledgeDocumentStatusFilter<"KnowledgeDocument"> | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFilter<"KnowledgeDocument"> | $Enums.KnowledgeDocumentType
   authorId?: Prisma.StringFilter<"KnowledgeDocument"> | string
-  uri?: Prisma.StringFilter<"KnowledgeDocument"> | string
+  uploadKey?: Prisma.StringFilter<"KnowledgeDocument"> | string
   class?: Prisma.StringFilter<"KnowledgeDocument"> | string
   createdAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
@@ -255,7 +255,7 @@ export type KnowledgeDocumentOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
-  uri?: Prisma.SortOrder
+  uploadKey?: Prisma.SortOrder
   class?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -273,7 +273,7 @@ export type KnowledgeDocumentScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumKnowledgeDocumentStatusWithAggregatesFilter<"KnowledgeDocument"> | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeWithAggregatesFilter<"KnowledgeDocument"> | $Enums.KnowledgeDocumentType
   authorId?: Prisma.StringWithAggregatesFilter<"KnowledgeDocument"> | string
-  uri?: Prisma.StringWithAggregatesFilter<"KnowledgeDocument"> | string
+  uploadKey?: Prisma.StringWithAggregatesFilter<"KnowledgeDocument"> | string
   class?: Prisma.StringWithAggregatesFilter<"KnowledgeDocument"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"KnowledgeDocument"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"KnowledgeDocument"> | Date | string
@@ -284,7 +284,7 @@ export type KnowledgeDocumentCreateInput = {
   title: string
   status?: $Enums.KnowledgeDocumentStatus
   type: $Enums.KnowledgeDocumentType
-  uri: string
+  uploadKey: string
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -298,7 +298,7 @@ export type KnowledgeDocumentUncheckedCreateInput = {
   status?: $Enums.KnowledgeDocumentStatus
   type: $Enums.KnowledgeDocumentType
   authorId: string
-  uri: string
+  uploadKey: string
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -310,7 +310,7 @@ export type KnowledgeDocumentUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
-  uri?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -324,7 +324,7 @@ export type KnowledgeDocumentUncheckedUpdateInput = {
   status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
-  uri?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -337,7 +337,7 @@ export type KnowledgeDocumentCreateManyInput = {
   status?: $Enums.KnowledgeDocumentStatus
   type: $Enums.KnowledgeDocumentType
   authorId: string
-  uri: string
+  uploadKey: string
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -348,7 +348,7 @@ export type KnowledgeDocumentUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
-  uri?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -360,7 +360,7 @@ export type KnowledgeDocumentUncheckedUpdateManyInput = {
   status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
-  uri?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -382,7 +382,7 @@ export type KnowledgeDocumentCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
-  uri?: Prisma.SortOrder
+  uploadKey?: Prisma.SortOrder
   class?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -394,7 +394,7 @@ export type KnowledgeDocumentMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
-  uri?: Prisma.SortOrder
+  uploadKey?: Prisma.SortOrder
   class?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -406,7 +406,7 @@ export type KnowledgeDocumentMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
-  uri?: Prisma.SortOrder
+  uploadKey?: Prisma.SortOrder
   class?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -484,7 +484,7 @@ export type KnowledgeDocumentCreateWithoutAuthorInput = {
   title: string
   status?: $Enums.KnowledgeDocumentStatus
   type: $Enums.KnowledgeDocumentType
-  uri: string
+  uploadKey: string
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -496,7 +496,7 @@ export type KnowledgeDocumentUncheckedCreateWithoutAuthorInput = {
   title: string
   status?: $Enums.KnowledgeDocumentStatus
   type: $Enums.KnowledgeDocumentType
-  uri: string
+  uploadKey: string
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -538,7 +538,7 @@ export type KnowledgeDocumentScalarWhereInput = {
   status?: Prisma.EnumKnowledgeDocumentStatusFilter<"KnowledgeDocument"> | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFilter<"KnowledgeDocument"> | $Enums.KnowledgeDocumentType
   authorId?: Prisma.StringFilter<"KnowledgeDocument"> | string
-  uri?: Prisma.StringFilter<"KnowledgeDocument"> | string
+  uploadKey?: Prisma.StringFilter<"KnowledgeDocument"> | string
   class?: Prisma.StringFilter<"KnowledgeDocument"> | string
   createdAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
@@ -549,7 +549,7 @@ export type KnowledgeDocumentCreateWithoutChunksInput = {
   title: string
   status?: $Enums.KnowledgeDocumentStatus
   type: $Enums.KnowledgeDocumentType
-  uri: string
+  uploadKey: string
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -562,7 +562,7 @@ export type KnowledgeDocumentUncheckedCreateWithoutChunksInput = {
   status?: $Enums.KnowledgeDocumentStatus
   type: $Enums.KnowledgeDocumentType
   authorId: string
-  uri: string
+  uploadKey: string
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -589,7 +589,7 @@ export type KnowledgeDocumentUpdateWithoutChunksInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
-  uri?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -602,7 +602,7 @@ export type KnowledgeDocumentUncheckedUpdateWithoutChunksInput = {
   status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
-  uri?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -613,7 +613,7 @@ export type KnowledgeDocumentCreateManyAuthorInput = {
   title: string
   status?: $Enums.KnowledgeDocumentStatus
   type: $Enums.KnowledgeDocumentType
-  uri: string
+  uploadKey: string
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -624,7 +624,7 @@ export type KnowledgeDocumentUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
-  uri?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -636,7 +636,7 @@ export type KnowledgeDocumentUncheckedUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
-  uri?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -648,7 +648,7 @@ export type KnowledgeDocumentUncheckedUpdateManyWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
   type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
-  uri?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -691,7 +691,7 @@ export type KnowledgeDocumentSelect<ExtArgs extends runtime.Types.Extensions.Int
   status?: boolean
   type?: boolean
   authorId?: boolean
-  uri?: boolean
+  uploadKey?: boolean
   class?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -706,7 +706,7 @@ export type KnowledgeDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.T
   status?: boolean
   type?: boolean
   authorId?: boolean
-  uri?: boolean
+  uploadKey?: boolean
   class?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -719,7 +719,7 @@ export type KnowledgeDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   status?: boolean
   type?: boolean
   authorId?: boolean
-  uri?: boolean
+  uploadKey?: boolean
   class?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -732,13 +732,13 @@ export type KnowledgeDocumentSelectScalar = {
   status?: boolean
   type?: boolean
   authorId?: boolean
-  uri?: boolean
+  uploadKey?: boolean
   class?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type KnowledgeDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "status" | "type" | "authorId" | "uri" | "class" | "createdAt" | "updatedAt", ExtArgs["result"]["knowledgeDocument"]>
+export type KnowledgeDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "status" | "type" | "authorId" | "uploadKey" | "class" | "createdAt" | "updatedAt", ExtArgs["result"]["knowledgeDocument"]>
 export type KnowledgeDocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chunks?: boolean | Prisma.KnowledgeDocument$chunksArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -763,7 +763,7 @@ export type $KnowledgeDocumentPayload<ExtArgs extends runtime.Types.Extensions.I
     status: $Enums.KnowledgeDocumentStatus
     type: $Enums.KnowledgeDocumentType
     authorId: string
-    uri: string
+    uploadKey: string
     class: string
     createdAt: Date
     updatedAt: Date
@@ -1197,7 +1197,7 @@ export interface KnowledgeDocumentFieldRefs {
   readonly status: Prisma.FieldRef<"KnowledgeDocument", 'KnowledgeDocumentStatus'>
   readonly type: Prisma.FieldRef<"KnowledgeDocument", 'KnowledgeDocumentType'>
   readonly authorId: Prisma.FieldRef<"KnowledgeDocument", 'String'>
-  readonly uri: Prisma.FieldRef<"KnowledgeDocument", 'String'>
+  readonly uploadKey: Prisma.FieldRef<"KnowledgeDocument", 'String'>
   readonly class: Prisma.FieldRef<"KnowledgeDocument", 'String'>
   readonly createdAt: Prisma.FieldRef<"KnowledgeDocument", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"KnowledgeDocument", 'DateTime'>

@@ -41,7 +41,7 @@ model KnowledgeDocument {
   status KnowledgeDocumentStatus @default(QUEUED)
   type KnowledgeDocumentType
   authorId String
-  uri String
+  uploadKey String
   class String @default("None")
 
   createdAt DateTime @default(now())
@@ -49,7 +49,7 @@ model KnowledgeDocument {
 
   chunks KnowledgeDocumentChunk[]
 
-  author User @relation(fields: [authorId], references: [id])
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 model KnowledgeDocumentChunk {
@@ -61,5 +61,5 @@ model KnowledgeDocumentChunk {
   embedding Unsupported("vector(768)")
   createdAt DateTime @default(now())
 
-  document KnowledgeDocument @relation(fields: [documentId], references: [id])
+  document KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
 }

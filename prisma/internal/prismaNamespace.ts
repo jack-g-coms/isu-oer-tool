@@ -668,7 +668,7 @@ export const KnowledgeDocumentScalarFieldEnum = {
   status: 'status',
   type: 'type',
   authorId: 'authorId',
-  uri: 'uri',
+  uploadKey: 'uploadKey',
   class: 'class',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

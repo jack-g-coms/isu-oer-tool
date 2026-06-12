@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { ReactNode } from "react";
 
-type OverlayStore = {
+type ModalStore = {
     content: ReactNode | null;
     isOpen: boolean;
 
@@ -9,7 +9,7 @@ type OverlayStore = {
     close: () => void;
 };
 
-export const useOverlayStore = create<OverlayStore>((set) => ({
+export const useModalStore = create<ModalStore>((set) => ({
     content: null,
     isOpen: false,
 

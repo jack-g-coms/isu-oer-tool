@@ -1,13 +1,13 @@
 "use client";
 
 import { Upload } from "lucide-react";
-import { useOverlayStore } from "@/components/stores/Overlay";
+import { useModalStore } from "@/components/stores/Modals";
 
 import Button from "@/components/ui/input/Button";
 import UploadKnowledgeDocumentModal from "@/components/ui/modals/UploadKnowledgeDocumentModal";
 
 export default function Header() {
-    const open = useOverlayStore((state) => state.open);
+    const open = useModalStore((state) => state.open);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-[5fr_1fr] gap-4">

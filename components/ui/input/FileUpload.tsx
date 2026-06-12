@@ -5,7 +5,8 @@ import { useRef } from "react";
 
 type FileUploadProps = {
     label?: string
-    file: File | null
+    file: File | null,
+    required?: boolean,
     onChange: (file: File | null) => void
     accept: string
     acceptMsg: string
@@ -15,6 +16,7 @@ export default function FileUpload({
     label,
     file,
     onChange,
+    required=false,
     accept,
     acceptMsg
 }: FileUploadProps) {
@@ -33,6 +35,7 @@ export default function FileUpload({
                 type="file"
                 accept={accept}
                 className="hidden"
+                required={required}
                 onChange={(e) =>
                     onChange(e.target.files?.[0] ?? null)
                 }

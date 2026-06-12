@@ -7,7 +7,8 @@ import KnowledgeChunkWithDoc from "@/lib/types/KnowledgeChunkWithDoc";
 import prisma from "@/lib/db/prisma";
 import pgvector from "pgvector";
 import { generateChunkEmbedding } from "./ai";
-import { uploadFile, getFile } from "./uploads";
+import { uploadFile, getFile, deleteFile } from "./uploads";
+import KnowledgeDocumentUpdateProperties from "../types/KnowledgeDocumentUpdateProperties";
 
 // Configuration
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -55,7 +56,7 @@ async function chunkText(document: KnowledgeDocument): Promise<KnowledgeDocument
         }
     });
 
-    const fileBuffer = await getFile(document.uri);
+    const fileBuffer = await getFile(document.uploadKey);
     const chunks: KnowledgeDocumentChunk[] = [];
 
     if (document.type == KnowledgeDocumentType.TEXT) {
@@ -114,13 +115,13 @@ export async function createKnowledgeDocument(file: File, properties: KnowledgeD
         throw new Error(`File size exceeds the maximum limit of ${MAX_FILE_SIZE} bytes`);
     }
 
-    const filePath = await uploadFile(file);
+    const uploadKey = await uploadFile(file);
     const knowledgeDoc = await prisma.knowledgeDocument.create({
         data: {
             title: properties.title,
             authorId: properties.authorId,
             type: knowledgeDocType,
-            uri: filePath,
+            uploadKey: uploadKey,
             class: properties.class
         }
     });
@@ -133,7 +134,7 @@ export async function getRelevantChunks(knowledgeDocIds: string[], query: string
     const embeddingVector = pgvector.toSql(embedding);
 
     return await prisma.$queryRaw<KnowledgeChunkWithDoc[]>`
-        SELECT c.id AS "chunkId", c.text, d.id as "documentId", d.title, d.type, d.uri as "documentURI"
+        SELECT c.id AS "chunkId", c.text, d.id as "documentId", d.title, d.type, d.uploadKey
         FROM "KnowledgeDocumentChunk" c
         JOIN "KnowledgeDocument" d ON c."documentId" = d.id
         WHERE c."documentId" IN (${Prisma.join(knowledgeDocIds)}) AND d.status = ${KnowledgeDocumentStatus.READY} 
@@ -165,12 +166,19 @@ export async function getUserKnowledgeBase(userId: string, includeChunks: boolea
     });
 }
 
-export async function requeueKnowledgeDoc(knowledgeDocId: string) {
+export async function requeueKnowledgeDoc(knowledgeDocId: string): Promise<KnowledgeDocument> {
     return await prisma.knowledgeDocument.update({
         where: { id: knowledgeDocId },
         data: {
             status: KnowledgeDocumentStatus.QUEUED
         }
+    });
+}
+
+export async function updateKnowledgeDoc(knowledgeDocId: string, properties: KnowledgeDocumentUpdateProperties): Promise<KnowledgeDocument> {
+    return await prisma.knowledgeDocument.update({
+        where: { id: knowledgeDocId },
+        data: properties
     });
 }
 
@@ -204,4 +212,14 @@ export async function markIngestionFailure(knowledgeDocId: string): Promise<void
             documentId: knowledgeDocId
         }
     });
+}
+
+export async function deleteKnowledgeDocument(knowledgeDocId: string): Promise<void> {
+    const knowledgeDoc = await getKnowledgeDoc(knowledgeDocId);
+    await prisma.knowledgeDocument.delete({
+        where: {
+            id: knowledgeDocId
+        }
+    });
+    await deleteFile(knowledgeDoc.uploadKey);
 }

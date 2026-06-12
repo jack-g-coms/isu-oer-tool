@@ -2,7 +2,7 @@ import { auth } from "@/lib/utils/auth";
 import { redirect } from "next/navigation";
 
 import NavigationBar from "@/components/ui/layout/NavigationBar";
-import ModalDisplay from "@/components/ui/overlays/ModalDisplay";
+import ModalOverlay from "@/components/ui/overlays/ModalOverlay";
 
 export default async function AppLayout({
   children,
@@ -21,7 +21,7 @@ export default async function AppLayout({
         {children}
       </div>
 
-      <ModalDisplay/>
+      <ModalOverlay/>
     </main>
   );
 }

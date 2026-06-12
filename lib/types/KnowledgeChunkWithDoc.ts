@@ -4,7 +4,7 @@ type KnowledgeChunkWithDoc = {
     documentId: string;
     title: string;
     type: string;
-    documentURI: string;
+    uploadKey: string;
 };
 
 export default KnowledgeChunkWithDoc;

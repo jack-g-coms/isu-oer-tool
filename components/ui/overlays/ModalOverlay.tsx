@@ -1,9 +1,9 @@
 "use client";
 
-import { useOverlayStore } from "@/components/stores/Overlay";
+import { useModalStore } from "@/components/stores/Modals";
 
-export default function ModalDisplay() {
-    const { isOpen, content, close } = useOverlayStore();
+export default function ModalOverlay() {
+    const { isOpen, content, close } = useModalStore();
 
     if (!isOpen) return null;
 
@@ -11,7 +11,7 @@ export default function ModalDisplay() {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="absolute inset-0 bg-black/50" onClick={close}/>
 
-            <div className="relative">
+            <div className="w-full md:w-auto relative">
                 {content}
             </div>
         </div>  
