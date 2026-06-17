@@ -56,3 +56,18 @@ export type KnowledgeDocument = Prisma.KnowledgeDocumentModel
  * 
  */
 export type KnowledgeDocumentChunk = Prisma.KnowledgeDocumentChunkModel
+/**
+ * Model Textbook
+ * 
+ */
+export type Textbook = Prisma.TextbookModel
+/**
+ * Model Chapter
+ * 
+ */
+export type Chapter = Prisma.ChapterModel
+/**
+ * Model Section
+ * 
+ */
+export type Section = Prisma.SectionModel

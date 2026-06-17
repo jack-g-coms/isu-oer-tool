@@ -183,6 +183,7 @@ export type UserWhereInput = {
   department?: Prisma.StringNullableFilter<"User"> | string | null
   image?: Prisma.StringNullableFilter<"User"> | string | null
   documents?: Prisma.KnowledgeDocumentListRelationFilter
+  textbooks?: Prisma.TextbookListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -192,6 +193,7 @@ export type UserOrderByWithRelationInput = {
   department?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   documents?: Prisma.KnowledgeDocumentOrderByRelationAggregateInput
+  textbooks?: Prisma.TextbookOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -204,6 +206,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   department?: Prisma.StringNullableFilter<"User"> | string | null
   image?: Prisma.StringNullableFilter<"User"> | string | null
   documents?: Prisma.KnowledgeDocumentListRelationFilter
+  textbooks?: Prisma.TextbookListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -235,6 +238,7 @@ export type UserCreateInput = {
   department?: string | null
   image?: string | null
   documents?: Prisma.KnowledgeDocumentCreateNestedManyWithoutAuthorInput
+  textbooks?: Prisma.TextbookCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -244,6 +248,7 @@ export type UserUncheckedCreateInput = {
   department?: string | null
   image?: string | null
   documents?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutAuthorInput
+  textbooks?: Prisma.TextbookUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUpdateInput = {
@@ -253,6 +258,7 @@ export type UserUpdateInput = {
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documents?: Prisma.KnowledgeDocumentUpdateManyWithoutAuthorNestedInput
+  textbooks?: Prisma.TextbookUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -262,6 +268,7 @@ export type UserUncheckedUpdateInput = {
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documents?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutAuthorNestedInput
+  textbooks?: Prisma.TextbookUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -339,12 +346,27 @@ export type UserUpdateOneRequiredWithoutDocumentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDocumentsInput, Prisma.UserUpdateWithoutDocumentsInput>, Prisma.UserUncheckedUpdateWithoutDocumentsInput>
 }
 
+export type UserCreateNestedOneWithoutTextbooksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTextbooksInput, Prisma.UserUncheckedCreateWithoutTextbooksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTextbooksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTextbooksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTextbooksInput, Prisma.UserUncheckedCreateWithoutTextbooksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTextbooksInput
+  upsert?: Prisma.UserUpsertWithoutTextbooksInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTextbooksInput, Prisma.UserUpdateWithoutTextbooksInput>, Prisma.UserUncheckedUpdateWithoutTextbooksInput>
+}
+
 export type UserCreateWithoutDocumentsInput = {
   id?: string
   name: string
   email: string
   department?: string | null
   image?: string | null
+  textbooks?: Prisma.TextbookCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -353,6 +375,7 @@ export type UserUncheckedCreateWithoutDocumentsInput = {
   email: string
   department?: string | null
   image?: string | null
+  textbooks?: Prisma.TextbookUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -377,6 +400,7 @@ export type UserUpdateWithoutDocumentsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textbooks?: Prisma.TextbookUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -385,6 +409,59 @@ export type UserUncheckedUpdateWithoutDocumentsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textbooks?: Prisma.TextbookUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserCreateWithoutTextbooksInput = {
+  id?: string
+  name: string
+  email: string
+  department?: string | null
+  image?: string | null
+  documents?: Prisma.KnowledgeDocumentCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutTextbooksInput = {
+  id?: string
+  name: string
+  email: string
+  department?: string | null
+  image?: string | null
+  documents?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutTextbooksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTextbooksInput, Prisma.UserUncheckedCreateWithoutTextbooksInput>
+}
+
+export type UserUpsertWithoutTextbooksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTextbooksInput, Prisma.UserUncheckedUpdateWithoutTextbooksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTextbooksInput, Prisma.UserUncheckedCreateWithoutTextbooksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTextbooksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTextbooksInput, Prisma.UserUncheckedUpdateWithoutTextbooksInput>
+}
+
+export type UserUpdateWithoutTextbooksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documents?: Prisma.KnowledgeDocumentUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTextbooksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documents?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 
@@ -394,10 +471,12 @@ export type UserUncheckedUpdateWithoutDocumentsInput = {
 
 export type UserCountOutputType = {
   documents: number
+  textbooks: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   documents?: boolean | UserCountOutputTypeCountDocumentsArgs
+  textbooks?: boolean | UserCountOutputTypeCountTextbooksArgs
 }
 
 /**
@@ -417,6 +496,13 @@ export type UserCountOutputTypeCountDocumentsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.KnowledgeDocumentWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTextbooksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TextbookWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -425,6 +511,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   department?: boolean
   image?: boolean
   documents?: boolean | Prisma.User$documentsArgs<ExtArgs>
+  textbooks?: boolean | Prisma.User$textbooksArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -455,6 +542,7 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "department" | "image", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   documents?: boolean | Prisma.User$documentsArgs<ExtArgs>
+  textbooks?: boolean | Prisma.User$textbooksArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -464,6 +552,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     documents: Prisma.$KnowledgeDocumentPayload<ExtArgs>[]
+    textbooks: Prisma.$TextbookPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -866,6 +955,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   documents<T extends Prisma.User$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  textbooks<T extends Prisma.User$textbooksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$textbooksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TextbookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1314,6 +1404,30 @@ export type User$documentsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.KnowledgeDocumentScalarFieldEnum | Prisma.KnowledgeDocumentScalarFieldEnum[]
+}
+
+/**
+ * User.textbooks
+ */
+export type User$textbooksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Textbook
+   */
+  select?: Prisma.TextbookSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Textbook
+   */
+  omit?: Prisma.TextbookOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TextbookInclude<ExtArgs> | null
+  where?: Prisma.TextbookWhereInput
+  orderBy?: Prisma.TextbookOrderByWithRelationInput | Prisma.TextbookOrderByWithRelationInput[]
+  cursor?: Prisma.TextbookWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TextbookScalarFieldEnum | Prisma.TextbookScalarFieldEnum[]
 }
 
 /**

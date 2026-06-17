@@ -27,3 +27,15 @@ export const KnowledgeDocumentStatus = {
 } as const
 
 export type KnowledgeDocumentStatus = (typeof KnowledgeDocumentStatus)[keyof typeof KnowledgeDocumentStatus]
+
+
+export const TextbookStatus = {
+  QUEUED: 'QUEUED',
+  OUTLINING: 'OUTLINING',
+  WRITING: 'WRITING',
+  READY: 'READY',
+  FAILED_OUTLINING: 'FAILED_OUTLINING',
+  FAILED_WRITING: 'FAILED_WRITING'
+} as const
+
+export type TextbookStatus = (typeof TextbookStatus)[keyof typeof TextbookStatus]

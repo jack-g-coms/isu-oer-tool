@@ -215,6 +215,7 @@ export type KnowledgeDocumentWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
   chunks?: Prisma.KnowledgeDocumentChunkListRelationFilter
+  referencedIn?: Prisma.TextbookListRelationFilter
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -229,6 +230,7 @@ export type KnowledgeDocumentOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   chunks?: Prisma.KnowledgeDocumentChunkOrderByRelationAggregateInput
+  referencedIn?: Prisma.TextbookOrderByRelationAggregateInput
   author?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -246,6 +248,7 @@ export type KnowledgeDocumentWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
   chunks?: Prisma.KnowledgeDocumentChunkListRelationFilter
+  referencedIn?: Prisma.TextbookListRelationFilter
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
@@ -289,6 +292,7 @@ export type KnowledgeDocumentCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   chunks?: Prisma.KnowledgeDocumentChunkCreateNestedManyWithoutDocumentInput
+  referencedIn?: Prisma.TextbookCreateNestedManyWithoutSourcesInput
   author: Prisma.UserCreateNestedOneWithoutDocumentsInput
 }
 
@@ -303,6 +307,7 @@ export type KnowledgeDocumentUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   chunks?: Prisma.KnowledgeDocumentChunkUncheckedCreateNestedManyWithoutDocumentInput
+  referencedIn?: Prisma.TextbookUncheckedCreateNestedManyWithoutSourcesInput
 }
 
 export type KnowledgeDocumentUpdateInput = {
@@ -315,6 +320,7 @@ export type KnowledgeDocumentUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chunks?: Prisma.KnowledgeDocumentChunkUpdateManyWithoutDocumentNestedInput
+  referencedIn?: Prisma.TextbookUpdateManyWithoutSourcesNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
 }
 
@@ -329,6 +335,7 @@ export type KnowledgeDocumentUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chunks?: Prisma.KnowledgeDocumentChunkUncheckedUpdateManyWithoutDocumentNestedInput
+  referencedIn?: Prisma.TextbookUncheckedUpdateManyWithoutSourcesNestedInput
 }
 
 export type KnowledgeDocumentCreateManyInput = {
@@ -479,6 +486,44 @@ export type KnowledgeDocumentUpdateOneRequiredWithoutChunksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeDocumentUpdateToOneWithWhereWithoutChunksInput, Prisma.KnowledgeDocumentUpdateWithoutChunksInput>, Prisma.KnowledgeDocumentUncheckedUpdateWithoutChunksInput>
 }
 
+export type KnowledgeDocumentCreateNestedManyWithoutReferencedInInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeDocumentCreateWithoutReferencedInInput, Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput> | Prisma.KnowledgeDocumentCreateWithoutReferencedInInput[] | Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput[]
+  connectOrCreate?: Prisma.KnowledgeDocumentCreateOrConnectWithoutReferencedInInput | Prisma.KnowledgeDocumentCreateOrConnectWithoutReferencedInInput[]
+  connect?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+}
+
+export type KnowledgeDocumentUncheckedCreateNestedManyWithoutReferencedInInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeDocumentCreateWithoutReferencedInInput, Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput> | Prisma.KnowledgeDocumentCreateWithoutReferencedInInput[] | Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput[]
+  connectOrCreate?: Prisma.KnowledgeDocumentCreateOrConnectWithoutReferencedInInput | Prisma.KnowledgeDocumentCreateOrConnectWithoutReferencedInInput[]
+  connect?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+}
+
+export type KnowledgeDocumentUpdateManyWithoutReferencedInNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeDocumentCreateWithoutReferencedInInput, Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput> | Prisma.KnowledgeDocumentCreateWithoutReferencedInInput[] | Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput[]
+  connectOrCreate?: Prisma.KnowledgeDocumentCreateOrConnectWithoutReferencedInInput | Prisma.KnowledgeDocumentCreateOrConnectWithoutReferencedInInput[]
+  upsert?: Prisma.KnowledgeDocumentUpsertWithWhereUniqueWithoutReferencedInInput | Prisma.KnowledgeDocumentUpsertWithWhereUniqueWithoutReferencedInInput[]
+  set?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+  disconnect?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+  delete?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+  connect?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+  update?: Prisma.KnowledgeDocumentUpdateWithWhereUniqueWithoutReferencedInInput | Prisma.KnowledgeDocumentUpdateWithWhereUniqueWithoutReferencedInInput[]
+  updateMany?: Prisma.KnowledgeDocumentUpdateManyWithWhereWithoutReferencedInInput | Prisma.KnowledgeDocumentUpdateManyWithWhereWithoutReferencedInInput[]
+  deleteMany?: Prisma.KnowledgeDocumentScalarWhereInput | Prisma.KnowledgeDocumentScalarWhereInput[]
+}
+
+export type KnowledgeDocumentUncheckedUpdateManyWithoutReferencedInNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeDocumentCreateWithoutReferencedInInput, Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput> | Prisma.KnowledgeDocumentCreateWithoutReferencedInInput[] | Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput[]
+  connectOrCreate?: Prisma.KnowledgeDocumentCreateOrConnectWithoutReferencedInInput | Prisma.KnowledgeDocumentCreateOrConnectWithoutReferencedInInput[]
+  upsert?: Prisma.KnowledgeDocumentUpsertWithWhereUniqueWithoutReferencedInInput | Prisma.KnowledgeDocumentUpsertWithWhereUniqueWithoutReferencedInInput[]
+  set?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+  disconnect?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+  delete?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+  connect?: Prisma.KnowledgeDocumentWhereUniqueInput | Prisma.KnowledgeDocumentWhereUniqueInput[]
+  update?: Prisma.KnowledgeDocumentUpdateWithWhereUniqueWithoutReferencedInInput | Prisma.KnowledgeDocumentUpdateWithWhereUniqueWithoutReferencedInInput[]
+  updateMany?: Prisma.KnowledgeDocumentUpdateManyWithWhereWithoutReferencedInInput | Prisma.KnowledgeDocumentUpdateManyWithWhereWithoutReferencedInInput[]
+  deleteMany?: Prisma.KnowledgeDocumentScalarWhereInput | Prisma.KnowledgeDocumentScalarWhereInput[]
+}
+
 export type KnowledgeDocumentCreateWithoutAuthorInput = {
   id?: string
   title: string
@@ -489,6 +534,7 @@ export type KnowledgeDocumentCreateWithoutAuthorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   chunks?: Prisma.KnowledgeDocumentChunkCreateNestedManyWithoutDocumentInput
+  referencedIn?: Prisma.TextbookCreateNestedManyWithoutSourcesInput
 }
 
 export type KnowledgeDocumentUncheckedCreateWithoutAuthorInput = {
@@ -501,6 +547,7 @@ export type KnowledgeDocumentUncheckedCreateWithoutAuthorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   chunks?: Prisma.KnowledgeDocumentChunkUncheckedCreateNestedManyWithoutDocumentInput
+  referencedIn?: Prisma.TextbookUncheckedCreateNestedManyWithoutSourcesInput
 }
 
 export type KnowledgeDocumentCreateOrConnectWithoutAuthorInput = {
@@ -553,6 +600,7 @@ export type KnowledgeDocumentCreateWithoutChunksInput = {
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  referencedIn?: Prisma.TextbookCreateNestedManyWithoutSourcesInput
   author: Prisma.UserCreateNestedOneWithoutDocumentsInput
 }
 
@@ -566,6 +614,7 @@ export type KnowledgeDocumentUncheckedCreateWithoutChunksInput = {
   class?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  referencedIn?: Prisma.TextbookUncheckedCreateNestedManyWithoutSourcesInput
 }
 
 export type KnowledgeDocumentCreateOrConnectWithoutChunksInput = {
@@ -593,6 +642,7 @@ export type KnowledgeDocumentUpdateWithoutChunksInput = {
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  referencedIn?: Prisma.TextbookUpdateManyWithoutSourcesNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
 }
 
@@ -606,6 +656,54 @@ export type KnowledgeDocumentUncheckedUpdateWithoutChunksInput = {
   class?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  referencedIn?: Prisma.TextbookUncheckedUpdateManyWithoutSourcesNestedInput
+}
+
+export type KnowledgeDocumentCreateWithoutReferencedInInput = {
+  id?: string
+  title: string
+  status?: $Enums.KnowledgeDocumentStatus
+  type: $Enums.KnowledgeDocumentType
+  uploadKey: string
+  class?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  chunks?: Prisma.KnowledgeDocumentChunkCreateNestedManyWithoutDocumentInput
+  author: Prisma.UserCreateNestedOneWithoutDocumentsInput
+}
+
+export type KnowledgeDocumentUncheckedCreateWithoutReferencedInInput = {
+  id?: string
+  title: string
+  status?: $Enums.KnowledgeDocumentStatus
+  type: $Enums.KnowledgeDocumentType
+  authorId: string
+  uploadKey: string
+  class?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  chunks?: Prisma.KnowledgeDocumentChunkUncheckedCreateNestedManyWithoutDocumentInput
+}
+
+export type KnowledgeDocumentCreateOrConnectWithoutReferencedInInput = {
+  where: Prisma.KnowledgeDocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeDocumentCreateWithoutReferencedInInput, Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput>
+}
+
+export type KnowledgeDocumentUpsertWithWhereUniqueWithoutReferencedInInput = {
+  where: Prisma.KnowledgeDocumentWhereUniqueInput
+  update: Prisma.XOR<Prisma.KnowledgeDocumentUpdateWithoutReferencedInInput, Prisma.KnowledgeDocumentUncheckedUpdateWithoutReferencedInInput>
+  create: Prisma.XOR<Prisma.KnowledgeDocumentCreateWithoutReferencedInInput, Prisma.KnowledgeDocumentUncheckedCreateWithoutReferencedInInput>
+}
+
+export type KnowledgeDocumentUpdateWithWhereUniqueWithoutReferencedInInput = {
+  where: Prisma.KnowledgeDocumentWhereUniqueInput
+  data: Prisma.XOR<Prisma.KnowledgeDocumentUpdateWithoutReferencedInInput, Prisma.KnowledgeDocumentUncheckedUpdateWithoutReferencedInInput>
+}
+
+export type KnowledgeDocumentUpdateManyWithWhereWithoutReferencedInInput = {
+  where: Prisma.KnowledgeDocumentScalarWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeDocumentUpdateManyMutationInput, Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutReferencedInInput>
 }
 
 export type KnowledgeDocumentCreateManyAuthorInput = {
@@ -629,6 +727,7 @@ export type KnowledgeDocumentUpdateWithoutAuthorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chunks?: Prisma.KnowledgeDocumentChunkUpdateManyWithoutDocumentNestedInput
+  referencedIn?: Prisma.TextbookUpdateManyWithoutSourcesNestedInput
 }
 
 export type KnowledgeDocumentUncheckedUpdateWithoutAuthorInput = {
@@ -641,6 +740,7 @@ export type KnowledgeDocumentUncheckedUpdateWithoutAuthorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chunks?: Prisma.KnowledgeDocumentChunkUncheckedUpdateManyWithoutDocumentNestedInput
+  referencedIn?: Prisma.TextbookUncheckedUpdateManyWithoutSourcesNestedInput
 }
 
 export type KnowledgeDocumentUncheckedUpdateManyWithoutAuthorInput = {
@@ -654,6 +754,44 @@ export type KnowledgeDocumentUncheckedUpdateManyWithoutAuthorInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type KnowledgeDocumentUpdateWithoutReferencedInInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
+  type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
+  class?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  chunks?: Prisma.KnowledgeDocumentChunkUpdateManyWithoutDocumentNestedInput
+  author?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
+}
+
+export type KnowledgeDocumentUncheckedUpdateWithoutReferencedInInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
+  type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
+  class?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  chunks?: Prisma.KnowledgeDocumentChunkUncheckedUpdateManyWithoutDocumentNestedInput
+}
+
+export type KnowledgeDocumentUncheckedUpdateManyWithoutReferencedInInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumKnowledgeDocumentStatusFieldUpdateOperationsInput | $Enums.KnowledgeDocumentStatus
+  type?: Prisma.EnumKnowledgeDocumentTypeFieldUpdateOperationsInput | $Enums.KnowledgeDocumentType
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadKey?: Prisma.StringFieldUpdateOperationsInput | string
+  class?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 /**
  * Count Type KnowledgeDocumentCountOutputType
@@ -661,10 +799,12 @@ export type KnowledgeDocumentUncheckedUpdateManyWithoutAuthorInput = {
 
 export type KnowledgeDocumentCountOutputType = {
   chunks: number
+  referencedIn: number
 }
 
 export type KnowledgeDocumentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chunks?: boolean | KnowledgeDocumentCountOutputTypeCountChunksArgs
+  referencedIn?: boolean | KnowledgeDocumentCountOutputTypeCountReferencedInArgs
 }
 
 /**
@@ -684,6 +824,13 @@ export type KnowledgeDocumentCountOutputTypeCountChunksArgs<ExtArgs extends runt
   where?: Prisma.KnowledgeDocumentChunkWhereInput
 }
 
+/**
+ * KnowledgeDocumentCountOutputType without action
+ */
+export type KnowledgeDocumentCountOutputTypeCountReferencedInArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TextbookWhereInput
+}
+
 
 export type KnowledgeDocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -696,6 +843,7 @@ export type KnowledgeDocumentSelect<ExtArgs extends runtime.Types.Extensions.Int
   createdAt?: boolean
   updatedAt?: boolean
   chunks?: boolean | Prisma.KnowledgeDocument$chunksArgs<ExtArgs>
+  referencedIn?: boolean | Prisma.KnowledgeDocument$referencedInArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.KnowledgeDocumentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["knowledgeDocument"]>
@@ -741,6 +889,7 @@ export type KnowledgeDocumentSelectScalar = {
 export type KnowledgeDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "status" | "type" | "authorId" | "uploadKey" | "class" | "createdAt" | "updatedAt", ExtArgs["result"]["knowledgeDocument"]>
 export type KnowledgeDocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chunks?: boolean | Prisma.KnowledgeDocument$chunksArgs<ExtArgs>
+  referencedIn?: boolean | Prisma.KnowledgeDocument$referencedInArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.KnowledgeDocumentCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -755,6 +904,7 @@ export type $KnowledgeDocumentPayload<ExtArgs extends runtime.Types.Extensions.I
   name: "KnowledgeDocument"
   objects: {
     chunks: Prisma.$KnowledgeDocumentChunkPayload<ExtArgs>[]
+    referencedIn: Prisma.$TextbookPayload<ExtArgs>[]
     author: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1162,6 +1312,7 @@ readonly fields: KnowledgeDocumentFieldRefs;
 export interface Prisma__KnowledgeDocumentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   chunks<T extends Prisma.KnowledgeDocument$chunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeDocument$chunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  referencedIn<T extends Prisma.KnowledgeDocument$referencedInArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeDocument$referencedInArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TextbookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1623,6 +1774,30 @@ export type KnowledgeDocument$chunksArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.KnowledgeDocumentChunkScalarFieldEnum | Prisma.KnowledgeDocumentChunkScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeDocument.referencedIn
+ */
+export type KnowledgeDocument$referencedInArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Textbook
+   */
+  select?: Prisma.TextbookSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Textbook
+   */
+  omit?: Prisma.TextbookOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TextbookInclude<ExtArgs> | null
+  where?: Prisma.TextbookWhereInput
+  orderBy?: Prisma.TextbookOrderByWithRelationInput | Prisma.TextbookOrderByWithRelationInput[]
+  cursor?: Prisma.TextbookWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TextbookScalarFieldEnum | Prisma.TextbookScalarFieldEnum[]
 }
 
 /**

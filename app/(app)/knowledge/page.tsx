@@ -39,7 +39,7 @@ export default async function KnowledgePage({ searchParams }: KnowledgePageProps
             <Pagination
                 page={page}
                 total={total}
-                limit={12}
+                limit={16}
             />
         </div>
     )

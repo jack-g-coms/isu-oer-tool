@@ -1,4 +1,4 @@
-import { Ollama } from "ollama";
+import { Ollama, ChatResponse } from "ollama";
 
 const ollama = new Ollama({
     host: process.env.OLLAMA_HOST ?? "http://localhost:11434"
@@ -11,4 +11,21 @@ export async function generateChunkEmbedding(text: string): Promise<number[]> {
         input: text
     });
     return response.embeddings[0];
+}
+
+export async function chat(systemPrompt: string, prompt: string, format?: string | object): Promise<ChatResponse> {
+    return await ollama.chat({
+        model: "qwen2.5",
+        messages: [
+            {
+                role: "system",
+                content: systemPrompt 
+            },
+            {
+                role: "user",
+                content: prompt
+            }
+        ],
+        format
+    });
 }

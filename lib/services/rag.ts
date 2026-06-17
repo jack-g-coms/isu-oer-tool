@@ -130,17 +130,17 @@ export async function createKnowledgeDocument(file: File, properties: KnowledgeD
     return knowledgeDoc;
 }
 
-export async function getRelevantChunks(knowledgeDocIds: string[], query: string): Promise<KnowledgeChunkWithDoc[]> {
+export async function getRelevantChunks(knowledgeDocIds: string[], query: string, limit: number=MAX_TOTAL_CHUNKS_PER_QUERY): Promise<KnowledgeChunkWithDoc[]> {
     const embedding = await generateChunkEmbedding(query);
     const embeddingVector = pgvector.toSql(embedding);
 
     return await prisma.$queryRaw<KnowledgeChunkWithDoc[]>`
-        SELECT c.id AS "chunkId", c.text, d.id as "documentId", d.title, d.type, d.uploadKey
+        SELECT c.id AS "chunkId", c.text, d.id as "documentId", d.title, d.type, d."uploadKey"
         FROM "KnowledgeDocumentChunk" c
         JOIN "KnowledgeDocument" d ON c."documentId" = d.id
         WHERE c."documentId" IN (${Prisma.join(knowledgeDocIds)}) AND d.status = ${KnowledgeDocumentStatus.READY} 
         ORDER BY c.embedding <-> ${embeddingVector}::vector
-        LIMIT ${MAX_TOTAL_CHUNKS_PER_QUERY};
+        LIMIT ${limit};
     `
 }
 
@@ -161,7 +161,7 @@ export async function getUserKnowledgeBase(
     fileType?: KnowledgeDocumentType, 
     status?: KnowledgeDocumentStatus,
     page: number=1,
-    limit: number=12
+    limit: number=16
 ): Promise<{ data: KnowledgeDocument[], total: number }> {
     const where: KnowledgeDocumentWhereInput = { 
         authorId: userId,

@@ -11,4 +11,7 @@
 export type * from './models/User'
 export type * from './models/KnowledgeDocument'
 export type * from './models/KnowledgeDocumentChunk'
+export type * from './models/Textbook'
+export type * from './models/Chapter'
+export type * from './models/Section'
 export type * from './commonInputTypes'
