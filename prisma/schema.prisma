@@ -70,10 +70,15 @@ model KnowledgeDocumentChunk {
 enum TextbookStatus {
   QUEUED
   OUTLINING
-  WRITING
   READY
   FAILED_OUTLINING
-  FAILED_WRITING
+}
+
+enum SectionStatus {
+  QUEUED
+  WRITING
+  READY
+  FAILED
 }
 
 model Textbook {
@@ -114,8 +119,11 @@ model Section {
   chapterId String
   chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
+  status SectionStatus @default(QUEUED)
+
   title String
+  summary String?
   order Int
 
-  content Json
+  content Json?
 }

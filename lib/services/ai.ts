@@ -13,9 +13,10 @@ export async function generateChunkEmbedding(text: string): Promise<number[]> {
     return response.embeddings[0];
 }
 
-export async function chat(systemPrompt: string, prompt: string, format?: string | object): Promise<ChatResponse> {
-    return await ollama.chat({
-        model: "qwen2.5",
+export async function chat(systemPrompt: string, prompt: string, format?: string | object): Promise<string> {
+    const stream = await ollama.chat({
+        model: "qwen2.5:3b",
+        keep_alive: "30m",
         messages: [
             {
                 role: "system",
@@ -26,6 +27,19 @@ export async function chat(systemPrompt: string, prompt: string, format?: string
                 content: prompt
             }
         ],
-        format
+        stream: true,
+        format,
+        options: {
+            temperature: 0.2,
+            top_p: 0.9,
+            num_ctx: 8192,
+            num_predict: 1500
+        }
     });
+
+    let result = "";
+    for await (const chunk of stream) {
+        result += chunk.message.content;
+    }
+    return result;
 }

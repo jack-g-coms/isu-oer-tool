@@ -32,10 +32,18 @@ export type KnowledgeDocumentStatus = (typeof KnowledgeDocumentStatus)[keyof typ
 export const TextbookStatus = {
   QUEUED: 'QUEUED',
   OUTLINING: 'OUTLINING',
-  WRITING: 'WRITING',
   READY: 'READY',
-  FAILED_OUTLINING: 'FAILED_OUTLINING',
-  FAILED_WRITING: 'FAILED_WRITING'
+  FAILED_OUTLINING: 'FAILED_OUTLINING'
 } as const
 
 export type TextbookStatus = (typeof TextbookStatus)[keyof typeof TextbookStatus]
+
+
+export const SectionStatus = {
+  QUEUED: 'QUEUED',
+  WRITING: 'WRITING',
+  READY: 'READY',
+  FAILED: 'FAILED'
+} as const
+
+export type SectionStatus = (typeof SectionStatus)[keyof typeof SectionStatus]
