@@ -20,10 +20,10 @@ services:
     volumes:
       - redis-data:/data
 
-  worker-ingestion:
+  workers:
     build: .
-    container_name: worker-ingestion
-    command: ["npm", "run", "worker-ingestion"]
+    container_name: workers
+    command: ["npm", "run", "workers"]
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/oer_dev
       REDIS_HOST: redis

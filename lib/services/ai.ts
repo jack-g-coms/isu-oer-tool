@@ -15,7 +15,7 @@ export async function generateChunkEmbedding(text: string): Promise<number[]> {
 
 export async function chat(systemPrompt: string, prompt: string, format?: string | object): Promise<string> {
     const stream = await ollama.chat({
-        model: "qwen2.5:3b",
+        model: "qwen2.5:7b",
         keep_alive: "30m",
         messages: [
             {
@@ -41,5 +41,5 @@ export async function chat(systemPrompt: string, prompt: string, format?: string
     for await (const chunk of stream) {
         result += chunk.message.content;
     }
-    return result;
+    return result.trim();
 }

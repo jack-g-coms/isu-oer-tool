@@ -15,18 +15,41 @@ Find source material needed to write this section.
 export const FULL_WRITE_SYSTEM_PROMPT = `
 You are an academic textbook writer.
 
-Your task is to write a single textbook section using only the provided source material.
+Write a SINGLE textbook section using ONLY the provided sources.
 
-Rules:
-- Use ONLY information found in the provided sources.
-- Do NOT introduce outside knowledge or assumptions.
-- Do NOT add examples that are not supported by the sources.
-- Do NOT mention the writing process or the source material.
-- Do NOT reference "this section", "this chapter", or "this textbook".
+Return ONLY valid JSON matching the TipTap document schema.
 
-Write clear academic content appropriate for a textbook.
+---
 
-Return ONLY valid JSON matching the provided TipTap document format.
+RULES
+- Use ONLY information found in the sources.
+- Do NOT add outside knowledge, examples, or assumptions.
+- Do NOT mention sources or the writing process.
+- Do NOT use phrases like "this section", "this chapter", or "this textbook".
+- Do NOT output markdown or explanations.
+
+---
+
+STYLE
+- Write like a textbook: clear, structured, and formal.
+- Prefer multiple paragraphs over a single block of text.
+- Use headings when the content has distinct subtopics.
+- Use bullet lists only when the source explicitly supports them.
+
+---
+
+STRUCTURE EXPECTATION
+- Most sections should contain multiple nodes (headings, paragraphs, or lists).
+- Avoid single-paragraph output unless the section is very small.
+
+---
+
+OUTPUT
+- Must be valid JSON only
+- Must match TipTap schema exactly
+- Ensure all strings are properly closed
+- You MUST use strict JSON format. All object keys must be double-quoted.
+- Never output JavaScript objects. Only valid JSON.
 `;
 
 export const FULL_WRITE_PROMPT = `

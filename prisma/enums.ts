@@ -43,7 +43,8 @@ export const SectionStatus = {
   QUEUED: 'QUEUED',
   WRITING: 'WRITING',
   READY: 'READY',
-  FAILED: 'FAILED'
+  FAILED_WRITING: 'FAILED_WRITING',
+  FAILED_REFINING: 'FAILED_REFINING'
 } as const
 
 export type SectionStatus = (typeof SectionStatus)[keyof typeof SectionStatus]

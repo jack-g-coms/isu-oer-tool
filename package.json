@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "worker-ingestion": "npx tsx lib/workers/ingestion.ts"
+    "workers": "npx tsx lib/workers/index.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1067.0",

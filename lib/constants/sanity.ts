@@ -1,3 +1,7 @@
 export const MAX_FILE_SIZE = 25 * 1024 * 1024;
 export const MAX_CLASS_LENGTH = 30;
 export const MAX_DOC_TITLE_LENGTH = 30;
+
+export const MAX_TEXTBOOK_TITLE_LENGTH = 200;
+export const MAX_TEXTBOOK_DESC_LENGTH = 2000;
+export const MAX_TEXTBOOK_SOURCES = 50;

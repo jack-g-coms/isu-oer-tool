@@ -7,44 +7,43 @@ import { MAX_CLASS_LENGTH, MAX_DOC_TITLE_LENGTH } from "@/lib/constants/sanity";
 import { getUrl } from "@/lib/services/uploads";
 import { KnowledgeDocumentStatus } from "@/prisma/enums";
 
-async function secretPATCH(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
-    const id = (await params).id;
-    const formData = await req.formData();
-    
-    let title = formData.get("title") as string;
-    let className = formData.get("class") as string;
-
-    if (!className && !title) {
-        return Response.json(
-            { error: "Missing arguments" },
-            { status: 400 }
-        );
-    }
-    if (className.length > MAX_CLASS_LENGTH) {
-        return Response.json(
-            { error: "Class is too long" },
-            { status: 400 }
-        );
-    }
-    if (title.trim().length == 0) {
-        return Response.json(
-            { error: "Title can't be empty" },
-            { status: 400 }
-        );
-    }
-    if (title.length > MAX_DOC_TITLE_LENGTH) {
-        return Response.json(
-            { error: "Title is too long" },
-            { status: 400 }
-        );
-    }
-    if (className.length == 0) {
-        className = "None";
-    }
-
+async function secretPUT(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
     try {
-        const session = await auth();
+        const id = (await params).id;
+        const formData = await req.formData();
+        
+        let title = formData.get("title") as string;
+        let className = formData.get("class") as string;
 
+        if (!className || !title) {
+            return Response.json(
+                { error: "Missing arguments" },
+                { status: 400 }
+            );
+        }
+        if (className.length > MAX_CLASS_LENGTH) {
+            return Response.json(
+                { error: "Class is too long" },
+                { status: 400 }
+            );
+        }
+        if (title.trim().length == 0) {
+            return Response.json(
+                { error: "Title can't be empty" },
+                { status: 400 }
+            );
+        }
+        if (title.length > MAX_DOC_TITLE_LENGTH) {
+            return Response.json(
+                { error: "Title is too long" },
+                { status: 400 }
+            );
+        }
+        if (className.length == 0) {
+            className = "None";
+        }
+
+        const session = await auth();
         const knowledgeDoc = await getKnowledgeDoc(id);
         if (!knowledgeDoc) {
             return Response.json(
@@ -77,8 +76,8 @@ async function secretPATCH(req: NextRequest, { params }: { params: Promise<{ id:
 }
 
 async function secretDELETE(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
-    const id = (await params).id;
     try {
+        const id = (await params).id;
         const session = await auth();
 
         const knowledgeDoc = await getKnowledgeDoc(id);
@@ -110,8 +109,8 @@ async function secretDELETE(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 async function secretGET(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
-    const id = (await params).id;
     try {
+        const id = (await params).id;
         const session = await auth();
 
         const knowledgeDoc = await getKnowledgeDoc(id);
@@ -141,6 +140,6 @@ async function secretGET(req: NextRequest, { params }: { params: Promise<{ id: s
     }
 }
 
-export const PATCH = withAuth(secretPATCH);
+export const PUT = withAuth(secretPUT);
 export const DELETE = withAuth(secretDELETE);
 export const GET = withAuth(secretGET);

@@ -1,10 +1,10 @@
 import { auth } from "@/lib/utils/auth";
 import { NextRequest } from "next/server";
 
-import { createKnowledgeDocument } from "@/lib/services/rag";
+import { createTextbook } from "@/lib/services/textbooks";
 import withAuth from "@/lib/api/authMiddleware";
-import { ingestionQueue } from "@/lib/queues/ingestion";
-import { MAX_CLASS_LENGTH, MAX_DOC_TITLE_LENGTH, MAX_FILE_SIZE } from "@/lib/constants/sanity";
+import { textbookQueue } from "@/lib/queues/textbook";
+import { MAX_TEXTBOOK_DESC_LENGTH, MAX_TEXTBOOK_TITLE_LENGTH, MAX_TEXTBOOK_SOURCES } from "@/lib/constants/sanity";
 
 async function secretPOST(req: NextRequest) {
     try {
@@ -12,18 +12,18 @@ async function secretPOST(req: NextRequest) {
         const session = await auth();
 
         const title = formData.get("title") as string;
-        const className = formData.get("class") as string;
-        const file = formData.get("file") as File;
+        const description = formData.get("description") as string;
+        const sources = formData.getAll("sources") as string[];
 
-        if (!title || !className || !file) {
+        if (!title || !description || !sources || sources.length == 0) {
             return Response.json(
                 { error: "Missing information" },
                 { status: 400 }
             );
         }
-        if (className.length > MAX_CLASS_LENGTH) {
+        if (title.length > MAX_TEXTBOOK_TITLE_LENGTH) {
             return Response.json(
-                { error: "Class is too long" },
+                { error: "Title is too long" },
                 { status: 400 }
             );
         }
@@ -33,31 +33,38 @@ async function secretPOST(req: NextRequest) {
                 { status: 400 }
             );
         }
-        if (title.length > MAX_DOC_TITLE_LENGTH) {
+        if (description.length > MAX_TEXTBOOK_DESC_LENGTH) {
             return Response.json(
-                { error: "Title is too long" },
+                { error: "Description is too long" },
                 { status: 400 }
             );
         }
-        if (file.size > MAX_FILE_SIZE) {
+        if (description.trim().length == 0) {
             return Response.json(
-                { error: `File is too large, ${MAX_FILE_SIZE} MB is the limit` },
+                { error: "Description can't be empty" },
+                { status: 400 }
+            );
+        }
+        if (sources.length > MAX_TEXTBOOK_SOURCES) {
+            return Response.json(
+                { error: "Too many sources" },
                 { status: 400 }
             );
         }
 
-        const knowledgeDoc = await createKnowledgeDocument(file, {
-            title,
+        const textbook = await createTextbook({
             authorId: session?.user.id as string,
-            class: className
+            title,
+            description,
+            sources
         });
 
-        await ingestionQueue.add("ingest-document", {
-            knowledgeDocumentId: knowledgeDoc.id,
+        await textbookQueue.add("outline-textbook", {
+            textbookId: textbook.id
         });
 
         return Response.json(
-            { success: true, data: knowledgeDoc },
+            { success: true, data: textbook },
             { status: 201 }
         );
     } catch (err) {

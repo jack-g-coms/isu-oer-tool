@@ -78,7 +78,8 @@ enum SectionStatus {
   QUEUED
   WRITING
   READY
-  FAILED
+  FAILED_WRITING
+  FAILED_REFINING
 }
 
 model Textbook {

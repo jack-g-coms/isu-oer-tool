@@ -10,4 +10,4 @@ COPY . .
 
 RUN npx prisma generate
 
-CMD ["npm", "run", "worker-ingestion"]
+CMD ["npm", "run", "workers"]

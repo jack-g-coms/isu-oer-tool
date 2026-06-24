@@ -1,6 +1,6 @@
 import { Queue } from "bullmq";
 
-export const ingestionQueue = new Queue("ingestion", {
+export const sectionQueue = new Queue("section", {
     connection: {
         host: process.env.REDIS_HOST,
         port: Number(process.env.REDIS_PORT)

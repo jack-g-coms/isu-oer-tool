@@ -30,7 +30,7 @@ export async function retryIngest(knowledgeDocId: string): Promise<{ success: bo
 
 export async function updateKnowledgeDocument(knowledgeDocId: string, properties: FormData): Promise<{ success: boolean, data: KnowledgeDocument }> {
     const response = await fetch(`${apiUrl}/knowledge/${knowledgeDocId}/`, {
-        method: "PATCH",
+        method: "PUT",
         body: properties
     });
 
