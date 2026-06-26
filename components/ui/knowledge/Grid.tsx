@@ -13,10 +13,11 @@ type GridProps = {
     layout?: string,
     selections?: Record<string, boolean>,
     canSelect?: boolean,
+    canEditDelete?: boolean,
     onSelect?: (doc: KnowledgeDocument) => void
 }
 
-export default function Grid({ data, search=false, layout="grid-cols-1 md:grid-cols-2 lg:grid-cols-4", selections, canSelect=false, onSelect }: GridProps) {
+export default function Grid({ data, search=false, layout="grid-cols-1 md:grid-cols-2 lg:grid-cols-4", selections, canSelect=false, canEditDelete=true, onSelect }: GridProps) {
     const router = useRouter();
     const hasActiveJobs = data.some(
         d => d.status == "QUEUED" || d.status == "PROCESSING"
@@ -41,6 +42,7 @@ export default function Grid({ data, search=false, layout="grid-cols-1 md:grid-c
                             key={value.id}
                             data={value}
                             canSelect={canSelect}
+                            canEditDelete={canEditDelete}
                             onSelect={onSelect}
                             selected={selections && selections[value.id] == true || false}
                         />

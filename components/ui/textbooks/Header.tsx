@@ -26,7 +26,7 @@ export default function Header({
     const params = new URLSearchParams(searchParams);
 
     const router = useRouter();
-    const { isOpen, component, updateProps, open } = useModalStore();
+    const { updateProps, open, current } = useModalStore();
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("");
 
@@ -54,7 +54,8 @@ export default function Header({
     }, [status])
 
     useEffect(() => {
-        if (isOpen && component == NewTextbookModal) {
+        const active = current();
+        if (active && active.component == NewTextbookModal) {
             updateProps({
                 data: knowledgeData,
                 page: knowledgePage,

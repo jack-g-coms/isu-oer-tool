@@ -19,10 +19,11 @@ type CardProps = {
     data: KnowledgeDocument,
     selected: boolean,
     canSelect: boolean,
+    canEditDelete: boolean,
     onSelect?: (doc: KnowledgeDocument) => void
 }
 
-export default function Card({ data, canSelect, onSelect, selected }: CardProps) {
+export default function Card({ data, canSelect, onSelect, canEditDelete, selected }: CardProps) {
     const open = useModalStore((state) => state.open);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -151,7 +152,7 @@ export default function Card({ data, canSelect, onSelect, selected }: CardProps)
                     <Eye width={20} height={20}/>
                 </Button>
 
-                {data.status == "READY" &&
+                {data.status == "READY" && canEditDelete &&
                     <>
                         <Button 
                             variant="icon"

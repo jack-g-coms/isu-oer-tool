@@ -178,6 +178,7 @@ export default function NewTextbookModal({
 
                 <Grid
                     data={data}
+                    canEditDelete={false}
                     search={search != undefined || fileType != undefined}
                     layout="grid-cols-1 md:grid-cols-2"
                     canSelect={true}

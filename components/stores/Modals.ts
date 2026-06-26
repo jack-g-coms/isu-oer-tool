@@ -1,39 +1,51 @@
 import { create } from "zustand";
+import { ComponentType } from "react";
 
-type ModalStore = {
-  component: React.ComponentType<any> | null,
-  props: Record<string, any>,
-  isOpen: boolean,
-
-  open: (component: React.ComponentType<any>, props?: Record<string, any>) => void,
-  close: () => void
-  updateProps: (newProps: Record<string, any>) => void
+type ModalEntry = {
+    component: ComponentType<any>,
+    props?: Record<string, any>
 };
 
-export const useModalStore = create<ModalStore>((set) => ({
-    component: null,
-    props: {},
-    isOpen: false,
+type ModalStore = {
+    stack: ModalEntry[],
+
+    open: (component: ComponentType<any>, props?: Record<string, any>) => void,
+    close: () => void,
+    updateProps: (newProps: Record<string, any>) => void,
+
+    current: () => ModalEntry | null
+};
+
+export const useModalStore = create<ModalStore>((set, get) => ({
+    stack: [],
 
     open: (component, props = {}) =>
-        set({
-            component,
-            props,
-            isOpen: true
-        }),
+        set((state) => ({
+            stack: [...state.stack, { component, props }]
+        })),
 
     close: () =>
-        set({
-            component: null,
-            props: {},
-            isOpen: false
-        }),
+        set((state) => ({
+            stack: state.stack.slice(0, -1)
+        })),
 
     updateProps: (newProps) =>
-        set((state) => ({
-            props: {
-                ...state.props,
-                ...newProps
+        set((state) => {
+            const stack = [...state.stack];
+            const last = stack[stack.length - 1];
+
+            if (last) {
+                last.props = {
+                    ...last.props,
+                    ...newProps
+                };
             }
-        }))
+
+            return { stack };
+        }),
+
+    current: () => {
+        const state = get();
+        return state.stack[state.stack.length - 1] ?? null;
+    }
 }));
