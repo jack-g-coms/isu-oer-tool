@@ -12,6 +12,7 @@ import { OutlineResponse } from "../ai/schemas/OutlineResponse";
 import { FULL_WRITE_QUERY, FULL_WRITE_SYSTEM_PROMPT, FULL_WRITE_PROMPT } from "../ai/prompts/TextbookFullWrite";
 import { SectionContentResponse } from "../ai/schemas/SectionContentResponse";
 import TextbookUpdateProperties from "../types/TextbookUpdateProperties";
+import { TextbookWhereInput } from "@/prisma/models";
 
 // Private
 async function updateTextbookStatus(textbookId: string, status: TextbookStatus): Promise<Textbook> {
@@ -84,11 +85,78 @@ export async function createTextbook(properties: TextbookProperties): Promise<Te
             title: properties.title,
             authorId: properties.authorId,
             description: properties.description,
+            class: properties.class,
             sources: {
                 connect: properties.sources.map(sourceId => ({
                     id: sourceId
                 }))
             }
+        }
+    });
+}
+
+export async function getUserTextbooks(
+    authorId: string,
+    includeSources: boolean=true,
+    includeChapters: boolean=false,
+    includeSections: boolean=false,
+    search?: string,
+    status?: TextbookStatus,
+    page: number=1,
+    limit: number=16
+) {
+    const where: TextbookWhereInput = {
+        authorId,
+        ...(status && {
+            status: status
+        }),
+        ...(search && {
+            OR: [
+                { title: { contains: search, mode: "insensitive" } },
+                { description: { contains: search, mode: "insensitive" } },
+                { class: { contains: search, mode: "insensitive" } }
+            ]
+        })
+    };
+
+    const [textbooks, total] = await prisma.$transaction([
+        prisma.textbook.findMany({
+            where,
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+                sources: includeSources,
+                chapters: includeSections ? {
+                    include: {
+                        sections: true
+                    }
+                } : includeChapters
+            },
+            orderBy: {
+                updatedAt: "desc"
+            }
+        }),
+
+        prisma.textbook.count({
+            where
+        })
+    ]);
+
+    return {
+        data: textbooks.sort((a, b) => {
+            if (a.status == TextbookStatus.FAILED_OUTLINING && b.status != TextbookStatus.FAILED_OUTLINING) return -1;
+            if (a.status != TextbookStatus.FAILED_OUTLINING && b.status == TextbookStatus.FAILED_OUTLINING) return 1;
+            return 0;
+        }),
+        total
+    };
+}
+
+export async function requeueTextbook(textbookId: string): Promise<Textbook> {
+    return await prisma.textbook.update({
+        where: { id: textbookId },
+        data: {
+            status: TextbookStatus.QUEUED
         }
     });
 }
@@ -213,7 +281,8 @@ export async function updateTextbook(textbookId: string, properties: TextbookUpd
                 }))
             },
             title: properties.title,
-            description: properties.description
+            description: properties.description,
+            class: properties.class
         }
     });
 }

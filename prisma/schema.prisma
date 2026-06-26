@@ -87,6 +87,8 @@ model Textbook {
   title String?
   authorId String
   description String?
+  class String @default("None")
+  uploadKey String?
 
   status TextbookStatus @default(QUEUED)
 

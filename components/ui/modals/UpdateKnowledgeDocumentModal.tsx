@@ -50,34 +50,36 @@ export default function UpdateKnowledgeDocumentModal({ initialData }: UpdateKnow
     }
 
     return (
-        <form onSubmit={handleSubmit} className="w-full h-screen md:h-fit md:w-2xl md:rounded-lg border border-gray-200 bg-white py-8 px-8 shadow-lg space-y-6">
-            <div className="space-y-2">
-                <div className="inline-flex gap-2">
-                    <FileText width={30} height={30}/>
-                    <h1 className="text-2xl font-bold">Update Document</h1>
+        <div className="w-full h-screen md:h-fit md:max-h-[calc(100vh-4rem)] md:w-2xl md:rounded-lg border border-gray-200 bg-white p-1 shadow-lg">
+            <form onSubmit={handleSubmit} className="overflow-y-auto max-h-full py-6 px-6 space-y-6">
+                <div className="space-y-2">
+                    <div className="inline-flex gap-2">
+                        <FileText width={30} height={30}/>
+                        <h1 className="text-2xl font-bold">Update Document</h1>
+                    </div>
                 </div>
-            </div>
 
-            <Input
-                label="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter a descriptive title for your document"
-                required
-            />
+                <Input
+                    label="Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Enter a descriptive title for your document"
+                    required
+                />
 
-            <Input
-                label="Class"
-                value={className}
-                onChange={(e) => setClassName(e.target.value)}
-                placeholder="Enter the class this document is for or leave this field blank"
-                tip='If you leave this field blank, the class will be listed as "None"'
-            />
-            
-            <div className="inline-flex gap-3 w-full mt-2">
-                <Button type="submit" loading={loading} loadingText="Saving..."><Upload width={20} height={20}/> Save</Button>
-                <Button onClick={close} disabled={loading} variant="secondary"><CircleX width={20} height={20}/> Cancel</Button>
-            </div>
-        </form>
+                <Input
+                    label="Class"
+                    value={className}
+                    onChange={(e) => setClassName(e.target.value)}
+                    placeholder="Enter the class this document is for or leave this field blank"
+                    tip='If you leave this field blank, the class will be listed as "None"'
+                />
+                
+                <div className="inline-flex gap-3 w-full mt-2">
+                    <Button type="submit" loading={loading} loadingText="Saving..."><Upload width={20} height={20}/> Save</Button>
+                    <Button onClick={close} disabled={loading} variant="secondary"><CircleX width={20} height={20}/> Cancel</Button>
+                </div>
+            </form>
+        </div>
     );
 }

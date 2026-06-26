@@ -8,7 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     loadingText?: string
 }
 
-export default function Button({ variant="primary", loading=false, children, loadingText="Loading...", ...props }: ButtonProps) {
+export default function Button({ variant="primary", loading=false, type="button", children, loadingText="Loading...", ...props }: ButtonProps) {
     const base = "inline-flex items-center cursor-pointer w-full py-2 rounded-lg font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2";
     const variants = {
         primary: "justify-center gap-2 px-4 bg-[var(--isu-cardinal)] text-white hover:bg-[#A50D25] active:bg-[#8C0B20] focus:ring-[var(--isu-cardinal)]",
@@ -18,7 +18,7 @@ export default function Button({ variant="primary", loading=false, children, loa
     }
 
     return (
-        <button {...props} disabled={props.disabled || loading} className={`${base} ${variants[variant]}`}>
+        <button {...props} type={type} disabled={props.disabled || loading} className={`${base} ${variants[variant]}`}>
             {loading && 
                 <Loader2
                     className="inline-block h-4 w-4 animate-spin mb-0.5"

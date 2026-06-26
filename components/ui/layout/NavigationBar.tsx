@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 import { getInitials } from "@/lib/utils/strings";
 
-import { Brain, LayoutDashboard, LogOut, Settings } from "lucide-react";
+import { Brain, GraduationCap, LayoutDashboard, LogOut, Settings } from "lucide-react";
 import Image from "next/image";
 import LinkButton from "../input/LinkButton";
 import Button from "../input/Button";
@@ -79,6 +79,13 @@ export default function NavigationBar() {
                         active={pathname == "/knowledge"}
                     >
                         <Brain width={20} height={20}/> Knowledge
+                    </LinkButton>
+
+                    <LinkButton
+                        href="/textbooks"
+                        active={pathname == "/textbooks"}
+                    >
+                        <GraduationCap width={20} height={20}/> Textbooks
                     </LinkButton>
                 </div>
 

@@ -5,15 +5,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 type PaginationProps = {
-    page: number
+    page: number,
+    pageName: string,
     total: number
-    limit: number
+    limit: number,
+    output?: string
 }
 
 export default function Pagination({
     page,
+    pageName,
     total,
-    limit
+    limit,
+    output="page"
 }: PaginationProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -22,8 +26,8 @@ export default function Pagination({
 
     function changePage(newPage: number) {
         const params = new URLSearchParams(searchParams.toString());
-        params.set("page", String(newPage));
-        router.push(`/knowledge?${params.toString()}`);
+        params.set(output, String(newPage));
+        router.push(`/${pageName}?${params.toString()}`);
     }
 
     useEffect(() => {
@@ -71,6 +75,7 @@ export default function Pagination({
             ">
                 <button
                     disabled={page === 1}
+                    type="button"
                     onClick={() => changePage(page - 1)}
                     className="
                         flex
@@ -112,6 +117,7 @@ export default function Pagination({
                 <button
                     disabled={page === totalPages}
                     onClick={() => changePage(page + 1)}
+                    type="button"
                     className="
                         flex
                         h-9

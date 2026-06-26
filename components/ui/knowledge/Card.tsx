@@ -13,12 +13,16 @@ import { useModalStore } from "@/components/stores/Modals";
 import { FileText, Presentation, Info, Trash, School, RotateCcw, Pencil, Eye } from "lucide-react";
 import Button from "../input/Button";
 import UpdateKnowledgeDocumentModal from "../modals/UpdateKnowledgeDocumentModal";
+import Checkbox from "../input/Checkbox";
 
 type CardProps = {
-    data: KnowledgeDocument
+    data: KnowledgeDocument,
+    selected: boolean,
+    canSelect: boolean,
+    onSelect?: (doc: KnowledgeDocument) => void
 }
 
-export default function Card({ data }: CardProps) {
+export default function Card({ data, canSelect, onSelect, selected }: CardProps) {
     const open = useModalStore((state) => state.open);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -95,7 +99,10 @@ export default function Card({ data }: CardProps) {
     }
 
     return (
-        <div className="flex flex-col gap-4 bg-white rounded-lg border border-gray-200 bg-white py-4 px-4 shadow-lg">
+        <div 
+            className={`flex flex-col gap-4 bg-white rounded-lg border border-gray-200 bg-white py-4 px-4 shadow-lg ${canSelect ? "cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" : ""}`}
+            onClick={() => onSelect && onSelect(data)}    
+        >
             <div className="flex flex-row gap-4 items-center">
                 {data.type == KnowledgeDocumentType.PPTX ?
                     <Presentation
@@ -112,7 +119,16 @@ export default function Card({ data }: CardProps) {
                 }
 
                 <div className="flex flex-col flex-1">
-                    <h3 className="text-lg font-semibold">{data.title}</h3>
+                    <div className="flex flex-row justify-between">
+                        <h3 className="text-lg font-semibold">{data.title}</h3>
+                        {canSelect &&
+                            <Checkbox
+                                checked={selected}
+                                disabled
+                            />
+                        }
+                    </div>
+
                     <div className="flex flex-row flex-wrap gap-1">
                         <span title="Document Format" className={`text-xs w-fit p-1.5 tracking-tight rounded-xl font-semibold ${knowledgeDocBadgeColors[data.type]} ${knowledgeDocBadgeTextColors[data.type]}`} >{data.type}</span>
                         <span title="Status" className={`inline-flex items-center gap-1 text-xs w-fit p-1.5 tracking-tight rounded-xl font-semibold ${knowledgeDocStatusBadgeColors[data.status]} ${knowledgeDocStatusBadgeTextColors[data.status]}`} ><Info width={15} height={15}/>{data.status}</span>
@@ -140,7 +156,9 @@ export default function Card({ data }: CardProps) {
                         <Button 
                             variant="icon"
                             onClick={() => {
-                                open(<UpdateKnowledgeDocumentModal initialData={data}/>);
+                                open(UpdateKnowledgeDocumentModal, {
+                                    initialData: data
+                                });
                             }}
                         >
                             <Pencil width={20} height={20}/>

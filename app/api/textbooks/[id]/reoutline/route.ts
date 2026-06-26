@@ -1,34 +1,34 @@
 import { auth } from "@/lib/utils/auth";
 import { NextRequest } from "next/server";
 
-import { getKnowledgeDoc, requeueKnowledgeDoc } from "@/lib/services/rag";
 import withAuth from "@/lib/api/authMiddleware";
-import { ingestionQueue } from "@/lib/queues/ingestion";
-import { KnowledgeDocumentStatus } from "@/prisma/enums";
+import { textbookQueue } from "@/lib/queues/textbook";
+import { TextbookStatus } from "@/prisma/enums";
+import { getTextbook, requeueTextbook } from "@/lib/services/textbooks";
 
 async function secretPOST(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
-    const id = (await params).id;
     try {
+        const id = (await params).id;
         const session = await auth();
 
-        const knowledgeDoc = await getKnowledgeDoc(id);
-        if (!knowledgeDoc) {
+        const textbook = await getTextbook(id);
+        if (!textbook) {
             return Response.json(
                 { error: "Not found" },
                 { status: 404 }
             );
-        } else if (knowledgeDoc.authorId != session?.user.id || knowledgeDoc.status != KnowledgeDocumentStatus.FAILED) {
+        } else if (textbook.authorId != session?.user.id || textbook.status != TextbookStatus.FAILED_OUTLINING) {
             return Response.json(
                 { error: "Unauthorized" },
                 { status: 401 }
             );
         }
 
-        await ingestionQueue.add("ingest-document", {
-            knowledgeDocumentId: id,
+        await textbookQueue.add("outline-textbook", {
+            textbookId: textbook.id
         });
 
-        await requeueKnowledgeDoc(id);
+        await requeueTextbook(id);
         return Response.json(
             { success: true },
             { status: 200 }

@@ -2,24 +2,20 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { KnowledgeDocument } from "@/prisma/client"
+import type { Textbook } from "@/prisma/client"
 import { Rocket } from "lucide-react";
 
 import Card from "./Card";
 
 type GridProps = {
-    data: KnowledgeDocument[],
-    search?: boolean,
-    layout?: string,
-    selections?: Record<string, boolean>,
-    canSelect?: boolean,
-    onSelect?: (doc: KnowledgeDocument) => void
+    data: Textbook[],
+    search?: boolean
 }
 
-export default function Grid({ data, search=false, layout="grid-cols-1 md:grid-cols-2 lg:grid-cols-4", selections, canSelect=false, onSelect }: GridProps) {
+export default function Grid({ data, search=false }: GridProps) {
     const router = useRouter();
     const hasActiveJobs = data.some(
-        d => d.status == "QUEUED" || d.status == "PROCESSING"
+        d => d.status == "QUEUED" || d.status == "OUTLINING"
     );
 
     useEffect(() => {
@@ -35,14 +31,11 @@ export default function Grid({ data, search=false, layout="grid-cols-1 md:grid-c
     return (
         <>
             {data.length >= 1 ?
-                <div className={`grid ${layout} gap-4`}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {data.map((value) => (
                         <Card
                             key={value.id}
                             data={value}
-                            canSelect={canSelect}
-                            onSelect={onSelect}
-                            selected={selections && selections[value.id] == true || false}
                         />
                     ))}
                 </div>
@@ -53,7 +46,7 @@ export default function Grid({ data, search=false, layout="grid-cols-1 md:grid-c
                         {search ? 
                             "We couldn't find anything with these filters, try searching something different."
                         :
-                            "Start uploading documents to build your AI knowledge base."
+                            "Start building textbooks from your knowledge base."
                         }
                     </h2>
                 </div>

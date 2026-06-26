@@ -31,6 +31,7 @@ export default function Input({ label, required, search=false, onClear, tip, ...
 
                     <input
                         {...props}
+                        required={required}
                         className="w-full border border-gray-300 rounded-lg pl-10 pr-10 py-2 focus:outline-none focus:ring-1 focus:ring-[#C8102E] focus:border-transparent transition"
                     />
 
@@ -45,6 +46,7 @@ export default function Input({ label, required, search=false, onClear, tip, ...
             :
                 <input
                     {...props}
+                    required={required}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#C8102E] focus:border-transparent transition"
                 />
             }

@@ -29,7 +29,7 @@ export async function retryIngest(knowledgeDocId: string): Promise<{ success: bo
 }
 
 export async function updateKnowledgeDocument(knowledgeDocId: string, properties: FormData): Promise<{ success: boolean, data: KnowledgeDocument }> {
-    const response = await fetch(`${apiUrl}/knowledge/${knowledgeDocId}/`, {
+    const response = await fetch(`${apiUrl}/knowledge/${knowledgeDocId}`, {
         method: "PUT",
         body: properties
     });
@@ -43,7 +43,7 @@ export async function updateKnowledgeDocument(knowledgeDocId: string, properties
 }
 
 export async function deleteKnowledgeDocument(knowledgeDocId: string): Promise<{ success: boolean }> {
-    const response = await fetch(`${apiUrl}/knowledge/${knowledgeDocId}/`, {
+    const response = await fetch(`${apiUrl}/knowledge/${knowledgeDocId}`, {
         method: "DELETE",
     });
 
@@ -56,7 +56,7 @@ export async function deleteKnowledgeDocument(knowledgeDocId: string): Promise<{
 }
 
 export async function getKnowledgeDocumentUrl(knowledgeDocId: string): Promise<{ success: boolean, data: string }> {
-    const response = await fetch(`${apiUrl}/knowledge/${knowledgeDocId}/`, {
+    const response = await fetch(`${apiUrl}/knowledge/${knowledgeDocId}`, {
         method: "GET",
     });
 

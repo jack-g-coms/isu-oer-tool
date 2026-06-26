@@ -1,25 +1,39 @@
 import { create } from "zustand";
-import { ReactNode } from "react";
 
 type ModalStore = {
-    content: ReactNode | null;
-    isOpen: boolean;
+  component: React.ComponentType<any> | null,
+  props: Record<string, any>,
+  isOpen: boolean,
 
-    open: (content: ReactNode) => void;
-    close: () => void;
+  open: (component: React.ComponentType<any>, props?: Record<string, any>) => void,
+  close: () => void
+  updateProps: (newProps: Record<string, any>) => void
 };
 
 export const useModalStore = create<ModalStore>((set) => ({
-    content: null,
+    component: null,
+    props: {},
     isOpen: false,
 
-    open: (content) => set({
-        content,
-        isOpen: true
-    }),
+    open: (component, props = {}) =>
+        set({
+            component,
+            props,
+            isOpen: true
+        }),
 
-    close: () => set({
-        content: null,
-        isOpen: false
-    })
+    close: () =>
+        set({
+            component: null,
+            props: {},
+            isOpen: false
+        }),
+
+    updateProps: (newProps) =>
+        set((state) => ({
+            props: {
+                ...state.props,
+                ...newProps
+            }
+        }))
 }));

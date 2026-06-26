@@ -40,6 +40,7 @@ export default async function KnowledgePage({ searchParams }: KnowledgePageProps
                 page={page}
                 total={total}
                 limit={16}
+                pageName="knowledge"
             />
         </div>
     )
