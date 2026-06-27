@@ -174,7 +174,7 @@ export default function NewTextbookModal({
                     </div>
                     <h3 className="text-md">Select the documents from your Knowledge Base that should be used by the AI in creating this textbook.</h3>
                     <p title="Selections" className={`text-sm p-1.5 w-fit tracking-tight rounded-xl font-semibold ${textbookStatusBadgeColors["QUEUED"]} ${textbookStatusBadgeTextColors["QUEUED"]}`} >
-                        Selections: {Object.entries(selections).length}
+                        Sources: {Object.entries(selections).length}
                     </p>
                 </div>
 
