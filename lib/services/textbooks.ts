@@ -98,8 +98,6 @@ export async function createTextbook(properties: TextbookProperties): Promise<Te
 export async function getUserTextbooks(
     authorId: string,
     includeSources: boolean=true,
-    includeChapters: boolean=false,
-    includeSections: boolean=false,
     search?: string,
     status?: TextbookStatus,
     page: number=1,
@@ -126,11 +124,11 @@ export async function getUserTextbooks(
             take: limit,
             include: {
                 sources: includeSources,
-                chapters: includeSections ? {
+                chapters: {
                     include: {
                         sections: true
                     }
-                } : includeChapters
+                }
             },
             orderBy: {
                 updatedAt: "desc"
@@ -171,7 +169,6 @@ export async function outlineTextbook(textbookId: string): Promise<void> {
     const prompt = buildPrompt(OUTLINE_PROMPT, {
         "chunks": chunks.map(c => c.text).join("\n\n")
     });
-    console.log(prompt);
     const response = await chat(OUTLINE_SYSTEM_PROMPT, prompt, z.toJSONSchema(OutlineResponse));
     const formattedResponse = OutlineResponse.parse(JSON.parse(response));
 

@@ -25,11 +25,10 @@ export default async function TextbooksPage({ searchParams }: TextbooksPageProps
     const { data, total } = await getUserTextbooks(
         session?.user.id as string,
         false,
-        false,
-        false,
         search,
         status as TextbookStatus | undefined,
-        page
+        page,
+        12
     );
 
     const { data: readyData, total: readyTotal } = await getUserKnowledgeBase(
@@ -50,6 +49,7 @@ export default async function TextbooksPage({ searchParams }: TextbooksPageProps
             />
 
             <Grid 
+                key={data.map(t => t.id).join("-")}
                 data={data} 
                 search={search != undefined || status != undefined}
             />
@@ -57,7 +57,7 @@ export default async function TextbooksPage({ searchParams }: TextbooksPageProps
             <Pagination
                 page={page}
                 total={total}
-                limit={16}
+                limit={12}
                 pageName="textbooks"
             />
         </div>

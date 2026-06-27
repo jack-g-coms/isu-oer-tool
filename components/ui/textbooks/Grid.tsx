@@ -2,31 +2,41 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { Textbook } from "@/prisma/client"
 import { Rocket } from "lucide-react";
 
 import Card from "./Card";
+import TextbookWithSections from "@/lib/types/TextbookWithSections";
 
 type GridProps = {
-    data: Textbook[],
+    data: TextbookWithSections[],
     search?: boolean
 }
 
-export default function Grid({ data, search=false }: GridProps) {
+export default function Grid({ 
+    data, 
+    search=false
+ }: GridProps) {
     const router = useRouter();
     const hasActiveJobs = data.some(
         d => d.status == "QUEUED" || d.status == "OUTLINING"
     );
+    const hasActiveWritingJobs = data.some(textbook => 
+        textbook.chapters.some(chapter => 
+            chapter.sections.some(section => 
+                section.status == "QUEUED" || section.status == "WRITING"
+            )
+        )
+    );
 
     useEffect(() => {
-        if (!hasActiveJobs) return;
+        if (!hasActiveJobs && !hasActiveWritingJobs) return;
 
         const interval = setInterval(() => {
             router.refresh();
         }, 10000);
 
         return () => clearInterval(interval);
-    }, [hasActiveJobs])
+    }, [hasActiveJobs, hasActiveWritingJobs])
 
     return (
         <>

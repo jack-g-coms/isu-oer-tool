@@ -3,7 +3,6 @@ import { markSectionFailure, writeSection } from "../services/textbooks";
 import { SectionStatus } from "@/prisma/enums";
 
 const worker = new Worker("section", async (job: Job) => {
-    console.log("starting section job")
     const { sectionId } = job.data;
 
     switch (job.name) {

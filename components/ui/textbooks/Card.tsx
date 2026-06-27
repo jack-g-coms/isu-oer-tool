@@ -1,27 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import type { Textbook } from "@/prisma/client";
 import { textbookStatusBadgeTextColors, textbookStatusBadgeColors, textbookBadgeColors, textbookBadgeTextColors } from "@/lib/constants/textbookColors";
 import { deleteTextbook, reOutline } from "@/lib/api/textbooks";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { useModalStore } from "@/components/stores/Modals";
 
-import { Info, Trash, School, RotateCcw, Pencil, Eye } from "lucide-react";
+import { Info, Trash, School, RotateCcw, Pencil, Eye, SquarePenIcon } from "lucide-react";
 import Button from "../input/Button";
+import TextbookWithSections from "@/lib/types/TextbookWithSections";
 
 type CardProps = {
-    data: Textbook
+    data: TextbookWithSections,
 }
 
 export default function Card({ data }: CardProps) {
-    const open = useModalStore((state) => state.open);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [loadingView, setLoadingView] = useState(false);
     const [loadingDelete, setLoadingDelete] = useState(false);
+
+    const canDelete = data.chapters.every(chapter => 
+        chapter.sections.every(section => section.status == "READY" || section.status == "FAILED_REFINING" || section.status == "FAILED_WRITING")
+    );
+    const writingFailed = data.chapters.some(chapter => 
+        chapter.sections.some(section => section.status == "FAILED_REFINING" || section.status == "FAILED_WRITING")
+    );
 
     async function handleRetry() {
         if (loading) return;
@@ -49,7 +54,7 @@ export default function Card({ data }: CardProps) {
         if (loadingDelete) return;
 
         const result = await Swal.fire({
-            title: "Delete document?",
+            title: "Delete textbook?",
             text: "Your textbook will be removed. This action can't be undone.",
             icon: "warning",
             showCancelButton: true,
@@ -87,7 +92,15 @@ export default function Card({ data }: CardProps) {
                 <div className="flex flex-col flex-1 gap-1">
                     <h3 className="text-lg font-semibold">{data.title}</h3>
                     <div className="flex flex-row flex-wrap gap-1">
-                        <span title="Status" className={`inline-flex items-center gap-1 text-xs w-fit p-1.5 tracking-tight rounded-xl font-semibold ${textbookStatusBadgeColors[data.status]} ${textbookStatusBadgeTextColors[data.status]}`} ><Info width={15} height={15}/>{data.status.split("_")[0]}</span>
+                        {data.status != "READY" ?
+                            <span title="Status" className={`inline-flex items-center gap-1 text-xs w-fit p-1.5 tracking-tight rounded-xl font-semibold ${textbookStatusBadgeColors[data.status]} ${textbookStatusBadgeTextColors[data.status]}`} ><Info width={15} height={15}/>{data.status.replace("_", " ")}</span>
+                        : !canDelete ?
+                            <span title="Writing Status" className={`inline-flex items-center gap-1 text-xs w-fit p-1.5 tracking-tight rounded-xl font-semibold ${textbookStatusBadgeColors["OUTLINING"]} ${textbookStatusBadgeTextColors["OUTLINING"]}`} ><SquarePenIcon width={15} height={15}/>WRITING</span>
+                        : writingFailed ?
+                            <span title="Writing Status" className={`inline-flex items-center gap-1 text-xs w-fit p-1.5 tracking-tight rounded-xl font-semibold ${textbookStatusBadgeColors["FAILED_OUTLINING"]} ${textbookStatusBadgeTextColors["FAILED_OUTLINING"]}`} ><Info width={15} height={15}/>FAILED WRITING</span>
+                        : 
+                            <span title="Status" className={`inline-flex items-center gap-1 text-xs w-fit p-1.5 tracking-tight rounded-xl font-semibold ${textbookStatusBadgeColors[data.status]} ${textbookStatusBadgeTextColors[data.status]}`} ><Info width={15} height={15}/>{data.status.replace("_", " ")}</span>
+                        }
                         <span title="Class" className={`inline-flex items-center max-w-[140px] gap-1 text-xs p-1.5 tracking-tight rounded-xl font-semibold overflow-hidden whitespace-nowrap text-ellipsis ${textbookBadgeColors["CLASS"]} ${textbookBadgeTextColors["CLASS"]}`} >
                             <School width={15} height={15} className="shrink-0"/>
                             <span className="truncate">{data.class}</span>
@@ -97,7 +110,7 @@ export default function Card({ data }: CardProps) {
             </div>
             
             <p className="line-clamp-2 text-md">
-                {data.description}audhjklsdafh;dasdfjisla;fh jsdafhil;dfsfhldsfkl;dsafhd;lssasdakdsakdksakskaks
+                {data.description}
             </p>
 
             <div className="inline-flex gap-2 w-fit">
@@ -122,9 +135,11 @@ export default function Card({ data }: CardProps) {
                             <Pencil width={20} height={20}/>
                         </Button>
 
-                        <Button onClick={handleDelete} loading={loadingDelete} loadingText="Deleting..." variant="icon">
-                            <Trash width={20} height={20}/>
-                        </Button>
+                        {canDelete &&
+                            <Button onClick={handleDelete} loading={loadingDelete} loadingText="Deleting..." variant="icon">
+                                <Trash width={20} height={20}/>
+                            </Button>
+                        }
                     </>
                 }
             </div>

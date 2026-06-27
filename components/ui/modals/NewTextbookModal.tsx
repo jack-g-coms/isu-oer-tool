@@ -81,16 +81,26 @@ export default function NewTextbookModal({
         e.preventDefault();
         if (loading) return;
 
+        const sourceIds = Object.keys(selections);
+        if (sourceIds.length == 0) {
+            toast.error("You must select at least one source.");
+            return;
+        }
+
+        setLoading(true);
+
         const formData = new FormData();
         formData.append("title", title);
         formData.append("class", className);
         formData.append("description", description);
+        for (const sourceId of sourceIds) {
+            formData.append("sources", sourceId);
+        }
 
-        setLoading(true);
         try {
             const textbook = await createTextbook(formData);
-            close();
             router.refresh();
+            close();
             toast.success("Success");
             toast("Your textbook is being processed by our system. Check on its status in the Textbooks tab!", {
                 duration: 10000

@@ -2,7 +2,6 @@ import { Worker, Job } from "bullmq";
 import { outlineTextbook, markOutlineFailure, writeFullTextbook } from "../services/textbooks";
 
 const worker = new Worker("textbook", async (job: Job) => {
-    console.log("starting textbook job")
     const { textbookId } = job.data;
 
     await outlineTextbook(textbookId);
