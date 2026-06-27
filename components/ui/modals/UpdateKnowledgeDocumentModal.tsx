@@ -30,7 +30,7 @@ export default function UpdateKnowledgeDocumentModal({ initialData }: UpdateKnow
 
         const formData = new FormData();
         formData.append("title", title);
-        formData.append("class", className);
+        formData.append("class", className.length == 0 ? "None" : className);
 
         setLoading(true);
         try {

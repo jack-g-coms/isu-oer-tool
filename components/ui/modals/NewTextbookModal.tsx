@@ -91,7 +91,7 @@ export default function NewTextbookModal({
 
         const formData = new FormData();
         formData.append("title", title);
-        formData.append("class", className);
+        formData.append("class", className.length == 0 ? "None" : className);
         formData.append("description", description);
         for (const sourceId of sourceIds) {
             formData.append("sources", sourceId);
@@ -189,7 +189,7 @@ export default function NewTextbookModal({
                 <Grid
                     data={data}
                     canEditDelete={false}
-                    search={search != undefined || fileType != undefined}
+                    search={search != "" || fileType != ""}
                     layout="grid-cols-1 md:grid-cols-2"
                     canSelect={true}
                     selections={selections}

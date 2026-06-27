@@ -31,7 +31,7 @@ export default function UploadKnowledgeDocumentModal() {
 
         const formData = new FormData();
         formData.append("title", title);
-        formData.append("class", className);
+        formData.append("class", className.length == 0 ? "None" : className);
         formData.append("file", file as File);
 
         setLoading(true);
