@@ -31,6 +31,7 @@ export type TextbookMinAggregateOutputType = {
   description: string | null
   class: string | null
   uploadKey: string | null
+  publishedUploadKey: string | null
   status: $Enums.TextbookStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -43,6 +44,7 @@ export type TextbookMaxAggregateOutputType = {
   description: string | null
   class: string | null
   uploadKey: string | null
+  publishedUploadKey: string | null
   status: $Enums.TextbookStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,6 +57,7 @@ export type TextbookCountAggregateOutputType = {
   description: number
   class: number
   uploadKey: number
+  publishedUploadKey: number
   status: number
   createdAt: number
   updatedAt: number
@@ -69,6 +72,7 @@ export type TextbookMinAggregateInputType = {
   description?: true
   class?: true
   uploadKey?: true
+  publishedUploadKey?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -81,6 +85,7 @@ export type TextbookMaxAggregateInputType = {
   description?: true
   class?: true
   uploadKey?: true
+  publishedUploadKey?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -93,6 +98,7 @@ export type TextbookCountAggregateInputType = {
   description?: true
   class?: true
   uploadKey?: true
+  publishedUploadKey?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -178,6 +184,7 @@ export type TextbookGroupByOutputType = {
   description: string | null
   class: string
   uploadKey: string | null
+  publishedUploadKey: string | null
   status: $Enums.TextbookStatus
   createdAt: Date
   updatedAt: Date
@@ -211,6 +218,7 @@ export type TextbookWhereInput = {
   description?: Prisma.StringNullableFilter<"Textbook"> | string | null
   class?: Prisma.StringFilter<"Textbook"> | string
   uploadKey?: Prisma.StringNullableFilter<"Textbook"> | string | null
+  publishedUploadKey?: Prisma.StringNullableFilter<"Textbook"> | string | null
   status?: Prisma.EnumTextbookStatusFilter<"Textbook"> | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFilter<"Textbook"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Textbook"> | Date | string
@@ -226,6 +234,7 @@ export type TextbookOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   class?: Prisma.SortOrder
   uploadKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  publishedUploadKey?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -244,6 +253,7 @@ export type TextbookWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Textbook"> | string | null
   class?: Prisma.StringFilter<"Textbook"> | string
   uploadKey?: Prisma.StringNullableFilter<"Textbook"> | string | null
+  publishedUploadKey?: Prisma.StringNullableFilter<"Textbook"> | string | null
   status?: Prisma.EnumTextbookStatusFilter<"Textbook"> | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFilter<"Textbook"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Textbook"> | Date | string
@@ -259,6 +269,7 @@ export type TextbookOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   class?: Prisma.SortOrder
   uploadKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  publishedUploadKey?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -277,6 +288,7 @@ export type TextbookScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Textbook"> | string | null
   class?: Prisma.StringWithAggregatesFilter<"Textbook"> | string
   uploadKey?: Prisma.StringNullableWithAggregatesFilter<"Textbook"> | string | null
+  publishedUploadKey?: Prisma.StringNullableWithAggregatesFilter<"Textbook"> | string | null
   status?: Prisma.EnumTextbookStatusWithAggregatesFilter<"Textbook"> | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Textbook"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Textbook"> | Date | string
@@ -288,6 +300,7 @@ export type TextbookCreateInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -303,6 +316,7 @@ export type TextbookUncheckedCreateInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -316,6 +330,7 @@ export type TextbookUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,6 +346,7 @@ export type TextbookUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -345,6 +361,7 @@ export type TextbookCreateManyInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -356,6 +373,7 @@ export type TextbookUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -368,6 +386,7 @@ export type TextbookUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -390,6 +409,7 @@ export type TextbookCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   class?: Prisma.SortOrder
   uploadKey?: Prisma.SortOrder
+  publishedUploadKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -402,6 +422,7 @@ export type TextbookMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   class?: Prisma.SortOrder
   uploadKey?: Prisma.SortOrder
+  publishedUploadKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -414,6 +435,7 @@ export type TextbookMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   class?: Prisma.SortOrder
   uploadKey?: Prisma.SortOrder
+  publishedUploadKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -528,6 +550,7 @@ export type TextbookCreateWithoutAuthorInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -541,6 +564,7 @@ export type TextbookUncheckedCreateWithoutAuthorInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -584,6 +608,7 @@ export type TextbookScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Textbook"> | string | null
   class?: Prisma.StringFilter<"Textbook"> | string
   uploadKey?: Prisma.StringNullableFilter<"Textbook"> | string | null
+  publishedUploadKey?: Prisma.StringNullableFilter<"Textbook"> | string | null
   status?: Prisma.EnumTextbookStatusFilter<"Textbook"> | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFilter<"Textbook"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Textbook"> | Date | string
@@ -595,6 +620,7 @@ export type TextbookCreateWithoutSourcesInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -609,6 +635,7 @@ export type TextbookUncheckedCreateWithoutSourcesInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -642,6 +669,7 @@ export type TextbookCreateWithoutChaptersInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -656,6 +684,7 @@ export type TextbookUncheckedCreateWithoutChaptersInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -684,6 +713,7 @@ export type TextbookUpdateWithoutChaptersInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -698,6 +728,7 @@ export type TextbookUncheckedUpdateWithoutChaptersInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -710,6 +741,7 @@ export type TextbookCreateManyAuthorInput = {
   description?: string | null
   class?: string
   uploadKey?: string | null
+  publishedUploadKey?: string | null
   status?: $Enums.TextbookStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -721,6 +753,7 @@ export type TextbookUpdateWithoutAuthorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -734,6 +767,7 @@ export type TextbookUncheckedUpdateWithoutAuthorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -747,6 +781,7 @@ export type TextbookUncheckedUpdateManyWithoutAuthorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -758,6 +793,7 @@ export type TextbookUpdateWithoutSourcesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -772,6 +808,7 @@ export type TextbookUncheckedUpdateWithoutSourcesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -785,6 +822,7 @@ export type TextbookUncheckedUpdateManyWithoutSourcesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   class?: Prisma.StringFieldUpdateOperationsInput | string
   uploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedUploadKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTextbookStatusFieldUpdateOperationsInput | $Enums.TextbookStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -837,6 +875,7 @@ export type TextbookSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   description?: boolean
   class?: boolean
   uploadKey?: boolean
+  publishedUploadKey?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -853,6 +892,7 @@ export type TextbookSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   description?: boolean
   class?: boolean
   uploadKey?: boolean
+  publishedUploadKey?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -866,6 +906,7 @@ export type TextbookSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   description?: boolean
   class?: boolean
   uploadKey?: boolean
+  publishedUploadKey?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -879,12 +920,13 @@ export type TextbookSelectScalar = {
   description?: boolean
   class?: boolean
   uploadKey?: boolean
+  publishedUploadKey?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TextbookOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "authorId" | "description" | "class" | "uploadKey" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["textbook"]>
+export type TextbookOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "authorId" | "description" | "class" | "uploadKey" | "publishedUploadKey" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["textbook"]>
 export type TextbookInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sources?: boolean | Prisma.Textbook$sourcesArgs<ExtArgs>
   chapters?: boolean | Prisma.Textbook$chaptersArgs<ExtArgs>
@@ -912,6 +954,7 @@ export type $TextbookPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     description: string | null
     class: string
     uploadKey: string | null
+    publishedUploadKey: string | null
     status: $Enums.TextbookStatus
     createdAt: Date
     updatedAt: Date
@@ -1347,6 +1390,7 @@ export interface TextbookFieldRefs {
   readonly description: Prisma.FieldRef<"Textbook", 'String'>
   readonly class: Prisma.FieldRef<"Textbook", 'String'>
   readonly uploadKey: Prisma.FieldRef<"Textbook", 'String'>
+  readonly publishedUploadKey: Prisma.FieldRef<"Textbook", 'String'>
   readonly status: Prisma.FieldRef<"Textbook", 'TextbookStatus'>
   readonly createdAt: Prisma.FieldRef<"Textbook", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Textbook", 'DateTime'>

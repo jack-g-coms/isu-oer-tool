@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 import AuthProvider from "@/components/context/AuthProvider";
+import ModalOverlay from "@/components/ui/overlays/ModalOverlay";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
             }}
           />
 
+          <ModalOverlay/>
           {children}
         </AuthProvider>
       </body>

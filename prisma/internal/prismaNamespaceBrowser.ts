@@ -119,6 +119,7 @@ export const TextbookScalarFieldEnum = {
   description: 'description',
   class: 'class',
   uploadKey: 'uploadKey',
+  publishedUploadKey: 'publishedUploadKey',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

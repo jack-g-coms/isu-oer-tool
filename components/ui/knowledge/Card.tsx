@@ -148,7 +148,7 @@ export default function Card({ data, canSelect, onSelect, canEditDelete, selecte
                     </Button>
                 }
 
-                <Button onClick={handleView} loading={loadingView} loadingText="Retrieving..." variant="icon">
+                <Button onClick={(e) => { e.stopPropagation(); handleView(); }} loading={loadingView} loadingText="Retrieving..." variant="icon">
                     <Eye width={20} height={20}/>
                 </Button>
 

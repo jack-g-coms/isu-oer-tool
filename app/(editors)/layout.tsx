@@ -1,8 +1,6 @@
 import { auth } from "@/lib/utils/auth";
 import { redirect } from "next/navigation";
 
-import NavigationBar from "@/components/ui/layout/NavigationBar";
-
 export default async function AppLayout({
   children,
 }: Readonly<{
@@ -14,11 +12,8 @@ export default async function AppLayout({
   }
 
   return (
-    <main className="min-h-screen flex flex-col lg:flex-row">
-      <NavigationBar/>
-      <div className="mx-auto w-full max-w-8xl px-6 lg:px-10 py-8">
-        {children}
-      </div>
+    <main className="min-h-screen flex flex-col">
+      {children}
     </main>
   );
 }

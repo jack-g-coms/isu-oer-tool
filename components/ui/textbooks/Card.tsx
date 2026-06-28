@@ -129,7 +129,7 @@ export default function Card({ data }: CardProps) {
                         <Button 
                             variant="icon"
                             onClick={() => {
-                                
+                                router.push(`/textbooks/${data.id}`)
                             }}
                         >
                             <Pencil width={20} height={20}/>
