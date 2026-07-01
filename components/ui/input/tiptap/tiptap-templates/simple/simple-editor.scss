@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+/* =========================
+   MAIN WRAPPER
+========================= */
+.simple-editor-wrapper {
+  width: 100%;
+  height: calc(100vh - 64px - 64px);
+
+  display: flex;
+  flex-direction: column;
+
+  background: #fafafa;
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+.tiptap-toolbar {
+  flex-shrink: 0;
+  position: relative !important;
+  z-index: 10;
+}
+
+/* =========================
+   SCROLL CONTAINER (KEY LAYER)
+========================= */
+.simple-editor-content {
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+}
+
+/* =========================
+   EDITOR SURFACE
+========================= */
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  padding-left: 3rem;
+  padding-right: 3rem;
+
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+
+  min-height: 100%;
+  height: auto;
+}

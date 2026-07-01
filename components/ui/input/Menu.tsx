@@ -13,9 +13,11 @@ type MenuItem = {
 };
 
 type MenuProps = {
+    menuClassName?: string,
     label?: {
-        text: string
-        icon?: LucideIcon
+        text?: string
+        icon?: LucideIcon,
+        iconClassName?: string
     }
     trigger?: ReactNode
     items: MenuItem[]
@@ -23,6 +25,7 @@ type MenuProps = {
 };
 
 export default function Menu({
+    menuClassName,
     label,
     trigger,
     items,
@@ -51,20 +54,26 @@ export default function Menu({
     return (
         <div
             ref={ref}
-            className="relative"
+            className={`relative ${menuClassName ? menuClassName : ""}`}
         >
             {trigger ? (
                 <div
-                    onClick={() => setOpen(!open)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setOpen(!open);
+                    }}
                     className="cursor-pointer"
                 >
                     {trigger}
                 </div>
             ) : (
                 <button
-                    onClick={() => setOpen(!open)}
-                    className="
-                        px-3
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setOpen(!open);
+                    }}
+                    className={`
+                        ${label?.text ? "px-3" : "px-1"}
                         py-1.5
                         rounded-md
                         text-lg
@@ -78,10 +87,10 @@ export default function Menu({
                         inline-flex
                         items-center
                         gap-2
-                    "
+                    `}
                 >
                     {label?.icon &&
-                        <label.icon />
+                        <label.icon className={label.iconClassName} />
                     }
                     {label?.text}
                 </button>
@@ -99,7 +108,7 @@ export default function Menu({
                         rounded-lg
                         shadow-lg
                         py-1
-                        z-50
+                        z-[150]
                         ${align === "right" ? "right-0" : "left-0"}
                     `}
                 >

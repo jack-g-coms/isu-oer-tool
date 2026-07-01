@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import Button from "../../input/Button";
 import { BookOpen, CircleX, FileText, Pencil } from "lucide-react";
+import Swal from "sweetalert2";
 
 type SidebarProps = {
     chapterView: Chapter | undefined,
@@ -16,8 +17,8 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ chapterView, sectionView, views, textbook }: SidebarProps) {
-    const [chapter, setChapter] = useState("");
-    const [section, setSection] = useState("");
+    const [chapter, setChapter] = useState(chapterView?.id ?? "");
+    const [section, setSection] = useState(sectionView?.id ?? "");
 
     if (!textbook || !views) return;
 
@@ -41,7 +42,7 @@ export default function Sidebar({ chapterView, sectionView, views, textbook }: S
     }, [chapter, section])
 
     return (
-        <div className="flex flex-col w-full max-w-xs h-[calc(100vh-64px)] overflow-y-auto bg-white border-b border-r border-gray-200 gap-1.5 p-4">
+        <div className="flex flex-col w-full max-w-xs min-h-[calc(100vh-64px)] overflow-y-auto bg-[#fafafa] border-b border-r border-gray-200 gap-1.5 p-4">
             <p className="block text-sm uppercase font-semibold text-gray-500 tracking-tight pl-2">
                 Outline
             </p>
@@ -54,10 +55,26 @@ export default function Sidebar({ chapterView, sectionView, views, textbook }: S
                         } 
                         variant="icon"
                         fixed={true}
+                        title={iChapter.title}
                         className={`${!sectionView && chapterView?.id == iChapter.id ? "bg-gray-100" : ""}`}
                         onClick={() => {
-                            setChapter(iChapter.id);
-                            setSection("");
+                            if (sectionView) {
+                                Swal.fire({
+                                    title: "Are you sure?",
+                                    text: "Are you sure you want to navigate away from this section? Any unsaved changes will be lost.",
+                                    icon: "warning",
+                                    showCancelButton: true
+                                })
+                                .then((res) => {
+                                    if (res.isConfirmed) {
+                                        setChapter(iChapter.id);
+                                        setSection("");
+                                    }
+                                })
+                            } else {
+                                setChapter(iChapter.id);
+                                setSection("");
+                            }
                         }}
                     >{iChapter.title}</Button>
                     
@@ -79,13 +96,29 @@ export default function Sidebar({ chapterView, sectionView, views, textbook }: S
                                         }
                                         <FileText className="shrink-0" width={20} height={20}/>
                                     </>
-                                } 
+                                }
+                                title={iSection.title}
                                 className={`${sectionView && sectionView?.id == iSection.id ? "bg-gray-100" : ""}`}
                                 variant="icon" 
                                 fixed={true}
                                 onClick={() => {
-                                    setSection(iSection.id);
-                                    setChapter(iSection.chapterId);
+                                    if (sectionView) {
+                                        Swal.fire({
+                                            title: "Are you sure?",
+                                            text: "Are you sure you want to navigate away from this section? Any unsaved changes will be lost.",
+                                            icon: "warning",
+                                            showCancelButton: true
+                                        })
+                                        .then((res) => {
+                                            if (res.isConfirmed) {
+                                                setSection(iSection.id);
+                                                setChapter(iSection.chapterId);
+                                            }
+                                        })
+                                    } else {
+                                        setSection(iSection.id);
+                                        setChapter(iSection.chapterId);
+                                    }
                                 }}
                             >
                                 {iSection.title}

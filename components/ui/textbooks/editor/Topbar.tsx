@@ -5,6 +5,9 @@ import TextbookWithSections from "@/lib/types/TextbookWithSections";
 import { GraduationCap, Lock, FileText, Download, Eye, X, Settings, Trash, Pencil, LogOut, ArrowLeft } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
+import { deleteTextbook } from "@/lib/api/textbooks";
 
 import Menu from "../../input/Menu";
 import Button from "../../input/Button";
@@ -19,7 +22,38 @@ export default function Topbar({ textbook }: TopbarProps) {
     const { data: session } = useSession();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+    const [loadingDelete, setLoadingDelete] = useState(false);
+
     if (!textbook) return;
+
+    async function handleDelete() {
+        if (loadingDelete || !textbook) return;
+
+        const result = await Swal.fire({
+            title: "Delete textbook?",
+            text: "Your textbook will be removed. This action can't be undone.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            confirmButtonColor: "#C8102E",
+        });
+        if (!result.isConfirmed) return;
+
+        setLoadingDelete(true);
+        try {
+            const res = await deleteTextbook(textbook.id);
+            router.push("/textbooks");
+            toast.success("Success");
+        } catch (err) {
+            if (err instanceof Error) {
+                toast.error(`Failed: ${err.message}`);
+            } else {
+                toast.error("Failed: Unknown error");
+            }
+        } finally {
+            setLoadingDelete(false);
+        } 
+    }
 
     return (
         <div className="px-5 py-3 h-16 top-0 sticky z-50 bg-white border-b border-gray-200 shadow-lg flex flex-row items-center gap-3 justify-between">
@@ -70,9 +104,10 @@ export default function Topbar({ textbook }: TopbarProps) {
                             icon: Settings
                         },
                         {
-                            label: "Delete",
+                            label: loadingDelete ? "Deleting..." : "Delete",
                             icon: Trash,
-                            danger: true
+                            danger: true,
+                            onClick: handleDelete
                         }
                     ]}
                 />
