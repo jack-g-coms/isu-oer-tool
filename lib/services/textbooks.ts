@@ -72,7 +72,14 @@ export async function getTextbookWithSections(textbookId: string, includeAuthor:
             sources: includeSources,
             chapters: {
                 include: {
-                    sections: true
+                    sections: {
+                        orderBy: {
+                            order: "asc"
+                        }
+                    }
+                },
+                orderBy: {
+                    order: "asc"
                 }
             }
         }

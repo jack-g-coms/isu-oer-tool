@@ -21,7 +21,7 @@ type MenuProps = {
     }
     trigger?: ReactNode
     items: MenuItem[]
-    align?: "left" | "right"
+    align?: "left" | "right" | "top-left"
 };
 
 export default function Menu({
@@ -74,6 +74,7 @@ export default function Menu({
                     }}
                     className={`
                         ${label?.text ? "px-3" : "px-1"}
+                        ${open ? "bg-gray-100" : ""}
                         py-1.5
                         rounded-md
                         text-lg
@@ -100,7 +101,6 @@ export default function Menu({
                 <div
                     className={`
                         absolute
-                        mt-1
                         w-48
                         bg-white
                         border
@@ -108,8 +108,8 @@ export default function Menu({
                         rounded-lg
                         shadow-lg
                         py-1
-                        z-[150]
-                        ${align === "right" ? "right-0" : "left-0"}
+                        z-[9999]
+                        ${align === "right" ? "right-0 top-full mt-1" : align === "top-left" ? "left-0 bottom-full mb-1" : "left-0 top-full mt-1"}
                     `}
                 >
                     {items.map((item, index) => (

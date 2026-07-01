@@ -205,7 +205,7 @@ export default function NewTextbookModal({
                 />
                 
                 <div className="inline-flex gap-3 w-full mt-2">
-                    <Button type="submit" loading={loading} loadingText="Uploading..."><Plus width={20} height={20}/> Create</Button>
+                    <Button type="submit" loading={loading} loadingText="Creating..."><Plus width={20} height={20}/> Create</Button>
                     <Button onClick={close} disabled={loading} variant="secondary"><CircleX width={20} height={20}/> Cancel</Button>
                 </div>
             </form>

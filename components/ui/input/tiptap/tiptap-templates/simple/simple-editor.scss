@@ -13,7 +13,8 @@
   background: #fafafa;
   border-radius: 8px;
 
-  overflow: hidden;
+  /* remove overflow hidden */
+  overflow: visible;
 }
 
 /* =========================

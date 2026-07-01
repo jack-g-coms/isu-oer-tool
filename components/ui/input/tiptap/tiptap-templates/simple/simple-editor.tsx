@@ -4,18 +4,6 @@ import { useEffect, useRef, useState } from "react"
 import { Content, Editor, EditorContent, EditorContext, useEditor } from "@tiptap/react"
 import Swal from "sweetalert2"
 
-// --- Tiptap Core Extensions ---
-import { StarterKit } from "@tiptap/starter-kit"
-import { Image } from "@tiptap/extension-image"
-import { TaskItem, TaskList } from "@tiptap/extension-list"
-import { TextAlign } from "@tiptap/extension-text-align"
-import { Typography } from "@tiptap/extension-typography"
-import { Highlight } from "@tiptap/extension-highlight"
-import { Subscript } from "@tiptap/extension-subscript"
-import { Superscript } from "@tiptap/extension-superscript"
-import { Selection } from "@tiptap/extensions"
-import { TableKit } from "@tiptap/extension-table";
-
 // --- UI Primitives ---
 import { Button } from "@/components/ui/input/tiptap/tiptap-ui-primitive/button"
 import { Spacer } from "@/components/ui/input/tiptap/tiptap-ui-primitive/spacer"
@@ -26,8 +14,6 @@ import {
 } from "@/components/ui/input/tiptap/tiptap-ui-primitive/toolbar"
 
 // --- Tiptap Node ---
-import { ImageUploadNode } from "@/components/ui/input/tiptap/tiptap-node/image-upload-node/image-upload-node-extension"
-import { HorizontalRule } from "@/components/ui/input/tiptap/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension"
 import "@/components/ui/input/tiptap/tiptap-node/blockquote-node/blockquote-node.scss"
 import "@/components/ui/input/tiptap/tiptap-node/code-block-node/code-block-node.scss"
 import "@/components/ui/input/tiptap/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss"
@@ -35,6 +21,8 @@ import "@/components/ui/input/tiptap/tiptap-node/list-node/list-node.scss"
 import "@/components/ui/input/tiptap/tiptap-node/image-node/image-node.scss"
 import "@/components/ui/input/tiptap/tiptap-node/heading-node/heading-node.scss"
 import "@/components/ui/input/tiptap/tiptap-node/paragraph-node/paragraph-node.scss"
+import { ImageUploadNode } from "@/components/ui/input/tiptap/tiptap-node/image-upload-node/image-upload-node-extension"
+import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/utils/tiptap-utils"
 
 // --- Tiptap UI ---
 import { HeadingDropdownMenu } from "@/components/ui/input/tiptap/tiptap-ui/heading-dropdown-menu"
@@ -71,11 +59,13 @@ import { ThemeToggle } from "@/components/ui/input/tiptap/tiptap-templates/simpl
 import MyBtn from "@/components/ui/input/Button";
 
 // --- Lib ---
-import { cn, handleImageUpload, MAX_FILE_SIZE } from "@/lib/utils/tiptap-utils"
+import { cn } from "@/lib/utils/tiptap-utils"
 
 // --- Styles ---
 import "@/components/ui/input/tiptap/tiptap-templates/simple/simple-editor.scss"
-import { Pencil, Loader2 } from "lucide-react"
+import { Brain, SquarePen, UserRound, Loader2, Settings } from "lucide-react"
+import Menu from "../../../Menu"
+import extensions from "./extensions"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -217,30 +207,13 @@ export function SimpleEditor({ initialContent, onSave, saving }: SimpleEditorPro
       }
     },
     extensions: [
-      StarterKit.configure({
-        horizontalRule: false,
-        link: {
-          openOnClick: false,
-          enableClickSelection: true,
-        },
-      }),
-      HorizontalRule,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-      TaskList,
-      TaskItem.configure({ nested: true }),
-      Highlight.configure({ multicolor: true }),
-      Image,
-      Typography,
-      Superscript,
-      Subscript,
-      Selection,
-      TableKit,
+      ...extensions,
       ImageUploadNode.configure({
-        accept: "image/*",
-        maxSize: MAX_FILE_SIZE,
-        limit: 3,
-        upload: handleImageUpload,
-        onError: (error) => console.error("Upload failed:", error),
+          accept: "image/*",
+          maxSize: MAX_FILE_SIZE,
+          limit: 3,
+          upload: handleImageUpload,
+          onError: (error) => console.error("Upload failed:", error),
       }),
     ],
     content: initialContent,
@@ -315,11 +288,40 @@ export function SimpleEditor({ initialContent, onSave, saving }: SimpleEditorPro
           className={cn("tiptap-footer", "rounded-b-[8px]")}
         >
           <div className="flex flex-row items-center justify-between gap-5 w-full">
-            <MyBtn
-              variant="icon"
-              width="w-fit"
-              disabled={saving}
-            ><Pencil width={20} height={20}/> Edit Title & Summary</MyBtn>
+            <div className="flex flex-row items-center gap-2">
+              <Menu
+                align="top-left"
+                label={{
+                  text: "AI",
+                  icon: Brain,
+                }}
+                items={[
+                  {
+                    label: "Rewrite",
+                    icon: SquarePen,
+                    danger: true
+                  },
+                  {
+                    label: "Assistant",
+                    icon: UserRound
+                  }
+                ]}
+              />
+
+              <Menu
+                align="top-left"
+                label={{
+                  text: "Properties",
+                  icon: Settings,
+                }}
+                items={[
+                  {
+                    label: "Title & Summary",
+                    icon: SquarePen
+                  }
+                ]}
+              />
+            </div>
             
             <div className="flex flex-row items-center gap-2">
               {saving ?
