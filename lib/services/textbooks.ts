@@ -168,6 +168,12 @@ export async function requeueSection(sectionId: string): Promise<Section> {
 }
 
 export async function requeueTextbook(textbookId: string): Promise<Textbook> {
+    await prisma.chapter.deleteMany({
+        where: {
+            textbookId
+        }
+    });
+
     return await prisma.textbook.update({
         where: { id: textbookId },
         data: {
@@ -290,7 +296,7 @@ export async function updateTextbook(textbookId: string, properties: TextbookUpd
         where: { id: textbookId },
         data: {
             sources: {
-                connect: properties.sources.map(sourceId => ({
+                set: properties.sources.map(sourceId => ({
                     id: sourceId
                 }))
             },

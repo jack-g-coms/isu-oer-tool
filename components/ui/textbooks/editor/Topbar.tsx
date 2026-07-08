@@ -1,33 +1,60 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextbookWithSections from "@/lib/types/TextbookWithSections";
-import { GraduationCap, Lock, FileText, Download, Eye, X, Settings, Trash, Pencil, LogOut, ArrowLeft } from "lucide-react";
+import type { KnowledgeDocument } from "@/prisma/client";
+import { GraduationCap, Lock, FileText, Download, Eye, X, Settings, Trash, Pencil, LogOut, ArrowLeft, SquarePen } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
-import { deleteTextbook } from "@/lib/api/textbooks";
+import { deleteTextbook, reOutline } from "@/lib/api/textbooks";
+import { useModalStore } from "@/components/stores/Modals";
 
 import Menu from "../../input/Menu";
 import Button from "../../input/Button";
 import Image from "next/image";
+import UpdateTextbookModal from "../../modals/UpdateTextbookModal";
+import UpdateTextbookSourcesModal from "../../modals/UpdateTextbookSourcesModal";
 
 type TopbarProps = {
-    textbook: TextbookWithSections | undefined
+    textbook: TextbookWithSections | undefined,
+    knowledgeData: KnowledgeDocument[],
+    knowledgePage: number,
+    knowledgeTotal: number
 };
 
-export default function Topbar({ textbook }: TopbarProps) {
+export default function Topbar({ 
+    textbook, 
+    knowledgeData,
+    knowledgePage,
+    knowledgeTotal 
+}: TopbarProps) {
     const router = useRouter();
     const { data: session } = useSession();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+    const [reoutlining, setReoutlining] = useState(false);
     const [loadingDelete, setLoadingDelete] = useState(false);
+
+    const { updateProps, open, current } = useModalStore();
 
     if (!textbook) return;
     const canDelete = textbook.chapters.every(chapter => 
         chapter.sections.every(section => section.status == "READY" || section.status == "FAILED_REFINING" || section.status == "FAILED_WRITING")
     );
+
+    useEffect(() => {
+        const active = current();
+        if (active && active.component == UpdateTextbookSourcesModal) {
+            updateProps({
+                textbookData: textbook,
+                data: knowledgeData,
+                page: knowledgePage,
+                total: knowledgeTotal
+            });
+        }
+    }, [knowledgeData, knowledgePage, knowledgeTotal, textbook]);
 
     async function handleDelete() {
         if (loadingDelete || !textbook || !canDelete) return;
@@ -58,8 +85,40 @@ export default function Topbar({ textbook }: TopbarProps) {
         } 
     }
 
+    async function handleReoutline() {
+        if (loadingDelete || reoutlining || !textbook || !canDelete) return;
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Your current textbook outline and content will be lost. This action cannot be undone.",
+            icon: "warning",
+            showCancelButton: true
+        })
+        .then(async (result) => {
+            if (result.isConfirmed) {
+                setReoutlining(true);
+                try {
+                    const res = await reOutline(textbook.id);
+                    router.push("/textbooks");
+                    toast.success("Success");
+                    toast("Your textbook is being rewritten from scratch. Check on its status in the Textbooks tab!", {
+                        duration: 10000
+                    });
+                } catch (err) {
+                    if (err instanceof Error) {
+                        toast.error(`Failed: ${err.message}`);
+                    } else {
+                        toast.error("Failed: Unknown error");
+                    }
+                } finally {
+                    setReoutlining(false);
+                } 
+            }
+        });
+    }
+
     return (
-        <div className="px-5 py-3 h-16 top-0 sticky z-50 bg-white border-b border-gray-200 shadow-lg flex flex-row items-center gap-3 justify-between">
+        <div className="px-5 py-3 z-50 h-16 top-0 sticky bg-white border-b border-gray-200 flex flex-row items-center gap-3 justify-between">
             <div className="flex flex-row items-center justify-between w-full">
                 <div className="flex flex-row items-center gap-3">
                     <ArrowLeft
@@ -103,8 +162,18 @@ export default function Topbar({ textbook }: TopbarProps) {
                     }}
                     items={[
                         {
-                            label: "Settings",
-                            icon: Settings
+                            label: "Properties",
+                            icon: Settings,
+                            onClick: () => open(UpdateTextbookModal, {
+                                initialData: textbook
+                            })
+                        },
+                        {
+                            label: reoutlining ? "Requeuing..." : "Re-Outline",
+                            disabled: reoutlining || !canDelete,
+                            icon: SquarePen,
+                            danger: true,
+                            onClick: handleReoutline
                         },
                         {
                             label: loadingDelete ? "Deleting..." : "Delete",
@@ -124,7 +193,13 @@ export default function Topbar({ textbook }: TopbarProps) {
                     items={[
                         {
                             label: "Manage Sources",
-                            icon: Pencil
+                            icon: Pencil,
+                            onClick: () => open(UpdateTextbookSourcesModal, {
+                                textbookData: textbook,
+                                data: knowledgeData,
+                                page: knowledgePage,
+                                total: knowledgeTotal
+                            })
                         }
                     ]}
                 />

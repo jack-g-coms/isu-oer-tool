@@ -19,7 +19,7 @@ export default function NavigationBar() {
 
     return (
         <>
-            <div className="lg:hidden px-5 md:px-10 py-3 top-0 sticky z-50 bg-white border-b border-gray-200">
+            <div className="lg:hidden px-5 md:px-10 py-3 top-0 sticky bg-white border-b border-gray-200">
                 <div className="flex flex-row justify-between">
                     <div className="flex flex-row gap-3 items-center">
                         <Image

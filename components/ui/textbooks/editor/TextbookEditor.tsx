@@ -7,12 +7,15 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
+import { useModalStore } from "@/components/stores/Modals";
 
 import { SimpleEditor } from "../../input/tiptap/tiptap-templates/simple/simple-editor";
 import type { Content, Editor } from "@tiptap/core";
 import { saveContent, deleteSection, rewrite } from "@/lib/api/sections";
 import { Brain, RotateCcw } from "lucide-react";
 import Button from "../../input/Button";
+import UpdateSectionModal from "../../modals/UpdateSectionModal";
+
 
 type TextbookEditorProps = {
     chapterView: Chapter | undefined,
@@ -27,6 +30,8 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [rewriting, setRewriting] = useState(false);
+
+    const open = useModalStore((state) => state.open);
     
     useEffect(() => {
         if (loadError) {
@@ -126,6 +131,16 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
         });
     }
 
+    async function handleEdit() {
+        if (saving || deleting || rewriting) return;
+
+        if (sectionView) {
+            open(UpdateSectionModal, {
+                initialData: sectionView
+            });
+        }
+    }
+
     async function confirmRewrite() {
         if (saving || deleting || rewriting || !sectionView) return;
         setRewriting(true);
@@ -161,6 +176,8 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
 
                     rewriting={rewriting}
                     onRewrite={handleRewrite}
+
+                    onEdit={handleEdit}
                 />
             }
 

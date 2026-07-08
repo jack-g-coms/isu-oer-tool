@@ -1,6 +1,9 @@
 import { auth } from "@/lib/utils/auth";
 import TextbookEditor from "@/components/ui/textbooks/editor/TextbookEditor";
 import { getTextbookWithSections } from "@/lib/services/textbooks";
+import { getUserKnowledgeBase } from "@/lib/services/rag";
+import { KnowledgeDocumentStatus, KnowledgeDocumentType } from "@/prisma/enums";
+
 import Sidebar from "@/components/ui/textbooks/editor/Sidebar";
 import Topbar from "@/components/ui/textbooks/editor/Topbar";
 import { TriangleAlert } from "lucide-react";
@@ -13,8 +16,21 @@ type TextbookEditorPageProps = {
 export default async function TextbookEditorPage({ params, searchParams }: TextbookEditorPageProps) {
     const session = await auth();
     const { id } = await params;
-    const { chapter, section } = await searchParams;
+    const { chapter, section, kq, ktype, kpage } = await searchParams;
     if (!id) return;
+
+    const knowledgeSearch = kq?.toLowerCase();
+    const knowledgeType = ktype;
+    const knowledgePage = Number(kpage ?? "1");
+
+    const { data: readyData, total: readyTotal } = await getUserKnowledgeBase(
+        session?.user.id as string, 
+        false, 
+        knowledgeSearch, 
+        knowledgeType as KnowledgeDocumentType | undefined, 
+        KnowledgeDocumentStatus.READY,
+        knowledgePage
+    );
 
     let textbook;
     let views;
@@ -47,6 +63,9 @@ export default async function TextbookEditorPage({ params, searchParams }: Textb
         <>
             <Topbar
                 textbook={textbook}
+                knowledgeData={readyData}
+                knowledgePage={knowledgePage}
+                knowledgeTotal={readyTotal}
             />
 
             <div className="h-[calc(100vh-64px)] flex flex-col items-center justify-center lg:hidden mx-auto w-full max-w-8xl px-6 lg:px-10 py-8 gap-6">

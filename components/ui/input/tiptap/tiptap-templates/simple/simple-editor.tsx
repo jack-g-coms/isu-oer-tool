@@ -182,10 +182,11 @@ type SimpleEditorProps = {
   deleting: boolean,
   onDelete: () => void,
   rewriting: boolean,
-  onRewrite: () => void
+  onRewrite: () => void,
+  onEdit: () => void
 };
 
-export function SimpleEditor({ initialContent, onSave, saving, deleting, onDelete, rewriting, onRewrite }: SimpleEditorProps) {
+export function SimpleEditor({ initialContent, onSave, saving, deleting, onDelete, rewriting, onRewrite, onEdit }: SimpleEditorProps) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -339,7 +340,8 @@ export function SimpleEditor({ initialContent, onSave, saving, deleting, onDelet
                 items={[
                   {
                     label: "Title & Summary",
-                    icon: SquarePen
+                    icon: SquarePen,
+                    onClick: onEdit
                   }
                 ]}
               />

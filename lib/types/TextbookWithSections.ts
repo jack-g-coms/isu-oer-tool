@@ -6,7 +6,8 @@ type TextbookWithSections = Prisma.TextbookGetPayload<{
             include: {
                 sections: true;
             }
-        }
+        },
+        sources: true
     }
 }>;
 
