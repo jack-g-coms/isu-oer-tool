@@ -74,6 +74,7 @@ export default function NewTextbookModal({
             params.delete("ktype");
             params.delete("kpage");
             router.push(`/textbooks?${params.toString()}`); 
+            router.refresh();
         };
     }, []);
 
@@ -99,7 +100,6 @@ export default function NewTextbookModal({
 
         try {
             const textbook = await createTextbook(formData);
-            router.refresh();
             close();
             toast.success("Success");
             toast("Your textbook is being processed by our system. Check on its status in the Textbooks tab!", {

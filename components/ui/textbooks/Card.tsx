@@ -109,7 +109,7 @@ export default function Card({ data }: CardProps) {
                 </div>
             </div>
             
-            <p className="line-clamp-2 text-md">
+            <p className="line-clamp-2 min-h-[3rem] text-md">
                 {data.description}
             </p>
 

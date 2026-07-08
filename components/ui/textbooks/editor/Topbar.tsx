@@ -25,9 +25,12 @@ export default function Topbar({ textbook }: TopbarProps) {
     const [loadingDelete, setLoadingDelete] = useState(false);
 
     if (!textbook) return;
+    const canDelete = textbook.chapters.every(chapter => 
+        chapter.sections.every(section => section.status == "READY" || section.status == "FAILED_REFINING" || section.status == "FAILED_WRITING")
+    );
 
     async function handleDelete() {
-        if (loadingDelete || !textbook) return;
+        if (loadingDelete || !textbook || !canDelete) return;
 
         const result = await Swal.fire({
             title: "Delete textbook?",
@@ -105,7 +108,7 @@ export default function Topbar({ textbook }: TopbarProps) {
                         },
                         {
                             label: loadingDelete ? "Deleting..." : "Delete",
-                            disabled: loadingDelete,
+                            disabled: loadingDelete || !canDelete,
                             icon: Trash,
                             danger: true,
                             onClick: handleDelete
