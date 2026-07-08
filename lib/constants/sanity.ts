@@ -5,3 +5,6 @@ export const MAX_DOC_TITLE_LENGTH = 30;
 export const MAX_TEXTBOOK_TITLE_LENGTH = 200;
 export const MAX_TEXTBOOK_DESC_LENGTH = 2000;
 export const MAX_TEXTBOOK_SOURCES = 50;
+
+export const MAX_SECTION_TITLE_LENGTH = 100;
+export const MAX_SECTION_SUMMARY_LENGTH = 300;

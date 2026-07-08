@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 
 import withAuth from "@/lib/api/authMiddleware";
 import { MAX_TEXTBOOK_DESC_LENGTH, MAX_CLASS_LENGTH, MAX_TEXTBOOK_TITLE_LENGTH, MAX_TEXTBOOK_SOURCES } from "@/lib/constants/sanity";
-import { deleteTextbook, getTextbook, getTextbookWithSections, updateTextbook } from "@/lib/services/textbooks";
+import { deleteTextbook, getTextbook, getTextbookWithSections, updateTextbook, hasTextbookAccess } from "@/lib/services/textbooks";
 import { TextbookStatus } from "@/prisma/enums";
 
 async function secretPUT(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
@@ -69,7 +69,7 @@ async function secretPUT(req: NextRequest, { params }: { params: Promise<{ id: s
                 { error: "Not found" },
                 { status: 404 }
             );
-        } else if (textbook.authorId != session?.user.id || textbook.status != TextbookStatus.READY) {
+        } else if (!(await hasTextbookAccess(textbook.id, session?.user.id as string)) || textbook.status != TextbookStatus.READY) {
             return Response.json(
                 { error: "Unauthorized" },
                 { status: 401 }
@@ -111,7 +111,7 @@ async function secretDELETE(req: NextRequest, { params }: { params: Promise<{ id
                 { error: "Not found" },
                 { status: 404 }
             );
-        } else if (textbook.authorId != session?.user.id || textbook.status != TextbookStatus.READY || !canDeleteSections) {
+        } else if (!(await hasTextbookAccess(textbook.id, session?.user.id as string)) || textbook.status != TextbookStatus.READY || !canDeleteSections) {
             return Response.json(
                 { error: "Unauthorized" },
                 { status: 401 }

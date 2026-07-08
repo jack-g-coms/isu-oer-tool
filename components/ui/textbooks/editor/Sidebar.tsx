@@ -58,7 +58,7 @@ export default function Sidebar({ chapterView, sectionView, views, textbook }: S
                         title={iChapter.title}
                         className={`${!sectionView && chapterView?.id == iChapter.id ? "bg-gray-100" : ""}`}
                         onClick={() => {
-                            if (sectionView) {
+                            if (sectionView && sectionView.status != "WRITING" && sectionView.status != "QUEUED" && sectionView.status != "FAILED_WRITING") {
                                 Swal.fire({
                                     title: "Are you sure?",
                                     text: "Are you sure you want to navigate away from this section? Any unsaved changes will be lost.",
@@ -102,7 +102,7 @@ export default function Sidebar({ chapterView, sectionView, views, textbook }: S
                                 variant="icon" 
                                 fixed={true}
                                 onClick={() => {
-                                    if (sectionView) {
+                                    if (sectionView && sectionView.status != "WRITING" && sectionView.status != "QUEUED" && sectionView.status != "FAILED_WRITING") {
                                         Swal.fire({
                                             title: "Are you sure?",
                                             text: "Are you sure you want to navigate away from this section? Any unsaved changes will be lost.",

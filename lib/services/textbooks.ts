@@ -1,7 +1,7 @@
 import prisma from "../db/prisma";
 import { z } from "zod";
 
-import { Textbook, TextbookStatus, Section, SectionStatus } from "@/prisma/client";
+import { Textbook, TextbookStatus, Section, SectionStatus, Chapter } from "@/prisma/client";
 import TextbookProperties from "../types/TextbookProperties";
 import { getRelevantChunks } from "./rag";
 import { chat } from "./ai";
@@ -13,6 +13,7 @@ import { FULL_WRITE_QUERY, FULL_WRITE_SYSTEM_PROMPT, FULL_WRITE_PROMPT } from ".
 import { SectionContentResponse } from "../ai/schemas/SectionContentResponse";
 import TextbookUpdateProperties from "../types/TextbookUpdateProperties";
 import { TextbookWhereInput } from "@/prisma/models";
+import { SectionUpdateProperties, SectionContentUpdateProperties } from "../types/SectionUpdateProperties";
 
 // Private
 async function updateTextbookStatus(textbookId: string, status: TextbookStatus): Promise<Textbook> {
@@ -157,6 +158,15 @@ export async function getUserTextbooks(
     };
 }
 
+export async function requeueSection(sectionId: string): Promise<Section> {
+    return await prisma.section.update({
+        where: { id: sectionId },
+        data: {
+            status: SectionStatus.QUEUED
+        }
+    });
+}
+
 export async function requeueTextbook(textbookId: string): Promise<Textbook> {
     return await prisma.textbook.update({
         where: { id: textbookId },
@@ -291,6 +301,31 @@ export async function updateTextbook(textbookId: string, properties: TextbookUpd
     });
 }
 
+export async function updateSection(sectionId: string, properties: SectionUpdateProperties | SectionContentUpdateProperties): Promise<Section> {
+    return await prisma.section.update({
+        where: {
+            id: sectionId
+        },
+        data: properties
+    });
+}
+
+export async function getChapter(chapterId: string): Promise<Chapter> {
+    return await prisma.chapter.findFirstOrThrow({
+        where: {
+            id: chapterId
+        }
+    });
+}
+
+export async function deleteSection(sectionId: string) {
+    return await prisma.section.delete({
+        where: {
+            id: sectionId
+        }
+    });
+}
+
 export async function markOutlineFailure(textbookId: string): Promise<void> {
     await prisma.textbook.update({
         where: {
@@ -325,4 +360,9 @@ export async function deleteTextbook(textbookId: string): Promise<void> {
             id: textbookId
         }
     });
+}
+
+export async function hasTextbookAccess(textbookId: string, userId: string): Promise<boolean> {
+    const textbook = await getTextbook(textbookId, false, false, false);
+    return textbook.authorId == userId;
 }

@@ -105,6 +105,7 @@ export default function Topbar({ textbook }: TopbarProps) {
                         },
                         {
                             label: loadingDelete ? "Deleting..." : "Delete",
+                            disabled: loadingDelete,
                             icon: Trash,
                             danger: true,
                             onClick: handleDelete

@@ -63,7 +63,7 @@ import { cn } from "@/lib/utils/tiptap-utils"
 
 // --- Styles ---
 import "@/components/ui/input/tiptap/tiptap-templates/simple/simple-editor.scss"
-import { Brain, SquarePen, UserRound, Loader2, Settings } from "lucide-react"
+import { Brain, SquarePen, UserRound, Loader2, Settings, FileText, Trash } from "lucide-react"
 import Menu from "../../../Menu"
 import extensions from "./extensions"
 
@@ -178,10 +178,14 @@ const MobileToolbarContent = ({
 type SimpleEditorProps = {
   initialContent: Content,
   onSave: (content: Content, editor: Editor) => void,
-  saving: boolean
+  saving: boolean,
+  deleting: boolean,
+  onDelete: () => void,
+  rewriting: boolean,
+  onRewrite: () => void
 };
 
-export function SimpleEditor({ initialContent, onSave, saving }: SimpleEditorProps) {
+export function SimpleEditor({ initialContent, onSave, saving, deleting, onDelete, rewriting, onRewrite }: SimpleEditorProps) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -290,6 +294,22 @@ export function SimpleEditor({ initialContent, onSave, saving }: SimpleEditorPro
           <div className="flex flex-row items-center justify-between gap-5 w-full">
             <div className="flex flex-row items-center gap-2">
               <Menu
+                  align="top-left"
+                  label={{
+                      text: "File",
+                      icon: FileText
+                  }}
+                  items={[
+                      {
+                          label: deleting ? "Deleting..." : "Delete",
+                          disabled: deleting,
+                          icon: Trash,
+                          danger: true,
+                          onClick: onDelete
+                      }
+                  ]}
+              />
+              <Menu
                 align="top-left"
                 label={{
                   text: "AI",
@@ -297,9 +317,11 @@ export function SimpleEditor({ initialContent, onSave, saving }: SimpleEditorPro
                 }}
                 items={[
                   {
-                    label: "Rewrite",
+                    label: rewriting ? "Requeuing..." : "Rewrite",
+                    disabled: rewriting,
                     icon: SquarePen,
-                    danger: true
+                    danger: true,
+                    onClick: onRewrite
                   },
                   {
                     label: "Assistant",
