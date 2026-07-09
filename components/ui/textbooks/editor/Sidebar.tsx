@@ -6,7 +6,7 @@ import type { Chapter, Section } from "@/prisma/client";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Button from "../../input/Button";
-import { BookOpen, CircleX, FileText, Pencil } from "lucide-react";
+import { BookOpen, CircleX, FileText, Pencil, TableOfContents } from "lucide-react";
 import Swal from "sweetalert2";
 
 type SidebarProps = {
@@ -41,11 +41,45 @@ export default function Sidebar({ chapterView, sectionView, views, textbook }: S
         router.push(`/textbooks/${textbook.id}/?${params.toString()}`);
     }, [chapter, section])
 
+    useEffect(() => {
+        setChapter(chapterView?.id ?? "");
+        setSection(sectionView?.id ?? "");
+    }, [chapterView, sectionView]);
+
     return (
-        <div className="flex flex-col w-full max-w-xs min-h-[calc(100vh-64px)] overflow-y-auto bg-[#fafafa] border-b border-r border-gray-200 gap-1.5 p-4">
+        <div className="flex flex-col w-full max-w-xs min-h-[calc(100vh-64px)] overflow-y-auto bg-[#fafafa] border-b border-r border-gray-200 gap-1.5 p-4 shrink-0">
             <p className="block text-sm uppercase font-semibold text-gray-500 tracking-tight pl-2">
                 Outline
             </p>
+
+            <Button 
+                icon={
+                    <TableOfContents className="shrink-0" width={20} height={20}/>
+                }
+                variant="icon"
+                fixed={true}
+                title="Table of Contents"
+                className={`${!sectionView && !chapterView ? "bg-gray-100" : ""}`}
+                onClick={() => {
+                    if (sectionView && sectionView.status != "WRITING" && sectionView.status != "QUEUED" && sectionView.status != "FAILED_WRITING") {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "Are you sure you want to navigate away from this section? Any unsaved changes will be lost.",
+                            icon: "warning",
+                            showCancelButton: true
+                        })
+                        .then((res) => {
+                            if (res.isConfirmed) {
+                                setChapter("");
+                                setSection("");
+                            }
+                        })
+                    } else {
+                        setChapter("");
+                        setSection("");
+                    }
+                }}
+            >Table of Contents</Button>
 
             {Object.values(views).map((iChapter) => (
                 <div className="space-y-1.5" key={iChapter.id}>

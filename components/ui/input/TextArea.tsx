@@ -24,7 +24,7 @@ export default function TextArea({ label, required, tip, ...props }: TextAreaPro
             <textarea
                 {...props}
                 required={required}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#C8102E] focus:border-transparent transition resize-none"
+                className="w-full resize-y border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#C8102E] focus:border-transparent transition resize-none"
             />
 
             {tip &&

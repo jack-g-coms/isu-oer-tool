@@ -17,7 +17,7 @@ async function secretPOST(req: NextRequest, { params }: { params: Promise<{ id: 
                 { error: "Not found" },
                 { status: 404 }
             );
-        } else if (!(await hasTextbookAccess(section.chapter.textbookId, session?.user.id as string)) || section.status != SectionStatus.READY) {
+        } else if (!(await hasTextbookAccess(section.chapter.textbookId, session?.user.id as string)) || (section.status != SectionStatus.READY && section.status != SectionStatus.FAILED_WRITING)) {
             return Response.json(
                 { error: "Unauthorized" },
                 { status: 401 }

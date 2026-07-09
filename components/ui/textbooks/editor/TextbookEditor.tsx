@@ -15,7 +15,7 @@ import { saveContent, deleteSection, rewrite } from "@/lib/api/sections";
 import { Brain, RotateCcw } from "lucide-react";
 import Button from "../../input/Button";
 import UpdateSectionModal from "../../modals/UpdateSectionModal";
-
+import Link from "next/link";
 
 type TextbookEditorProps = {
     chapterView: Chapter | undefined,
@@ -25,7 +25,7 @@ type TextbookEditorProps = {
     loadError: boolean
 };
 
-export default function TextbookEditor({ loadError, chapterView, sectionView, textbook }: TextbookEditorProps) {
+export default function TextbookEditor({ loadError, chapterView, sectionView, textbook, views }: TextbookEditorProps) {
     const router = useRouter();
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
@@ -56,7 +56,7 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
         return () => clearInterval(interval);
     }, [sectionView])
 
-    if (!textbook || loadError) return;
+    if (!textbook || loadError || !views) return;
 
     async function handleSave(content: Content, editor: Editor) {
         if (saving || deleting || rewriting || !sectionView) return;
@@ -199,6 +199,54 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
                     <Button onClick={confirmRewrite} loading={rewriting} width="w-fit" loadingText="Requeueing...">
                         <RotateCcw width={20} height={20}/> Retry
                     </Button>
+                </div>
+            }
+
+            {chapterView && !sectionView &&
+                <div className="flex flex-col gap-6">
+                    <h1 className="text-3xl font-bold">Table of Contents</h1>
+                    <div className="flex flex-col gap-4">
+                        {Object.entries(views[chapterView.id].sections).map(([sectionId, section]) => (
+                            <Link key={sectionId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterView.id}&section=${sectionId}`}>
+                                <span className="max-w-7xl truncate">{section.title}</span>
+                                <span
+                                    className="flex-1 h-px self-end mb-1 bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] bg-[length:8px_2px] text-gray-400"
+                                />
+                                <span className="shrink-0">{chapterView.order}.{section.order}</span>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            }
+
+            {!chapterView && !sectionView &&
+                <div className="flex flex-col gap-6">
+                    <h1 className="text-3xl font-bold">Table of Contents</h1>
+                    <div className="flex flex-col gap-4">
+                        {Object.entries(views).map(([chapterId, chapter]) => (
+                            <>
+                                <Link key={chapterId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterId}`}>
+                                    <span className="max-w-7xl truncate">{chapter.title}</span>
+                                    <span
+                                        className="flex-1 h-px self-end mb-1 bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] bg-[length:8px_2px] text-gray-400"
+                                    />
+                                    <span className="shrink-0">{chapter.order}</span>
+                                </Link>
+
+                                <div className="flex flex-col gap-4 ml-5">
+                                    {Object.entries(views[chapterId].sections).map(([sectionId, section]) => (
+                                        <Link key={sectionId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterId}&section=${sectionId}`}>
+                                            <span className="max-w-7xl truncate">{section.title}</span>
+                                            <span
+                                                className="flex-1 h-px self-end mb-1 bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] bg-[length:8px_2px] text-gray-400"
+                                            />
+                                            <span className="shrink-0">{chapter.order}.{section.order}</span>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </>
+                        ))}
+                    </div>
                 </div>
             }
         </>
