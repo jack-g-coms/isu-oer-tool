@@ -4,10 +4,13 @@ import { useState, useEffect } from "react";
 import TextbookWithSections from "@/lib/types/TextbookWithSections";
 import type { Chapter, Section } from "@/prisma/client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useModalStore } from "@/components/stores/Modals";
 
 import Button from "../../input/Button";
-import { BookOpen, CircleX, FileText, Pencil, TableOfContents } from "lucide-react";
+import { BookOpen, CircleX, FileText, Pencil, Plus, TableOfContents } from "lucide-react";
 import Swal from "sweetalert2";
+import NewChapterModal from "../../modals/NewChapterModal";
+import NewSectionModal from "../../modals/NewSectionModal";
 
 type SidebarProps = {
     chapterView: Chapter | undefined,
@@ -19,6 +22,8 @@ type SidebarProps = {
 export default function Sidebar({ chapterView, sectionView, views, textbook }: SidebarProps) {
     const [chapter, setChapter] = useState(chapterView?.id ?? "");
     const [section, setSection] = useState(sectionView?.id ?? "");
+
+    const open = useModalStore((state) => state.open);
 
     if (!textbook || !views) return;
 
@@ -47,10 +52,17 @@ export default function Sidebar({ chapterView, sectionView, views, textbook }: S
     }, [chapterView, sectionView]);
 
     return (
-        <div className="flex flex-col w-full max-w-xs min-h-[calc(100vh-64px)] overflow-y-auto bg-[#fafafa] border-b border-r border-gray-200 gap-1.5 p-4 shrink-0">
-            <p className="block text-sm uppercase font-semibold text-gray-500 tracking-tight pl-2">
+        <div className="flex flex-col w-full max-w-xs h-[calc(100vh-64px)] overflow-y-auto sticky top-16 bg-[#fafafa] border-b border-r border-gray-200 gap-1.5 p-4 shrink-0">
+            <p className="block text-sm uppercase font-semibold text-gray-500 tracking-tight">
                 Outline
             </p>
+            <Button 
+                variant="secondary" 
+                className="py-1!"
+                onClick={() => open(NewChapterModal, {
+                    textbookId: textbook.id
+                })}
+            ><Plus className="shrink-0" width={20} height={20}/> Add Chapter</Button>
 
             <Button 
                 icon={
@@ -79,10 +91,10 @@ export default function Sidebar({ chapterView, sectionView, views, textbook }: S
                         setSection("");
                     }
                 }}
-            >Table of Contents</Button>
+            >Overview</Button>
 
             {Object.values(views).map((iChapter) => (
-                <div className="space-y-1.5" key={iChapter.id}>
+                <div className="space-y-1.5 group/chapter" key={iChapter.id}>
                     <Button 
                         icon={
                             <BookOpen className="shrink-0" width={20} height={20}/>
@@ -158,6 +170,13 @@ export default function Sidebar({ chapterView, sectionView, views, textbook }: S
                                 {iSection.title}
                             </Button>
                         ))}
+
+                        <Button
+                            className="py-1! group-hover/chapter:inline-flex! hidden!"
+                            onClick={() => open(NewSectionModal, {
+                                chapterId: iChapter.id
+                            })}
+                        ><Plus className="shrink-0" width={20} height={20}/> Add Section</Button>
                     </div>
                 </div>
             ))}

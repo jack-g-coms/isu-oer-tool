@@ -14,6 +14,8 @@ import { SectionContentResponse } from "../ai/schemas/SectionContentResponse";
 import TextbookUpdateProperties from "../types/TextbookUpdateProperties";
 import { TextbookWhereInput } from "@/prisma/models";
 import { SectionUpdateProperties, SectionContentUpdateProperties } from "../types/SectionUpdateProperties";
+import ChapterProperties from "../types/ChapterProperties";
+import SectionProperties from "../types/SectionProperties";
 
 // Private
 async function updateTextbookStatus(textbookId: string, status: TextbookStatus): Promise<Textbook> {
@@ -58,7 +60,11 @@ export async function getTextbook(textbookId: string, includeAuthor: boolean=fal
         include: {
             author: includeAuthor,
             sources: includeSources,
-            chapters: includeChapters
+            chapters: includeChapters ? {
+                orderBy: {
+                    order: "asc"
+                }
+            } : false
         }
     });
 }
@@ -101,6 +107,39 @@ export async function createTextbook(properties: TextbookProperties): Promise<Te
             }
         }
     });
+}
+
+export async function createChapter(properties: ChapterProperties): Promise<Chapter> {
+    const textbook = await getTextbook(properties.textbookId, false, false, true);
+    return await prisma.chapter.create({
+        data: {
+            title: properties.title,
+            summary: properties.summary,
+            order: textbook.chapters[textbook.chapters.length - 1].order + 1,
+            textbookId: properties.textbookId
+        }
+    });
+}
+
+export async function createSection(properties: SectionProperties, aiWritten: boolean=true): Promise<Section> {
+    const chapter = await getChapter(properties.chapterId, true);
+    const section = await prisma.section.create({
+        data: {
+            title: properties.title,
+            summary: properties.summary,
+            order: chapter.sections[chapter.sections.length - 1].order + 1,
+            chapterId: properties.chapterId,
+            status: !aiWritten ? SectionStatus.READY : SectionStatus.QUEUED
+        }
+    });
+
+    if (aiWritten) {
+        await sectionQueue.add("write-section", {
+            sectionId: section.id
+        });
+    }
+
+    return section;
 }
 
 export async function getUserTextbooks(
@@ -316,10 +355,18 @@ export async function updateSection(sectionId: string, properties: SectionUpdate
     });
 }
 
-export async function getChapter(chapterId: string): Promise<Chapter> {
+export async function getChapter(chapterId: string, includeSections: boolean=false, includeTextbook: boolean=false) {
     return await prisma.chapter.findFirstOrThrow({
         where: {
             id: chapterId
+        },
+        include: {
+            sections: includeSections ? {
+                orderBy: {
+                    order: "asc"
+                }
+            } : false,
+            textbook: includeTextbook
         }
     });
 }

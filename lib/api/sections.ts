@@ -18,6 +18,20 @@ export async function saveContent(sectionId: string, content: Object): Promise<{
     }
 }
 
+export async function createSection(chapterId: string, data: FormData): Promise<{ success: boolean, data: Section }> {
+    const response = await fetch(`${apiUrl}/chapters/${chapterId}/sections`, {
+        method: "POST",
+        body: data
+    });
+
+    const res = await response.json();
+    if (!response.ok) {
+        throw new Error(res.error);
+    } else {
+        return res;
+    }
+}
+
 export async function updateSection(sectionId: string, properties: FormData): Promise<{ success: boolean, data: Section }> {
     const response = await fetch(`${apiUrl}/sections/${sectionId}`, {
         method: "PUT",

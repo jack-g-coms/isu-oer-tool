@@ -12,10 +12,11 @@ import { useModalStore } from "@/components/stores/Modals";
 import { SimpleEditor } from "../../input/tiptap/tiptap-templates/simple/simple-editor";
 import type { Content, Editor } from "@tiptap/core";
 import { saveContent, deleteSection, rewrite } from "@/lib/api/sections";
-import { Brain, RotateCcw } from "lucide-react";
+import { Brain, RotateCcw, Rocket, Settings, Trash, SquarePen, FileText, BookOpen, GraduationCap } from "lucide-react";
 import Button from "../../input/Button";
 import UpdateSectionModal from "../../modals/UpdateSectionModal";
 import Link from "next/link";
+import Menu from "../../input/Menu";
 
 type TextbookEditorProps = {
     chapterView: Chapter | undefined,
@@ -115,6 +116,42 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
         });
     }
 
+     async function handleChapterDelete() {
+        if (saving || deleting || rewriting || (!sectionView && !chapterView)) return;
+        
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone.",
+            icon: "warning",
+            showCancelButton: true
+        })
+        .then(async (result) => {
+            if (result.isConfirmed) {
+                setDeleting(true);
+
+                try {
+                    let res;
+                    if (sectionView) {
+                        res = await deleteSection(sectionView.id);
+                    } else {
+                        // Delete chapter
+                    }
+
+                    router.refresh();
+                    toast.success("Success");
+                } catch (err) {
+                    if (err instanceof Error) {
+                        toast.error(`Failed: ${err.message}`);
+                    } else {
+                        toast.error("Failed: Unknown error");
+                    }
+                } finally {
+                    setDeleting(false);
+                }
+            }
+        });
+    }
+
     async function handleRewrite() {
         if (saving || deleting || rewriting || !sectionView) return;
         
@@ -132,6 +169,16 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
     }
 
     async function handleEdit() {
+        if (saving || deleting || rewriting) return;
+
+        if (sectionView) {
+            open(UpdateSectionModal, {
+                initialData: sectionView
+            });
+        }
+    }
+
+    async function handleChapterEdit() {
         if (saving || deleting || rewriting) return;
 
         if (sectionView) {
@@ -182,7 +229,7 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
             }
 
             {sectionView && (sectionView.status == "WRITING" || sectionView.status == "QUEUED") &&
-                <div className="flex flex-col gap-6 items-center justify-center p-8 h-[calc(100vh-64px-64px)]">
+                <div className="flex flex-col gap-6 items-center justify-center p-8 h-[calc(100vh-64px-64px)] grow">
                     <Brain height={175} width={175} className="text-[var(--isu-gold)] animate-shake"/>
                     <h2 className="text-xl md:text-2xl font-semibold text-center">
                         This section is actively being written or refined by AI, check back soon!
@@ -191,7 +238,7 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
             }
 
             {sectionView && sectionView.status == "FAILED_WRITING" &&
-                <div className="flex flex-col gap-6 items-center justify-center p-8 h-[calc(100vh-64px-64px)]">
+                <div className="flex flex-col gap-6 items-center justify-center p-8 h-[calc(100vh-64px-64px)] grow">
                     <Brain height={175} width={175} className="text-[var(--isu-gold)]"/>
                     <h2 className="text-xl md:text-2xl font-semibold text-center">
                         We ran into a problem while trying to write this section.
@@ -203,49 +250,119 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
             }
 
             {chapterView && !sectionView &&
-                <div className="flex flex-col gap-6">
-                    <h1 className="text-3xl font-bold">Table of Contents</h1>
-                    <div className="flex flex-col gap-4">
-                        {Object.entries(views[chapterView.id].sections).map(([sectionId, section]) => (
-                            <Link key={sectionId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterView.id}&section=${sectionId}`}>
-                                <span className="max-w-7xl truncate">{section.title}</span>
-                                <span
-                                    className="flex-1 h-px self-end mb-1 bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] bg-[length:8px_2px] text-gray-400"
-                                />
-                                <span className="shrink-0">{chapterView.order}.{section.order}</span>
-                            </Link>
-                        ))}
+                <div className="flex flex-col gap-4 grow">
+                    <div className="flex flex-col gap-2 bg-white p-3 border border-gray-200 rounded-xl">
+                        <div className="flex flex-col gap-2 p-3">
+                            <h1 className="inline-flex gap-4 text-3xl font-bold"><BookOpen className="shrink-0" width={35} height={35}/> {chapterView.title}</h1>
+                            <p className="text-lg">{chapterView.summary}</p>
+                        </div>
+
+                        <div className="flex flex-row items-center gap-2">
+                            <Menu
+                                label={{
+                                    text: "File",
+                                    icon: FileText
+                                }}
+                                items={[
+                                    {
+                                        label: deleting ? "Deleting..." : "Delete",
+                                        disabled: deleting,
+                                        icon: Trash,
+                                        danger: true,
+                                        onClick: handleChapterDelete
+                                    }
+                                ]}
+                            />
+            
+                            <Menu
+                                label={{
+                                    text: "Properties",
+                                    icon: Settings,
+                                }}
+                                items={[
+                                    {
+                                        label: "Title & Summary",
+                                        icon: SquarePen,
+                                        onClick: handleChapterEdit
+                                    }
+                                ]}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-6 rounded-lg bg-white p-6 border border-gray-200 rounded-xl">
+                        <h1 className="text-3xl font-bold">Table of Contents</h1>
+
+                        <div className="flex flex-col gap-4 grow">
+                            {Object.keys(views[chapterView.id].sections).length == 0 ?
+                                <div className="flex flex-col gap-6 items-center grow justify-center pb-5">
+                                    <Rocket height={175} width={175} className="text-[var(--isu-gold)]"/>
+                                    <h2 className="text-xl md:text-2xl font-semibold text-center">
+                                        Start writing sections for this chapter and they will show up here.
+                                    </h2>
+                                </div>
+                            :
+                                Object.entries(views[chapterView.id].sections).map(([sectionId, section], posSection) => (
+                                    <Link key={sectionId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterView.id}&section=${sectionId}`}>
+                                        <span className="max-w-7xl truncate">{section.title}</span>
+                                        <span
+                                            className="flex-1 h-px self-end mb-1 bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] bg-[length:8px_2px] text-gray-400"
+                                        />
+                                        <span className="shrink-0">{Object.keys(views).indexOf(chapterView.id) + 1}.{posSection + 1}</span>
+                                    </Link>
+                                ))
+                            }
+                        </div>
                     </div>
                 </div>
             }
 
             {!chapterView && !sectionView &&
-                <div className="flex flex-col gap-6">
-                    <h1 className="text-3xl font-bold">Table of Contents</h1>
-                    <div className="flex flex-col gap-4">
-                        {Object.entries(views).map(([chapterId, chapter]) => (
-                            <>
-                                <Link key={chapterId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterId}`}>
-                                    <span className="max-w-7xl truncate">{chapter.title}</span>
-                                    <span
-                                        className="flex-1 h-px self-end mb-1 bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] bg-[length:8px_2px] text-gray-400"
-                                    />
-                                    <span className="shrink-0">{chapter.order}</span>
-                                </Link>
+                <div className="flex flex-col gap-4 grow">
+                    <div className="flex flex-col gap-2 bg-white p-6 border border-gray-200 rounded-xl">
+                        <div className="flex flex-col gap-2">
+                            <h1 className="inline-flex items-center gap-4 text-3xl font-bold"><GraduationCap className="shrink-0" width={45} height={45}/> {textbook.title}</h1>
+                            <p className="text-lg">{textbook.description}</p>
+                        </div>
+                    </div>
 
-                                <div className="flex flex-col gap-4 ml-5">
-                                    {Object.entries(views[chapterId].sections).map(([sectionId, section]) => (
-                                        <Link key={sectionId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterId}&section=${sectionId}`}>
-                                            <span className="max-w-7xl truncate">{section.title}</span>
+                    <div className="flex flex-col gap-6 rounded-lg bg-white p-6 border border-gray-200 rounded-xl">
+                        <h1 className="text-3xl font-bold">Table of Contents</h1>
+
+                        {Object.keys(views).length == 0 ?
+                            <div className="flex flex-col gap-6 items-center grow justify-center pb-5">
+                                <Rocket height={175} width={175} className="text-[var(--isu-gold)]"/>
+                                <h2 className="text-xl md:text-2xl font-semibold text-center">
+                                    Start creating chapters for this textbook and they will show up here.
+                                </h2>
+                            </div>
+                        :
+                            <div className="flex flex-col gap-4">
+                                {Object.entries(views).map(([chapterId, chapter], chapterPos) => (
+                                    <>
+                                        <Link key={chapterId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterId}`}>
+                                            <span className="max-w-7xl truncate">{chapter.title}</span>
                                             <span
                                                 className="flex-1 h-px self-end mb-1 bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] bg-[length:8px_2px] text-gray-400"
                                             />
-                                            <span className="shrink-0">{chapter.order}.{section.order}</span>
+                                            <span className="shrink-0">{chapterPos + 1}</span>
                                         </Link>
-                                    ))}
-                                </div>
-                            </>
-                        ))}
+
+                                        <div className="flex flex-col gap-4 ml-5">
+                                            {Object.entries(views[chapterId].sections).map(([sectionId, section], sectionPos) => (
+                                                <Link key={sectionId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterId}&section=${sectionId}`}>
+                                                    <span className="max-w-7xl truncate">{section.title}</span>
+                                                    <span
+                                                        className="flex-1 h-px self-end mb-1 bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] bg-[length:8px_2px] text-gray-400"
+                                                    />
+                                                    <span className="shrink-0">{chapterPos + 1}.{sectionPos + 1}</span>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </>
+                                ))}
+                            </div>
+                        }
                     </div>
                 </div>
             }

@@ -83,7 +83,7 @@ export default async function TextbookEditorPage({ params, searchParams }: Textb
                     textbook={textbook}
                 />
                 
-                <div className="mx-auto flex-1 max-w-8xl px-6 lg:px-10 py-8">
+                <div className="mx-auto flex-1 max-w-8xl px-6 lg:px-10 py-8 flex flex-row">
                     <TextbookEditor
                         chapterView = {chapterView}
                         sectionView = {sectionView}

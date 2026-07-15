@@ -68,13 +68,6 @@ export default function NavigationBar() {
 
                 <div className="px-4 space-y-2 py-4">
                     <LinkButton
-                        href="/dashboard"
-                        active={pathname == "/dashboard"}
-                    >
-                        <LayoutDashboard width={20} height={20}/> Dashboard
-                    </LinkButton>
-
-                    <LinkButton
                         href="/knowledge"
                         active={pathname == "/knowledge"}
                     >

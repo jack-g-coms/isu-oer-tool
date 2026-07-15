@@ -1,26 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import type { Section } from "@/prisma/client";
 import { useModalStore } from "@/components/stores/Modals";
-import { updateSection } from "@/lib/api/sections";
+import { createChapter } from "@/lib/api/chapters";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-import { FileText, Upload, CircleX } from "lucide-react";
+import { FileText, Plus, CircleX } from "lucide-react";
 import Input from "../input/Input";
 import TextArea from "../input/TextArea";
 import Button from "../input/Button";
 
-type UpdateSectionModalProps = {
-    initialData: Section
+type NewChapterModalProps = {
+    textbookId: string
 }
 
-export default function UpdateSectionModal({ initialData }: UpdateSectionModalProps) {
+export default function NewChapterModal({ textbookId }: NewChapterModalProps) {
     const router = useRouter();
 
-    const [title, setTitle] = useState(initialData.title);
-    const [summary, setSummary] = useState(initialData.summary ?? "");
+    const [title, setTitle] = useState("");
+    const [summary, setSummary] = useState("");
     const [loading, setLoading] = useState(false);
 
     const close = useModalStore((state) => state.close);
@@ -32,12 +31,10 @@ export default function UpdateSectionModal({ initialData }: UpdateSectionModalPr
         const formData = new FormData();
         formData.append("title", title);
         formData.append("summary", summary);
-        formData.append("chapterId", initialData.chapterId);
-        formData.append("order", String(initialData.order));
 
         setLoading(true);
         try {
-            const section = await updateSection(initialData.id, formData);
+            const chapter = await createChapter(textbookId, formData);
             close();
             router.refresh();
             toast.success("Success");
@@ -58,7 +55,7 @@ export default function UpdateSectionModal({ initialData }: UpdateSectionModalPr
                 <div className="space-y-2">
                     <div className="inline-flex gap-2">
                         <FileText width={30} height={30}/>
-                        <h1 className="text-2xl font-bold">Update Section</h1>
+                        <h1 className="text-2xl font-bold">New Chapter</h1>
                     </div>
                 </div>
 
@@ -66,7 +63,7 @@ export default function UpdateSectionModal({ initialData }: UpdateSectionModalPr
                     label="Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Enter a descriptive title for your section"
+                    placeholder="Enter a descriptive title for your chapter"
                     required
                     tip="The more descriptive the title, the better results."
                 />
@@ -76,12 +73,12 @@ export default function UpdateSectionModal({ initialData }: UpdateSectionModalPr
                     required
                     value={summary}
                     onChange={(e) => setSummary(e.target.value)}
-                    placeholder="Enter a descriptive summary for your section"
+                    placeholder="Enter a descriptive summary for your chapter"
                     tip="The more descriptive the summary, the better results."
                 />
                 
                 <div className="inline-flex gap-3 w-full mt-2">
-                    <Button type="submit" loading={loading} loadingText="Saving..."><Upload width={20} height={20}/> Save</Button>
+                    <Button type="submit" loading={loading} loadingText="Creating..."><Plus width={20} height={20}/> Create</Button>
                     <Button onClick={close} disabled={loading} variant="secondary"><CircleX width={20} height={20}/> Cancel</Button>
                 </div>
             </form>

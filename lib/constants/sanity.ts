@@ -8,3 +8,9 @@ export const MAX_TEXTBOOK_SOURCES = 50;
 
 export const MAX_SECTION_TITLE_LENGTH = 100;
 export const MAX_SECTION_SUMMARY_LENGTH = 300;
+
+export const MAX_CHAPTER_TITLE_LENGTH = 100;
+export const MAX_CHAPTER_SUMMARY_LENGTH = 300;
+
+export const MAX_CHAPTERS = 30;
+export const MAX_SECTIONS_PER_CHAPTER = 20;

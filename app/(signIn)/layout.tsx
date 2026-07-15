@@ -8,7 +8,7 @@ export default async function FormLayout({
 }>) {
   const session = await auth();
   if (session?.user) {
-    redirect("/dashboard");
+    redirect("/knowledge");
   }
   
   return (

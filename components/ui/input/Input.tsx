@@ -12,7 +12,7 @@ export default function Input({ label, required, search=false, onClear, tip, ...
     return (
         <div className="space-y-1">
             {label &&
-                <div className="inline-flex gap-1">
+                <div className="inline-flex gap-1 items-center">
                     <label className="block text-sm font-medium text-gray-500 tracking-tight">
                         {label}
                     </label>

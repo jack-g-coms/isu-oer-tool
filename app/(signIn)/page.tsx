@@ -27,7 +27,7 @@ export default function SignIn() {
     setLoading(false);
   
     if (result?.ok) {
-      router.push("/dashboard");
+      router.push("/knowledge");
       toast.success(`Signed In!`)
     } else {
       toast.error("Failed to login")
