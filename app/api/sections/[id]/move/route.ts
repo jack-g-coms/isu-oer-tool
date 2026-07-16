@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 
 import withAuth from "@/lib/api/authMiddleware";
 import { getSection, getChapter, hasTextbookAccess, moveSection } from "@/lib/services/textbooks";
+import { TextbookStatus } from "@/prisma/enums";
 
 async function secretPOST(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
     try {
@@ -19,7 +20,7 @@ async function secretPOST(req: NextRequest, { params }: { params: Promise<{ id: 
         }
 
         const section = await getSection(id);
-        const chapter = await getChapter(chapterId);
+        const chapter = await getChapter(chapterId, false, true);
         const session = await auth();
         if (
             !chapter || 
@@ -43,7 +44,7 @@ async function secretPOST(req: NextRequest, { params }: { params: Promise<{ id: 
             }
         }
 
-        if (!(await hasTextbookAccess(chapter.textbookId, session?.user.id as string))) {
+        if (!(await hasTextbookAccess(chapter.textbookId, session?.user.id as string)) || chapter.textbook.status != TextbookStatus.READY) {
             return Response.json(
                 { error: "Unauthorized" },
                 { status: 401 }

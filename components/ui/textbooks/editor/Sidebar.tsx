@@ -268,55 +268,53 @@ export default function Sidebar({ chapterView, sectionView, initialViews, textbo
 
     return (
         <div className="flex flex-col w-full max-w-xs h-[calc(100vh-64px)] overflow-y-auto sticky top-16 bg-[#fafafa] border-b border-r border-gray-200 p-4 shrink-0 pb-20">
-            <div className="space-y-1.5">
-                <p className="block text-sm uppercase font-semibold text-gray-500 tracking-tight">
-                    Outline
-                </p>
-                <Button 
-                    variant="secondary" 
-                    className="py-1!"
-                    onClick={() => open(NewChapterModal, {
-                        textbookId: textbook.id
-                    })}
-                ><Plus className="shrink-0" width={20} height={20}/> Add Chapter</Button>
+            <p className="block text-sm uppercase font-semibold text-gray-500 tracking-tight mb-1.5">
+                Outline
+            </p>
+            <Button 
+                variant="secondary" 
+                className="py-1! mb-1.5"
+                onClick={() => open(NewChapterModal, {
+                    textbookId: textbook.id
+                })}
+            ><Plus className="shrink-0" width={20} height={20}/> Add Chapter</Button>
 
-                <Button 
-                    icon={
-                        <TableOfContents className="shrink-0" width={20} height={20}/>
+            <Button 
+                icon={
+                    <TableOfContents className="shrink-0" width={20} height={20}/>
+                }
+                variant="icon"
+                fixed={true}
+                title="Overview"
+                className={`mb-1.5 ${!sectionView && !chapterView ? "bg-gray-100" : ""}`}
+                onClick={() => {
+                    if (sectionView && sectionView.status != "WRITING" && sectionView.status != "QUEUED" && sectionView.status != "FAILED_WRITING") {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "Are you sure you want to navigate away from this section? Any unsaved changes will be lost.",
+                            icon: "warning",
+                            showCancelButton: true
+                        })
+                        .then((res) => {
+                            if (res.isConfirmed) {
+                                setChapter("");
+                                setSection("");
+                            }
+                        })
+                    } else {
+                        setChapter("");
+                        setSection("");
                     }
-                    variant="icon"
-                    fixed={true}
-                    title="Overview"
-                    className={`${!sectionView && !chapterView ? "bg-gray-100" : ""}`}
-                    onClick={() => {
-                        if (sectionView && sectionView.status != "WRITING" && sectionView.status != "QUEUED" && sectionView.status != "FAILED_WRITING") {
-                            Swal.fire({
-                                title: "Are you sure?",
-                                text: "Are you sure you want to navigate away from this section? Any unsaved changes will be lost.",
-                                icon: "warning",
-                                showCancelButton: true
-                            })
-                            .then((res) => {
-                                if (res.isConfirmed) {
-                                    setChapter("");
-                                    setSection("");
-                                }
-                            })
-                        } else {
-                            setChapter("");
-                            setSection("");
-                        }
-                    }}
-                >Overview</Button>
-            </div>
+                }}
+            >Overview</Button>
 
             <DragDropProvider
                 onDragEnd={handleDragEnd}
                 onDragStart={handleDragStart}
             >
-                {Object.values(views).map((iChapter, cIndex) => (
-                    <div className="group/chapter" key={iChapter.id}>
-                        <Droppable pos={cIndex} disabled={dragType != "chapter"} isDragging={dragging} id={`beforeChapter-${iChapter.id}`} className="w-full"/>
+                {Object.values(views).map((iChapter) => (
+                    <div className="group/chapter flex flex-col" key={iChapter.id}>
+                        <Droppable disabled={dragType != "chapter"} isDragging={dragging} id={`beforeChapter-${iChapter.id}`}/>
                         <Draggable
                             id={`chapter-${iChapter.id}`} 
                             icon={
@@ -325,7 +323,7 @@ export default function Sidebar({ chapterView, sectionView, initialViews, textbo
                             variant="icon"
                             fixed={true}
                             title={iChapter.title}
-                            className={`${!sectionView && chapterView?.id == iChapter.id ? "bg-gray-100" : ""}`}
+                            className={`mb-1.5 ${!sectionView && chapterView?.id == iChapter.id ? "bg-gray-100" : ""}`}
                             onClick={() => {
                                 if (sectionView && sectionView.status != "WRITING" && sectionView.status != "QUEUED" && sectionView.status != "FAILED_WRITING") {
                                     Swal.fire({
@@ -347,10 +345,10 @@ export default function Sidebar({ chapterView, sectionView, initialViews, textbo
                             }}
                         >{iChapter.title}</Draggable>
                         
-                        <div className="ml-5">
+                        <div className="ml-5 flex flex-col">
                             {Object.values(iChapter.sections).map((iSection, pIndex) => (
                                 <div key={iSection.id} className={draggingSection?.id == iSection.id ? "opacity-50" : ""}>
-                                    <Droppable pos={pIndex} disabled={dragType != "section"} isDragging={dragging} id={`beforeSection-${iChapter.id}-${iSection.id}`} className="w-full"/>
+                                    <Droppable disabled={dragType != "section"} isDragging={dragging} id={`beforeSection-${iChapter.id}-${iSection.id}`}/>
                                     <Draggable
                                         id={`section-${iChapter.id}-${iSection.id}`}
                                         key={iSection.id} 
@@ -370,7 +368,7 @@ export default function Sidebar({ chapterView, sectionView, initialViews, textbo
                                             </>
                                         }
                                         title={iSection.title}
-                                        className={`${sectionView && sectionView?.id == iSection.id ? "bg-gray-100" : ""}`}
+                                        className={`mb-1.5 ${sectionView && sectionView?.id == iSection.id ? "bg-gray-100" : ""}`}
                                         variant="icon" 
                                         fixed={true}
                                         onClick={() => {
@@ -398,11 +396,11 @@ export default function Sidebar({ chapterView, sectionView, initialViews, textbo
                                 </div>
                             ))}
 
-                            <Droppable disabled={dragType != "section"} isDragging={dragging} id={`afterSection-${iChapter.id}`} className="w-full"/>
+                            <Droppable disabled={dragType != "section"} isDragging={dragging} id={`afterSection-${iChapter.id}`}/>
 
                             {!dragging &&
                                 <Button
-                                    className="py-1! group-hover/chapter:inline-flex! hidden!"
+                                    className="py-1! group-hover/chapter:inline-flex! hidden! mb-1.5"
                                     onClick={() => open(NewSectionModal, {
                                         chapterId: iChapter.id
                                     })}
@@ -415,7 +413,7 @@ export default function Sidebar({ chapterView, sectionView, initialViews, textbo
                 ))}
 
                 <div>
-                    <Droppable disabled={false} isDragging={dragging} id="afterChapter" className="w-full"/>
+                    <Droppable disabled={false} isDragging={dragging} id="afterChapter"/>
                 </div>
 
                 <DragOverlay>
