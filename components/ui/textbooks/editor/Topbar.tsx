@@ -56,6 +56,37 @@ export default function Topbar({
         }
     }, [knowledgeData, knowledgePage, knowledgeTotal, textbook]);
 
+    useEffect(() => {
+        if (loadingDelete || reoutlining) {
+            const title = reoutlining
+                ? "Saving..."
+                : "Deleting...";
+
+            const message = reoutlining
+                ? "Please wait while we save your changes."
+                : "Please wait while we delete this textbook.";
+
+            Swal.fire({
+                title: title,
+                text: message,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+        } else if (Swal.isVisible()) {
+            Swal.close();
+        }
+        
+        return () => {
+            if (Swal.isVisible()) {
+                Swal.close();
+            }
+        };
+    }, [loadingDelete, reoutlining]);
+
     async function handleDelete() {
         if (loadingDelete || !textbook || !canDelete) return;
 

@@ -17,6 +17,8 @@ import Button from "../../input/Button";
 import UpdateSectionModal from "../../modals/UpdateSectionModal";
 import Link from "next/link";
 import Menu from "../../input/Menu";
+import { deleteChapter } from "@/lib/api/chapters";
+import UpdateChapterModal from "../../modals/UpdateChapterModal";
 
 type TextbookEditorProps = {
     chapterView: Chapter | undefined,
@@ -48,6 +50,41 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
     }, [loadError]);
 
     useEffect(() => {
+        if (saving || deleting || rewriting) {
+            const title = saving
+                ? "Saving..."
+                : deleting
+                ? "Deleting..."
+                : "Saving...";
+
+            const message = saving
+                ? "Please wait while we save your changes."
+                : deleting
+                ? "Please wait while we delete this item."
+                : "Please wait while we save your changes.";
+
+            Swal.fire({
+                title: title,
+                text: message,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+        } else if (Swal.isVisible()) {
+            Swal.close();
+        }
+        
+        return () => {
+            if (Swal.isVisible()) {
+                Swal.close();
+            }
+        };
+    }, [saving, deleting, rewriting]);
+
+    useEffect(() => {
         if (!sectionView || sectionView.status == "READY" || sectionView.status == "FAILED_WRITING" || sectionView.status == "FAILED_REFINING") return;
 
         const interval = setInterval(() => {
@@ -55,7 +92,7 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
         }, 10000);
 
         return () => clearInterval(interval);
-    }, [sectionView])
+    }, [sectionView]);
 
     if (!textbook || loadError || !views) return;
 
@@ -97,44 +134,8 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
                     let res;
                     if (sectionView) {
                         res = await deleteSection(sectionView.id);
-                    } else {
-                        // Delete chapter
-                    }
-
-                    router.refresh();
-                    toast.success("Success");
-                } catch (err) {
-                    if (err instanceof Error) {
-                        toast.error(`Failed: ${err.message}`);
-                    } else {
-                        toast.error("Failed: Unknown error");
-                    }
-                } finally {
-                    setDeleting(false);
-                }
-            }
-        });
-    }
-
-     async function handleChapterDelete() {
-        if (saving || deleting || rewriting || (!sectionView && !chapterView)) return;
-        
-        Swal.fire({
-            title: "Are you sure?",
-            text: "This action cannot be undone.",
-            icon: "warning",
-            showCancelButton: true
-        })
-        .then(async (result) => {
-            if (result.isConfirmed) {
-                setDeleting(true);
-
-                try {
-                    let res;
-                    if (sectionView) {
-                        res = await deleteSection(sectionView.id);
-                    } else {
-                        // Delete chapter
+                    } else if (chapterView) {
+                        res = await deleteChapter(chapterView.id);
                     }
 
                     router.refresh();
@@ -169,21 +170,15 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
     }
 
     async function handleEdit() {
-        if (saving || deleting || rewriting) return;
+        if (saving || deleting || rewriting || (!sectionView && !chapterView)) return;
 
         if (sectionView) {
             open(UpdateSectionModal, {
                 initialData: sectionView
             });
-        }
-    }
-
-    async function handleChapterEdit() {
-        if (saving || deleting || rewriting) return;
-
-        if (sectionView) {
-            open(UpdateSectionModal, {
-                initialData: sectionView
+        } else if (chapterView) {
+            open(UpdateChapterModal, {
+                initialData: chapterView
             });
         }
     }
@@ -269,7 +264,7 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
                                         disabled: deleting,
                                         icon: Trash,
                                         danger: true,
-                                        onClick: handleChapterDelete
+                                        onClick: handleDelete
                                     }
                                 ]}
                             />
@@ -283,7 +278,7 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
                                     {
                                         label: "Title & Summary",
                                         icon: SquarePen,
-                                        onClick: handleChapterEdit
+                                        onClick: handleEdit
                                     }
                                 ]}
                             />
@@ -348,7 +343,7 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
                                             <span className="shrink-0">{chapterPos + 1}</span>
                                         </Link>
 
-                                        <div className="flex flex-col gap-4 ml-5">
+                                        <div className={`${Object.entries(views[chapterId].sections).length == 0 ? "hidden" : "flex"} flex-col gap-4 ml-5`}>
                                             {Object.entries(views[chapterId].sections).map(([sectionId, section], sectionPos) => (
                                                 <Link key={sectionId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterId}&section=${sectionId}`}>
                                                     <span className="max-w-7xl truncate">{section.title}</span>

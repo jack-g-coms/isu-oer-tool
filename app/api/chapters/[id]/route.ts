@@ -2,29 +2,28 @@ import { auth } from "@/lib/utils/auth";
 import { NextRequest } from "next/server";
 
 import withAuth from "@/lib/api/authMiddleware";
-import { getSection, hasTextbookAccess, deleteSection, getChapter, updateSection } from "@/lib/services/textbooks";
-import { SectionStatus } from "@/prisma/enums";
-import { MAX_SECTION_SUMMARY_LENGTH, MAX_SECTION_TITLE_LENGTH } from "@/lib/constants/sanity";
+import { deleteChapter, getChapter, hasTextbookAccess, updateChapter } from "@/lib/services/textbooks";
+import { MAX_CHAPTER_SUMMARY_LENGTH, MAX_CHAPTER_TITLE_LENGTH } from "@/lib/constants/sanity";
 
 async function secretDELETE(req: NextRequest, { params }: { params: Promise<{ id: string }>}) {
     try {
         const id = (await params).id;
         const session = await auth();
 
-        const section = await getSection(id);
-        if (!section) {
+        const chapter = await getChapter(id);
+        if (!chapter) {
             return Response.json(
                 { error: "Not found" },
                 { status: 404 }
             );
-        } else if (!(await hasTextbookAccess(section.chapter.textbookId, session?.user.id as string)) || section.status != SectionStatus.READY) {
+        } else if (!(await hasTextbookAccess(chapter.textbookId, session?.user.id as string))) {
             return Response.json(
                 { error: "Unauthorized" },
                 { status: 401 }
             );
         }
-
-        await deleteSection(id);
+        
+        await deleteChapter(id);
 
         return Response.json(
             { success: true },
@@ -43,32 +42,13 @@ async function secretPUT(req: NextRequest, { params }: { params: Promise<{ id: s
     try {
         const id = (await params).id;
         const formData = await req.formData();
-
-        let chapterId = formData.get("chapterId") as string;
+        
         let title = formData.get("title") as string;
         let summary = formData.get("summary") as string;
 
-        if (!chapterId || !title || !summary) {
+        if (!title || !summary) {
             return Response.json(
                 { error: "Missing information" },
-                { status: 400 }
-            );
-        }
-        if (chapterId.trim().length == 0) {
-            return Response.json(
-                { error: "Invalid chapter" },
-                { status: 400 }
-            );
-        }
-        if (title.length > MAX_SECTION_TITLE_LENGTH) {
-            return Response.json(
-                { error: "Title is too long" },
-                { status: 400 }
-            );
-        }
-        if (summary.length > MAX_SECTION_SUMMARY_LENGTH) {
-            return Response.json(
-                { error: "Summary is too long" },
                 { status: 400 }
             );
         }
@@ -84,39 +64,42 @@ async function secretPUT(req: NextRequest, { params }: { params: Promise<{ id: s
                 { status: 400 }
             );
         }
-
-        const chapter = getChapter(chapterId);
-        if (!chapter) {
+        if (summary.length > MAX_CHAPTER_SUMMARY_LENGTH) {
             return Response.json(
-                { error: "Invalid chapter" },
+                { error: "Summary is too long" },
+                { status: 400 }
+            );
+        }
+        if (title.length > MAX_CHAPTER_TITLE_LENGTH) {
+            return Response.json(
+                { error: "Title is too long" },
                 { status: 400 }
             );
         }
 
         const session = await auth();
-        const section = await getSection(id);
-        if (!section) {
+        const chapter = await getChapter(id);
+        if (!chapter) {
             return Response.json(
                 { error: "Not found" },
                 { status: 404 }
             );
-        } else if (!(await hasTextbookAccess(section.chapter.textbookId, session?.user.id as string)) || section.status != SectionStatus.READY) {
+        } else if (!(await hasTextbookAccess(chapter.textbookId, session?.user.id as string))) {
             return Response.json(
                 { error: "Unauthorized" },
                 { status: 401 }
             );
         }
 
-        const updatedSection = await updateSection(id, {
-            chapterId,
+        const updatedChapter = await updateChapter(id, {
             title,
             summary
         });
 
         return Response.json(
-            { success: true, data: updatedSection },
+            { success: true, data: updatedChapter },
             { status: 201 }
-        );
+        )
     } catch (err) {
         console.error(err);
         return Response.json(
@@ -126,5 +109,5 @@ async function secretPUT(req: NextRequest, { params }: { params: Promise<{ id: s
     }
 }
 
-export const DELETE = withAuth(secretDELETE);
 export const PUT = withAuth(secretPUT);
+export const DELETE = withAuth(secretDELETE);

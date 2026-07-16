@@ -32,6 +32,23 @@ export async function createSection(chapterId: string, data: FormData): Promise<
     }
 }
 
+export async function moveSection(sectionId: string, data: { chapterId: string, targetSectionId?: string, position: "before" | "after" }): Promise<{ success: boolean }> {
+    const response = await fetch(`${apiUrl}/sections/${sectionId}/move`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    const res = await response.json();
+    if (!response.ok) {
+        throw new Error(res.error);
+    } else {
+        return res;
+    }
+}
+
 export async function updateSection(sectionId: string, properties: FormData): Promise<{ success: boolean, data: Section }> {
     const response = await fetch(`${apiUrl}/sections/${sectionId}`, {
         method: "PUT",

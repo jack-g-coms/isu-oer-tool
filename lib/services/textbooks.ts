@@ -16,6 +16,7 @@ import { TextbookWhereInput } from "@/prisma/models";
 import { SectionUpdateProperties, SectionContentUpdateProperties } from "../types/SectionUpdateProperties";
 import ChapterProperties from "../types/ChapterProperties";
 import SectionProperties from "../types/SectionProperties";
+import ChapterUpdateProperties from "../types/ChapterUpdateProperties";
 
 // Private
 async function updateTextbookStatus(textbookId: string, status: TextbookStatus): Promise<Textbook> {
@@ -355,6 +356,149 @@ export async function updateSection(sectionId: string, properties: SectionUpdate
     });
 }
 
+export async function moveSection(
+    sectionId: string,
+    chapterId: string,
+    position: "before" | "after",
+    targetSectionId?: string
+) {
+    return prisma.$transaction(async (tx) => {
+        const section = await tx.section.findUniqueOrThrow({
+            where: {
+                id: sectionId
+            }
+        });
+
+        const oldChapterId = section.chapterId;
+        let sections = await tx.section.findMany({
+            where: {
+                chapterId
+            },
+            orderBy: {
+                order: "asc"
+            }
+        });
+
+        sections = sections.filter(
+            s => s.id != sectionId
+        );
+        let insertIndex = sections.length;
+
+        if (targetSectionId) {
+            const targetIndex = sections.findIndex(
+                s => s.id == targetSectionId
+            );
+
+            insertIndex = position == "before"
+                ? targetIndex
+                : targetIndex + 1;
+        }
+
+        sections.splice(insertIndex, 0, {
+            ...section,
+            chapterId
+        });
+
+        await Promise.all(
+            sections.map((section, index) =>
+                tx.section.update({
+                    where: {
+                        id: section.id
+                    },
+                    data: {
+                        chapterId,
+                        order: index
+                    }
+                })
+            )
+        );
+
+        if (oldChapterId != chapterId) {
+            const oldSections = await tx.section.findMany({
+                where: {
+                    chapterId: oldChapterId
+                },
+                orderBy: {
+                    order: "asc"
+                }
+            });
+
+            await Promise.all(
+                oldSections.map((section, index) =>
+                    tx.section.update({
+                        where: {
+                            id: section.id
+                        },
+                        data: {
+                            order: index
+                        }
+                    })
+                )
+            );
+        }
+    });
+}
+
+export async function moveChapter(
+    chapterId: string,
+    position: "before" | "after",
+    targetChapterId?: string
+) {
+    return prisma.$transaction(async (tx) => {
+        const chapter = await tx.chapter.findUniqueOrThrow({
+            where: {
+                id: chapterId
+            }
+        });
+        let chapters = await tx.chapter.findMany({
+            where: {
+                textbookId: chapter.textbookId
+            },
+            orderBy: {
+                order: "asc"
+            }
+        });
+
+        chapters = chapters.filter(
+            c => c.id != chapter.id
+        );
+        let insertIndex = chapters.length;
+
+        if (targetChapterId) {
+            const targetIndex = chapters.findIndex(
+                c => c.id == targetChapterId
+            );
+
+            insertIndex = position == "before"
+                ? targetIndex
+                : targetIndex + 1;
+        }
+        chapters.splice(insertIndex, 0, chapter);
+
+        await Promise.all(
+            chapters.map((chapter, index) =>
+                tx.chapter.update({
+                    where: {
+                        id: chapter.id
+                    },
+                    data: {
+                        order: index
+                    }
+                })
+            )
+        );
+    });
+}
+
+export async function updateChapter(chapterId: string, properties: ChapterUpdateProperties): Promise<Chapter> {
+    return await prisma.chapter.update({
+        where: {
+            id: chapterId
+        },
+        data: properties
+    });
+}
+
 export async function getChapter(chapterId: string, includeSections: boolean=false, includeTextbook: boolean=false) {
     return await prisma.chapter.findFirstOrThrow({
         where: {
@@ -375,6 +519,14 @@ export async function deleteSection(sectionId: string) {
     return await prisma.section.delete({
         where: {
             id: sectionId
+        }
+    });
+}
+
+export async function deleteChapter(chapterId: string) {
+    return await prisma.chapter.delete({
+        where: {
+            id: chapterId
         }
     });
 }

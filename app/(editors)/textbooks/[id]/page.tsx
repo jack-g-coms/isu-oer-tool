@@ -79,7 +79,7 @@ export default async function TextbookEditorPage({ params, searchParams }: Textb
                 <Sidebar
                     chapterView={chapterView}
                     sectionView={sectionView}
-                    views={views}
+                    initialViews={views}
                     textbook={textbook}
                 />
                 
