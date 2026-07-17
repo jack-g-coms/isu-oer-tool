@@ -16,7 +16,7 @@ export async function uploadImage(file: File, sectionId: string): Promise<Image>
 }
 
 export async function getImage(uploadKey: string) {
-    return prisma.image.findFirstOrThrow({
+    return prisma.image.findFirst({
         where: {
             uploadKey
         },

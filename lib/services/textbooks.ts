@@ -56,7 +56,7 @@ function buildPrompt(template: string, fields: Record<string, any>): string {
 
 // Public
 export async function getTextbook(textbookId: string, includeAuthor: boolean=false, includeSources: boolean=false, includeChapters: boolean=false) {
-    return await prisma.textbook.findFirstOrThrow({
+    return await prisma.textbook.findFirst({
         where: {
             id: textbookId
         },
@@ -73,7 +73,7 @@ export async function getTextbook(textbookId: string, includeAuthor: boolean=fal
 }
 
 export async function getTextbookWithSections(textbookId: string, includeAuthor: boolean=false, includeSources: boolean=false) {
-    return await prisma.textbook.findFirstOrThrow({
+    return await prisma.textbook.findFirst({
         where: {
             id: textbookId
         },
@@ -118,7 +118,7 @@ export async function createChapter(properties: ChapterProperties): Promise<Chap
         data: {
             title: properties.title,
             summary: properties.summary,
-            order: textbook.chapters[textbook.chapters.length - 1].order + 1,
+            order: textbook!.chapters[textbook!.chapters.length - 1].order + 1,
             textbookId: properties.textbookId
         }
     });
@@ -130,7 +130,7 @@ export async function createSection(properties: SectionProperties, aiWritten: bo
         data: {
             title: properties.title,
             summary: properties.summary,
-            order: chapter.sections[chapter.sections.length - 1].order + 1,
+            order: chapter!.sections[chapter!.sections.length - 1].order + 1,
             chapterId: properties.chapterId,
             status: !aiWritten ? SectionStatus.READY : SectionStatus.QUEUED
         }
@@ -228,7 +228,7 @@ export async function outlineTextbook(textbookId: string): Promise<void> {
     const textbook = await getTextbook(textbookId, false, true, false);
     await updateTextbookStatus(textbookId, TextbookStatus.OUTLINING);
 
-    const sourceIds = textbook.sources.map(source => source.id);
+    const sourceIds = textbook!.sources.map(source => source.id);
     const chunks = await getRelevantChunks(sourceIds, OUTLINE_QUERY);
     
     const prompt = buildPrompt(OUTLINE_PROMPT, {
@@ -261,11 +261,11 @@ export async function outlineTextbook(textbookId: string): Promise<void> {
 
 export async function writeFullTextbook(textbookId: string): Promise<void> {
     const textbook = await getTextbookWithSections(textbookId, false, true);
-    if (textbook.status != TextbookStatus.READY) {
+    if (textbook!.status != TextbookStatus.READY) {
         throw new Error("Textbook must be outlined before it can be written.");
     }
 
-    for (const chapter of textbook.chapters) {
+    for (const chapter of textbook!.chapters) {
         for (const section of chapter.sections) {
             await sectionQueue.add("write-section", {
                 sectionId: section.id
@@ -275,7 +275,7 @@ export async function writeFullTextbook(textbookId: string): Promise<void> {
 }
 
 export async function getSection(sectionId: string) {
-    return await prisma.section.findFirstOrThrow({
+    return await prisma.section.findFirst({
         where: {
             id: sectionId
         },
@@ -297,21 +297,21 @@ export async function writeSection(sectionId: string): Promise<void> {
     const section = await getSection(sectionId);
 
     await updateSectionStatus(sectionId, SectionStatus.WRITING);
-    const sourceIds = section.chapter.textbook.sources.map(source => source.id);
+    const sourceIds = section?.chapter.textbook.sources.map(source => source.id);
 
     const query = buildPrompt(FULL_WRITE_QUERY, {
-        "topic": section.chapter.textbook.title,
-        "chapter": section.chapter.title,
-        "chapterSummary": section.chapter.summary,
-        "section": section.title,
-        "sectionSummary": section.summary
+        "topic": section?.chapter.textbook.title,
+        "chapter": section?.chapter.title,
+        "chapterSummary": section?.chapter.summary,
+        "section": section?.title,
+        "sectionSummary": section?.summary
     });
-    const chunks = await getRelevantChunks(sourceIds, query, 5);
+    const chunks = await getRelevantChunks(sourceIds!, query, 5);
     const prompt = buildPrompt(FULL_WRITE_PROMPT, {
-        "textbookTitle": section.chapter.textbook.title,
-        "chapterTitle": section.chapter.title,
-        "sectionTitle": section.title,
-        "sectionSummary": section.summary,
+        "textbookTitle": section?.chapter.textbook.title,
+        "chapterTitle": section?.chapter.title,
+        "sectionTitle": section?.title,
+        "sectionSummary": section?.summary,
         "chunks": chunks.map(c => c.text).join("\n\n")
     });
     console.log(prompt);
@@ -532,7 +532,7 @@ export async function updateChapter(chapterId: string, properties: ChapterUpdate
 }
 
 export async function getChapter(chapterId: string, includeSections: boolean=false, includeTextbook: boolean=false) {
-    return await prisma.chapter.findFirstOrThrow({
+    return await prisma.chapter.findFirst({
         where: {
             id: chapterId
         },
@@ -601,5 +601,5 @@ export async function deleteTextbook(textbookId: string): Promise<void> {
 
 export async function hasTextbookAccess(textbookId: string, userId: string): Promise<boolean> {
     const textbook = await getTextbook(textbookId, false, false, false);
-    return textbook.authorId == userId;
+    return textbook!.authorId == userId;
 }
