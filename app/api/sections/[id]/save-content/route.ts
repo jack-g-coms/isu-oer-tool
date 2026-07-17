@@ -2,7 +2,7 @@ import { auth } from "@/lib/utils/auth";
 import { NextRequest } from "next/server";
 import { SectionStatus } from "@/prisma/enums";
 
-import { getSection, updateSection, hasTextbookAccess } from "@/lib/services/textbooks";
+import { getSection, updateSection, hasTextbookAccess, cleanupContentImages } from "@/lib/services/textbooks";
 import { validateTipTapJSON } from "@/lib/utils/tiptap-validation";
 import withAuth from "@/lib/api/authMiddleware";
 
@@ -36,6 +36,7 @@ async function secretPATCH(req: NextRequest, { params }: { params: Promise<{ id:
         const updatedSection = await updateSection(sectionId, {
             content
         });
+        await cleanupContentImages(content, sectionId);
 
         return Response.json(
             { success: true, data: updatedSection },

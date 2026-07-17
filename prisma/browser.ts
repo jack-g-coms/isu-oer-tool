@@ -47,3 +47,8 @@ export type Chapter = Prisma.ChapterModel
  * 
  */
 export type Section = Prisma.SectionModel
+/**
+ * Model Image
+ * 
+ */
+export type Image = Prisma.ImageModel

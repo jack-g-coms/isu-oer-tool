@@ -21,7 +21,7 @@ import "@/components/ui/input/tiptap/tiptap-node/list-node/list-node.scss"
 import "@/components/ui/input/tiptap/tiptap-node/image-node/image-node.scss"
 import "@/components/ui/input/tiptap/tiptap-node/heading-node/heading-node.scss"
 import "@/components/ui/input/tiptap/tiptap-node/paragraph-node/paragraph-node.scss"
-import { ImageUploadNode } from "@/components/ui/input/tiptap/tiptap-node/image-upload-node/image-upload-node-extension"
+import { ImageUploadNode, UploadFunction } from "@/components/ui/input/tiptap/tiptap-node/image-upload-node/image-upload-node-extension"
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/utils/tiptap-utils"
 
 // --- Tiptap UI ---
@@ -60,12 +60,14 @@ import MyBtn from "@/components/ui/input/Button";
 
 // --- Lib ---
 import { cn } from "@/lib/utils/tiptap-utils"
+import toast from "react-hot-toast"
 
 // --- Styles ---
 import "@/components/ui/input/tiptap/tiptap-templates/simple/simple-editor.scss"
 import { Brain, SquarePen, UserRound, Loader2, Settings, FileText, Trash } from "lucide-react"
 import Menu from "../../../Menu"
 import extensions from "./extensions"
+import { ALLOWED_IMAGE_TYPES } from "@/lib/constants/sanity"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -183,10 +185,11 @@ type SimpleEditorProps = {
   onDelete: () => void,
   rewriting: boolean,
   onRewrite: () => void,
-  onEdit: () => void
+  onEdit: () => void,
+  onImageUpload: UploadFunction
 };
 
-export function SimpleEditor({ initialContent, onSave, saving, deleting, onDelete, rewriting, onRewrite, onEdit }: SimpleEditorProps) {
+export function SimpleEditor({ initialContent, onSave, saving, deleting, onDelete, rewriting, onRewrite, onEdit, onImageUpload }: SimpleEditorProps) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -214,11 +217,17 @@ export function SimpleEditor({ initialContent, onSave, saving, deleting, onDelet
     extensions: [
       ...extensions,
       ImageUploadNode.configure({
-          accept: "image/*",
+          accept: ALLOWED_IMAGE_TYPES.join(","),
           maxSize: MAX_FILE_SIZE,
           limit: 3,
-          upload: handleImageUpload,
-          onError: (error) => console.error("Upload failed:", error),
+          upload: onImageUpload,
+          onError: (error) => {
+            if (error instanceof Error) {
+                toast.error(`Failed: ${error.message}`);
+            } else {
+                toast.error("Failed: Unknown error");
+            }
+          },
       }),
     ],
     content: initialContent,

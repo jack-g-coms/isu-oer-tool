@@ -19,6 +19,7 @@ import Link from "next/link";
 import Menu from "../../input/Menu";
 import { deleteChapter } from "@/lib/api/chapters";
 import UpdateChapterModal from "../../modals/UpdateChapterModal";
+import { handleImageUpload } from "@/lib/utils/tiptap-utils";
 
 type TextbookEditorProps = {
     chapterView: Chapter | undefined,
@@ -205,6 +206,10 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
         }
     }
 
+    async function handleUpload(file: File, onProgress?: (event: { progress: number }) => void, abortSignal?: AbortSignal) {
+        return await handleImageUpload(sectionView?.id as string, file, onProgress, abortSignal);
+    }
+
     return (
         <>
             {sectionView && sectionView.status == "READY" &&
@@ -220,6 +225,7 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
                     onRewrite={handleRewrite}
 
                     onEdit={handleEdit}
+                    onImageUpload={handleUpload}
                 />
             }
 

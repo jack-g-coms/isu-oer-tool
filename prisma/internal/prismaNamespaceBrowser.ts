@@ -56,7 +56,8 @@ export const ModelName = {
   KnowledgeDocumentChunk: 'KnowledgeDocumentChunk',
   Textbook: 'Textbook',
   Chapter: 'Chapter',
-  Section: 'Section'
+  Section: 'Section',
+  Image: 'Image'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -148,10 +149,22 @@ export const SectionScalarFieldEnum = {
   title: 'title',
   summary: 'summary',
   order: 'order',
-  content: 'content'
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type SectionScalarFieldEnum = (typeof SectionScalarFieldEnum)[keyof typeof SectionScalarFieldEnum]
+
+
+export const ImageScalarFieldEnum = {
+  uploadKey: 'uploadKey',
+  sectionId: 'sectionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ImageScalarFieldEnum = (typeof ImageScalarFieldEnum)[keyof typeof ImageScalarFieldEnum]
 
 
 export const SortOrder = {

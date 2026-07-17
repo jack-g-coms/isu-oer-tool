@@ -41,6 +41,8 @@ export type SectionMinAggregateOutputType = {
   title: string | null
   summary: string | null
   order: number | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type SectionMaxAggregateOutputType = {
@@ -50,6 +52,8 @@ export type SectionMaxAggregateOutputType = {
   title: string | null
   summary: string | null
   order: number | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type SectionCountAggregateOutputType = {
@@ -60,6 +64,8 @@ export type SectionCountAggregateOutputType = {
   summary: number
   order: number
   content: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -79,6 +85,8 @@ export type SectionMinAggregateInputType = {
   title?: true
   summary?: true
   order?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type SectionMaxAggregateInputType = {
@@ -88,6 +96,8 @@ export type SectionMaxAggregateInputType = {
   title?: true
   summary?: true
   order?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type SectionCountAggregateInputType = {
@@ -98,6 +108,8 @@ export type SectionCountAggregateInputType = {
   summary?: true
   order?: true
   content?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -195,6 +207,8 @@ export type SectionGroupByOutputType = {
   summary: string | null
   order: number
   content: runtime.JsonValue | null
+  createdAt: Date
+  updatedAt: Date
   _count: SectionCountAggregateOutputType | null
   _avg: SectionAvgAggregateOutputType | null
   _sum: SectionSumAggregateOutputType | null
@@ -228,7 +242,10 @@ export type SectionWhereInput = {
   summary?: Prisma.StringNullableFilter<"Section"> | string | null
   order?: Prisma.IntFilter<"Section"> | number
   content?: Prisma.JsonNullableFilter<"Section">
+  createdAt?: Prisma.DateTimeFilter<"Section"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Section"> | Date | string
   chapter?: Prisma.XOR<Prisma.ChapterScalarRelationFilter, Prisma.ChapterWhereInput>
+  images?: Prisma.ImageListRelationFilter
 }
 
 export type SectionOrderByWithRelationInput = {
@@ -239,7 +256,10 @@ export type SectionOrderByWithRelationInput = {
   summary?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   chapter?: Prisma.ChapterOrderByWithRelationInput
+  images?: Prisma.ImageOrderByRelationAggregateInput
 }
 
 export type SectionWhereUniqueInput = Prisma.AtLeast<{
@@ -253,7 +273,10 @@ export type SectionWhereUniqueInput = Prisma.AtLeast<{
   summary?: Prisma.StringNullableFilter<"Section"> | string | null
   order?: Prisma.IntFilter<"Section"> | number
   content?: Prisma.JsonNullableFilter<"Section">
+  createdAt?: Prisma.DateTimeFilter<"Section"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Section"> | Date | string
   chapter?: Prisma.XOR<Prisma.ChapterScalarRelationFilter, Prisma.ChapterWhereInput>
+  images?: Prisma.ImageListRelationFilter
 }, "id">
 
 export type SectionOrderByWithAggregationInput = {
@@ -264,6 +287,8 @@ export type SectionOrderByWithAggregationInput = {
   summary?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.SectionCountOrderByAggregateInput
   _avg?: Prisma.SectionAvgOrderByAggregateInput
   _max?: Prisma.SectionMaxOrderByAggregateInput
@@ -282,6 +307,8 @@ export type SectionScalarWhereWithAggregatesInput = {
   summary?: Prisma.StringNullableWithAggregatesFilter<"Section"> | string | null
   order?: Prisma.IntWithAggregatesFilter<"Section"> | number
   content?: Prisma.JsonNullableWithAggregatesFilter<"Section">
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Section"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Section"> | Date | string
 }
 
 export type SectionCreateInput = {
@@ -291,7 +318,10 @@ export type SectionCreateInput = {
   summary?: string | null
   order: number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
   chapter: Prisma.ChapterCreateNestedOneWithoutSectionsInput
+  images?: Prisma.ImageCreateNestedManyWithoutSectionInput
 }
 
 export type SectionUncheckedCreateInput = {
@@ -302,6 +332,9 @@ export type SectionUncheckedCreateInput = {
   summary?: string | null
   order: number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  images?: Prisma.ImageUncheckedCreateNestedManyWithoutSectionInput
 }
 
 export type SectionUpdateInput = {
@@ -311,7 +344,10 @@ export type SectionUpdateInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chapter?: Prisma.ChapterUpdateOneRequiredWithoutSectionsNestedInput
+  images?: Prisma.ImageUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionUncheckedUpdateInput = {
@@ -322,6 +358,9 @@ export type SectionUncheckedUpdateInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.ImageUncheckedUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionCreateManyInput = {
@@ -332,6 +371,8 @@ export type SectionCreateManyInput = {
   summary?: string | null
   order: number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type SectionUpdateManyMutationInput = {
@@ -341,6 +382,8 @@ export type SectionUpdateManyMutationInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SectionUncheckedUpdateManyInput = {
@@ -351,6 +394,8 @@ export type SectionUncheckedUpdateManyInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SectionListRelationFilter = {
@@ -371,6 +416,8 @@ export type SectionCountOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   order?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SectionAvgOrderByAggregateInput = {
@@ -384,6 +431,8 @@ export type SectionMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   summary?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SectionMinOrderByAggregateInput = {
@@ -393,10 +442,17 @@ export type SectionMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   summary?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SectionSumOrderByAggregateInput = {
   order?: Prisma.SortOrder
+}
+
+export type SectionScalarRelationFilter = {
+  is?: Prisma.SectionWhereInput
+  isNot?: Prisma.SectionWhereInput
 }
 
 export type SectionCreateNestedManyWithoutChapterInput = {
@@ -445,6 +501,20 @@ export type EnumSectionStatusFieldUpdateOperationsInput = {
   set?: $Enums.SectionStatus
 }
 
+export type SectionCreateNestedOneWithoutImagesInput = {
+  create?: Prisma.XOR<Prisma.SectionCreateWithoutImagesInput, Prisma.SectionUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.SectionCreateOrConnectWithoutImagesInput
+  connect?: Prisma.SectionWhereUniqueInput
+}
+
+export type SectionUpdateOneRequiredWithoutImagesNestedInput = {
+  create?: Prisma.XOR<Prisma.SectionCreateWithoutImagesInput, Prisma.SectionUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.SectionCreateOrConnectWithoutImagesInput
+  upsert?: Prisma.SectionUpsertWithoutImagesInput
+  connect?: Prisma.SectionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SectionUpdateToOneWithWhereWithoutImagesInput, Prisma.SectionUpdateWithoutImagesInput>, Prisma.SectionUncheckedUpdateWithoutImagesInput>
+}
+
 export type SectionCreateWithoutChapterInput = {
   id?: string
   status?: $Enums.SectionStatus
@@ -452,6 +522,9 @@ export type SectionCreateWithoutChapterInput = {
   summary?: string | null
   order: number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  images?: Prisma.ImageCreateNestedManyWithoutSectionInput
 }
 
 export type SectionUncheckedCreateWithoutChapterInput = {
@@ -461,6 +534,9 @@ export type SectionUncheckedCreateWithoutChapterInput = {
   summary?: string | null
   order: number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  images?: Prisma.ImageUncheckedCreateNestedManyWithoutSectionInput
 }
 
 export type SectionCreateOrConnectWithoutChapterInput = {
@@ -500,6 +576,72 @@ export type SectionScalarWhereInput = {
   summary?: Prisma.StringNullableFilter<"Section"> | string | null
   order?: Prisma.IntFilter<"Section"> | number
   content?: Prisma.JsonNullableFilter<"Section">
+  createdAt?: Prisma.DateTimeFilter<"Section"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Section"> | Date | string
+}
+
+export type SectionCreateWithoutImagesInput = {
+  id?: string
+  status?: $Enums.SectionStatus
+  title: string
+  summary?: string | null
+  order: number
+  content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  chapter: Prisma.ChapterCreateNestedOneWithoutSectionsInput
+}
+
+export type SectionUncheckedCreateWithoutImagesInput = {
+  id?: string
+  chapterId: string
+  status?: $Enums.SectionStatus
+  title: string
+  summary?: string | null
+  order: number
+  content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SectionCreateOrConnectWithoutImagesInput = {
+  where: Prisma.SectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.SectionCreateWithoutImagesInput, Prisma.SectionUncheckedCreateWithoutImagesInput>
+}
+
+export type SectionUpsertWithoutImagesInput = {
+  update: Prisma.XOR<Prisma.SectionUpdateWithoutImagesInput, Prisma.SectionUncheckedUpdateWithoutImagesInput>
+  create: Prisma.XOR<Prisma.SectionCreateWithoutImagesInput, Prisma.SectionUncheckedCreateWithoutImagesInput>
+  where?: Prisma.SectionWhereInput
+}
+
+export type SectionUpdateToOneWithWhereWithoutImagesInput = {
+  where?: Prisma.SectionWhereInput
+  data: Prisma.XOR<Prisma.SectionUpdateWithoutImagesInput, Prisma.SectionUncheckedUpdateWithoutImagesInput>
+}
+
+export type SectionUpdateWithoutImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumSectionStatusFieldUpdateOperationsInput | $Enums.SectionStatus
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  chapter?: Prisma.ChapterUpdateOneRequiredWithoutSectionsNestedInput
+}
+
+export type SectionUncheckedUpdateWithoutImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  chapterId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumSectionStatusFieldUpdateOperationsInput | $Enums.SectionStatus
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SectionCreateManyChapterInput = {
@@ -509,6 +651,8 @@ export type SectionCreateManyChapterInput = {
   summary?: string | null
   order: number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type SectionUpdateWithoutChapterInput = {
@@ -518,6 +662,9 @@ export type SectionUpdateWithoutChapterInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.ImageUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionUncheckedUpdateWithoutChapterInput = {
@@ -527,6 +674,9 @@ export type SectionUncheckedUpdateWithoutChapterInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.ImageUncheckedUpdateManyWithoutSectionNestedInput
 }
 
 export type SectionUncheckedUpdateManyWithoutChapterInput = {
@@ -536,8 +686,39 @@ export type SectionUncheckedUpdateManyWithoutChapterInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type SectionCountOutputType
+ */
+
+export type SectionCountOutputType = {
+  images: number
+}
+
+export type SectionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  images?: boolean | SectionCountOutputTypeCountImagesArgs
+}
+
+/**
+ * SectionCountOutputType without action
+ */
+export type SectionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SectionCountOutputType
+   */
+  select?: Prisma.SectionCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * SectionCountOutputType without action
+ */
+export type SectionCountOutputTypeCountImagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ImageWhereInput
+}
 
 
 export type SectionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -548,7 +729,11 @@ export type SectionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   summary?: boolean
   order?: boolean
   content?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   chapter?: boolean | Prisma.ChapterDefaultArgs<ExtArgs>
+  images?: boolean | Prisma.Section$imagesArgs<ExtArgs>
+  _count?: boolean | Prisma.SectionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["section"]>
 
 export type SectionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -559,6 +744,8 @@ export type SectionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   summary?: boolean
   order?: boolean
   content?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   chapter?: boolean | Prisma.ChapterDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["section"]>
 
@@ -570,6 +757,8 @@ export type SectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   summary?: boolean
   order?: boolean
   content?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   chapter?: boolean | Prisma.ChapterDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["section"]>
 
@@ -581,11 +770,15 @@ export type SectionSelectScalar = {
   summary?: boolean
   order?: boolean
   content?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type SectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "chapterId" | "status" | "title" | "summary" | "order" | "content", ExtArgs["result"]["section"]>
+export type SectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "chapterId" | "status" | "title" | "summary" | "order" | "content" | "createdAt" | "updatedAt", ExtArgs["result"]["section"]>
 export type SectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chapter?: boolean | Prisma.ChapterDefaultArgs<ExtArgs>
+  images?: boolean | Prisma.Section$imagesArgs<ExtArgs>
+  _count?: boolean | Prisma.SectionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SectionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chapter?: boolean | Prisma.ChapterDefaultArgs<ExtArgs>
@@ -598,6 +791,7 @@ export type $SectionPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Section"
   objects: {
     chapter: Prisma.$ChapterPayload<ExtArgs>
+    images: Prisma.$ImagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -607,6 +801,8 @@ export type $SectionPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     summary: string | null
     order: number
     content: runtime.JsonValue | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["section"]>
   composites: {}
 }
@@ -1002,6 +1198,7 @@ readonly fields: SectionFieldRefs;
 export interface Prisma__SectionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   chapter<T extends Prisma.ChapterDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChapterDefaultArgs<ExtArgs>>): Prisma.Prisma__ChapterClient<runtime.Types.Result.GetResult<Prisma.$ChapterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  images<T extends Prisma.Section$imagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Section$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1038,6 +1235,8 @@ export interface SectionFieldRefs {
   readonly summary: Prisma.FieldRef<"Section", 'String'>
   readonly order: Prisma.FieldRef<"Section", 'Int'>
   readonly content: Prisma.FieldRef<"Section", 'Json'>
+  readonly createdAt: Prisma.FieldRef<"Section", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Section", 'DateTime'>
 }
     
 
@@ -1436,6 +1635,30 @@ export type SectionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Sections to delete.
    */
   limit?: number
+}
+
+/**
+ * Section.images
+ */
+export type Section$imagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Image
+   */
+  select?: Prisma.ImageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Image
+   */
+  omit?: Prisma.ImageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImageInclude<ExtArgs> | null
+  where?: Prisma.ImageWhereInput
+  orderBy?: Prisma.ImageOrderByWithRelationInput | Prisma.ImageOrderByWithRelationInput[]
+  cursor?: Prisma.ImageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ImageScalarFieldEnum | Prisma.ImageScalarFieldEnum[]
 }
 
 /**

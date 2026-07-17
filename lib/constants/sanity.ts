@@ -14,3 +14,10 @@ export const MAX_CHAPTER_SUMMARY_LENGTH = 300;
 
 export const MAX_CHAPTERS = 30;
 export const MAX_SECTIONS_PER_CHAPTER = 20;
+
+export const ALLOWED_IMAGE_TYPES = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif"
+];

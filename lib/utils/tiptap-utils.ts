@@ -13,6 +13,9 @@ import {
   type Editor,
   type NodeWithPos,
 } from "@tiptap/react"
+import { ALLOWED_IMAGE_TYPES } from "../constants/sanity"
+import Swal from "sweetalert2"
+import { uploadImage } from "../api/images"
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
@@ -358,32 +361,42 @@ export function selectionWithinConvertibleTypes(
  * @returns Promise resolving to the URL of the uploaded image
  */
 export const handleImageUpload = async (
+  sectionId: string,
   file: File,
   onProgress?: (event: { progress: number }) => void,
-  abortSignal?: AbortSignal
+  abortSignal?: AbortSignal,
 ): Promise<string> => {
   // Validate file
   if (!file) {
     throw new Error("No file provided")
   }
-
   if (file.size > MAX_FILE_SIZE) {
     throw new Error(
-      `File size exceeds maximum allowed (${MAX_FILE_SIZE / (1024 * 1024)}MB)`
+      `Image must be smaller than ${MAX_FILE_SIZE / (1024 * 1024)} MB`
     )
   }
-
-  // For demo/testing: Simulate upload progress. In production, replace the following code
-  // with your own upload implementation.
-  for (let progress = 0; progress <= 100; progress += 10) {
-    if (abortSignal?.aborted) {
-      throw new Error("Upload cancelled")
-    }
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    onProgress?.({ progress })
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    throw new Error("Unsupported image type")
   }
 
-  return "/images/tiptap-ui-placeholder-image.jpg"
+  Swal.fire({
+      title: "Uploading...",
+      text: "Please wait while we upload this image.",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+          Swal.showLoading();
+      },
+  });
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await uploadImage(sectionId, formData);
+  Swal.close();
+  
+  return res.data;
 }
 
 type ProtocolOptions = {

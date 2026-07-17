@@ -114,7 +114,7 @@ model Chapter {
   sections Section[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
+  updatedAt DateTime @updatedAt
 }
 
 model Section {
@@ -130,4 +130,18 @@ model Section {
   order Int
 
   content Json?
+  images Image[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Image {
+  uploadKey String @id
+
+  sectionId String 
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt 
 }

@@ -17,6 +17,8 @@ import { SectionUpdateProperties, SectionContentUpdateProperties } from "../type
 import ChapterProperties from "../types/ChapterProperties";
 import SectionProperties from "../types/SectionProperties";
 import ChapterUpdateProperties from "../types/ChapterUpdateProperties";
+import TiptapNode from "../types/TiptapNode";
+import { deleteImage } from "./images";
 
 // Private
 async function updateTextbookStatus(textbookId: string, status: TextbookStatus): Promise<Textbook> {
@@ -354,6 +356,36 @@ export async function updateSection(sectionId: string, properties: SectionUpdate
         },
         data: properties
     });
+}
+
+export async function cleanupContentImages(content: TiptapNode, sectionId: string): Promise<void> {
+    let uploadKeys: string[] = [];
+
+    function walk(node: TiptapNode) {
+        if (node.type == "image") {
+            let splitSrc = (node.attrs?.src as string).split("/api/images/");
+            let uploadKey = splitSrc[1];
+            uploadKeys.push(uploadKey);
+        }
+
+        if (node.content) {
+            for (const child of node.content) {
+                walk(child);
+            }
+        }
+    }
+    walk(content);
+
+    const images = await prisma.image.findMany({
+        where: {
+            sectionId
+        }
+    });
+    for (const image of images) {
+        if (!uploadKeys.includes(image.uploadKey)) {
+            await deleteImage(image.uploadKey);
+        }
+    }
 }
 
 export async function moveSection(

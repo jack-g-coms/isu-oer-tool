@@ -3,13 +3,13 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import s3 from "../utils/s3";
 
 // Public
-export async function uploadFile(file: File): Promise<string> {
+export async function uploadFile(file: File, bucket: string="knowledge-documents"): Promise<string> {
     const key = `${crypto.randomUUID()}-${file.name}`;
     const buffer = Buffer.from(await file.arrayBuffer());
     
     await s3.send(
         new PutObjectCommand({
-            Bucket: "knowledge-documents",
+            Bucket: bucket,
             Key: key,
             Body: buffer,
             ContentType: file.type
@@ -19,21 +19,21 @@ export async function uploadFile(file: File): Promise<string> {
     return key;
 }
 
-export async function getUrl(uploadKey: string): Promise<string> {
+export async function getUrl(uploadKey: string, bucket: string="knowledge-documents"): Promise<string> {
     return await getSignedUrl(
         s3,
         new GetObjectCommand({
-            Bucket: "knowledge-documents",
+            Bucket: bucket,
             Key: uploadKey
         }),
         { expiresIn: 60 * 10 }
     );
 }
 
-export async function getFile(uploadKey: string): Promise<Buffer> {
+export async function getFile(uploadKey: string, bucket: string="knowledge-documents"): Promise<Buffer> {
     const res = await s3.send(
         new GetObjectCommand({
-            Bucket: "knowledge-documents",
+            Bucket: bucket,
             Key: uploadKey
         })
     );
@@ -42,10 +42,10 @@ export async function getFile(uploadKey: string): Promise<Buffer> {
     return Buffer.from(bytes);
 }
 
-export async function deleteFile(uploadKey: string): Promise<void> {
+export async function deleteFile(uploadKey: string, bucket: string="knowledge-documents"): Promise<void> {
     await s3.send(
         new DeleteObjectCommand({
-            Bucket: "knowledge-documents",
+            Bucket: bucket,
             Key: uploadKey
         })
     );
