@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import TextbookWithSections from "@/lib/types/TextbookWithSections";
 import type { KnowledgeDocument } from "@/prisma/client";
-import { GraduationCap, Lock, FileText, Download, Eye, X, Settings, Trash, Pencil, LogOut, ArrowLeft, SquarePen } from "lucide-react";
+import { GraduationCap, Lock, FileText, Download, Eye, X, Settings, Trash, Pencil, LogOut, ArrowLeft, SquarePen, Copy } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
@@ -16,6 +16,7 @@ import Button from "../../input/Button";
 import Image from "next/image";
 import UpdateTextbookModal from "../../modals/UpdateTextbookModal";
 import UpdateTextbookSourcesModal from "../../modals/UpdateTextbookSourcesModal";
+import { getPublishedTextbookUrl, getTextbookDraftUrl, publishTextbook, unpublishTextbook } from "@/lib/api/publish";
 
 type TopbarProps = {
     textbook: TextbookWithSections | undefined,
@@ -36,6 +37,9 @@ export default function Topbar({
 
     const [reoutlining, setReoutlining] = useState(false);
     const [loadingDelete, setLoadingDelete] = useState(false);
+    const [loadingPreview, setLoadingPreview] = useState(false);
+    const [loadingPublish, setLoadingPublish] = useState(false);
+    const [loadingUnpublish, setLoadingUnpublish] = useState(false);
 
     const { updateProps, open, current } = useModalStore();
 
@@ -57,14 +61,23 @@ export default function Topbar({
     }, [knowledgeData, knowledgePage, knowledgeTotal, textbook]);
 
     useEffect(() => {
-        if (loadingDelete || reoutlining) {
+        if (loadingDelete || reoutlining || loadingPreview || loadingPublish || loadingUnpublish) {
             const title = reoutlining
-                ? "Saving..."
-                : "Deleting...";
+                ? "Saving..." :
+                loadingDelete
+                ? "Deleting..." :
+                loadingPreview ?
+                "Generating..." :
+                loadingPublish ? 
+                "Publishing..."
+                : "Unpublishing..."
 
             const message = reoutlining
-                ? "Please wait while we save your changes."
-                : "Please wait while we delete this textbook.";
+                ? "Please wait while we save your changes." :
+                loadingDelete ? "Please wait while we delete this textbook." :
+                loadingPreview ? "Please wait while we generate this textbook." :
+                loadingPublish ? "Please wait while we publish this textbook." :
+                "Please wait while we unpublish this textbook."
 
             Swal.fire({
                 title: title,
@@ -85,10 +98,10 @@ export default function Topbar({
                 Swal.close();
             }
         };
-    }, [loadingDelete, reoutlining]);
+    }, [loadingDelete, loadingPreview, reoutlining, loadingPublish, loadingUnpublish]);
 
     async function handleDelete() {
-        if (loadingDelete || !textbook || !canDelete) return;
+        if (loadingDelete || loadingPreview || !textbook || !canDelete) return;
 
         const result = await Swal.fire({
             title: "Delete textbook?",
@@ -146,6 +159,97 @@ export default function Topbar({
                 } 
             }
         });
+    }
+
+    async function handlePreview() {
+        if (loadingPreview) return;
+        setLoadingPreview(true);
+
+        try {
+            const res = await getTextbookDraftUrl(textbook!.id);
+            toast.success("Success");
+            window.open(res.data, "_blank", "noopener,noreferrer")
+        } catch (err) {
+            if (err instanceof Error) {
+                toast.error(`Failed: ${err.message}`);
+            } else {
+                toast.error("Failed: Unknown error");
+            }
+        } finally {
+            setLoadingPreview(false);
+        } 
+    }
+
+    async function handlePublish() {
+        if (loadingPublish) return;
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Any previously published versions will be lost and the textbook will be publicly accessible via a link.",
+            icon: "warning",
+            showCancelButton: true
+        })
+        .then(async (result) => {
+            if (result.isConfirmed) {
+                setLoadingPublish(true);
+                try {
+                    const res = await publishTextbook(textbook!.id);
+                    toast.success("Success");
+                    router.refresh();
+                    window.open(res.data, "_blank", "noopener,noreferrer")
+                } catch (err) {
+                    if (err instanceof Error) {
+                        toast.error(`Failed: ${err.message}`);
+                    } else {
+                        toast.error("Failed: Unknown error");
+                    }
+                } finally {
+                    setLoadingPublish(false);
+                } 
+            }
+        });
+    }
+
+     async function handleUnpublish() {
+        if (loadingUnpublish) return;
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Any previously published versions will be completely lost.",
+            icon: "warning",
+            showCancelButton: true
+        })
+        .then(async (result) => {
+            if (result.isConfirmed) {
+                setLoadingUnpublish(true);
+                try {
+                    await unpublishTextbook(textbook!.id);
+                    toast.success("Success");
+                    router.refresh();
+                } catch (err) {
+                    if (err instanceof Error) {
+                        toast.error(`Failed: ${err.message}`);
+                    } else {
+                        toast.error("Failed: Unknown error");
+                    }
+                } finally {
+                    setLoadingUnpublish(false);
+                } 
+            }
+        });
+    }
+
+    function handleCopy() {
+        if (!textbook?.publishedUploadKey) return;
+
+        const url = getPublishedTextbookUrl(textbook!.id);
+        navigator.clipboard.writeText(url)
+            .then(() => {
+                toast.success('Published URL successfully copied to clipboard');
+            })
+            .catch(err => {
+                toast.error(`Failed: ${err.message}`);
+            });
     }
 
     return (
@@ -238,22 +342,33 @@ export default function Topbar({
                  <Menu
                     label={{
                         text: "Publish",
-                        icon: Download
+                        icon: Download,
                     }}
                     items={[
                         {
-                            label: "Preview",
-                            icon: Eye
+                            label: loadingPreview ? "Generating..." : "Preview Draft",
+                            disabled: loadingPreview || !canDelete,
+                            icon: Eye,
+                            onClick: handlePreview
                         },
                         {
-                            label: "Publish",
-                            icon: Download
+                            label: loadingPublish ? "Publishing..." : "Publish",
+                            icon: Download,
+                            disabled: loadingPublish || !canDelete,
+                            onClick: handlePublish
                         },
                         {
-                            label: "Unpublish",
+                            label: "Copy Published URL",
+                            icon: Copy,
+                            disabled: !textbook.publishedUploadKey,
+                            onClick: handleCopy
+                        },
+                        {
+                            label: loadingUnpublish ? "Unpublishing..." : "Unpublish",
                             icon: X,
                             danger: true,
-                            disabled: textbook.publishedUploadKey == undefined
+                            disabled: textbook.publishedUploadKey == null || loadingUnpublish,
+                            onClick: handleUnpublish
                         }
                     ]}
                 />

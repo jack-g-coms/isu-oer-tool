@@ -126,6 +126,7 @@ export default function Menu({
                             <button
                                 key={index}
                                 disabled={item.disabled}
+                                title={item.label}
                                 onClick={() => {
                                     if (item.disabled) return
                                     item.onClick?.()

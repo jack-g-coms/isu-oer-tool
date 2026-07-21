@@ -64,7 +64,7 @@ async function secretPUT(req: NextRequest, { params }: { params: Promise<{ id: s
 
         return Response.json(
             { success: true, data: updatedKnowledgeDoc },
-            { status: 201 }
+            { status: 200 }
         );
     } catch (err) {
         console.error(err);
@@ -97,7 +97,7 @@ async function secretDELETE(req: NextRequest, { params }: { params: Promise<{ id
 
         return Response.json(
             { success: true },
-            { status: 201 }
+            { status: 200 }
         );
     } catch (err) {
         console.error(err);
@@ -129,7 +129,7 @@ async function secretGET(req: NextRequest, { params }: { params: Promise<{ id: s
         const url = await getUrl(knowledgeDoc.uploadKey);
         return Response.json(
             { success: true, data: url },
-            { status: 201 }
+            { status: 200 }
         );
     } catch (err) {
         console.error(err);

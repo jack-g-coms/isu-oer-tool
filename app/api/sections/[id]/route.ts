@@ -28,7 +28,7 @@ async function secretDELETE(req: NextRequest, { params }: { params: Promise<{ id
 
         return Response.json(
             { success: true },
-            { status: 201 }
+            { status: 200 }
         );
     } catch (err) {
         console.error(err);
@@ -115,7 +115,7 @@ async function secretPUT(req: NextRequest, { params }: { params: Promise<{ id: s
 
         return Response.json(
             { success: true, data: updatedSection },
-            { status: 201 }
+            { status: 200 }
         );
     } catch (err) {
         console.error(err);

@@ -1,7 +1,14 @@
-import { Ollama, ChatResponse } from "ollama";
+import { Ollama } from "ollama";
+import OpenAI from "openai";
+import { zodResponseFormat } from "openai/helpers/zod";
+import { ZodObject } from "zod";
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
 
 const ollama = new Ollama({
-    host: process.env.OLLAMA_HOST ?? "http://localhost:11434"
+    host: process.env.OLLAMA_HOST
 });
 
 // Public
@@ -13,33 +20,26 @@ export async function generateChunkEmbedding(text: string): Promise<number[]> {
     return response.embeddings[0];
 }
 
-export async function chat(systemPrompt: string, prompt: string, format?: string | object): Promise<string> {
-    const stream = await ollama.chat({
-        model: "qwen2.5:7b",
-        keep_alive: "30m",
+export async function chat(systemPrompt: string, prompt: string, schema: ZodObject, schemaName: string): Promise<Record<string, any>> {
+    const completion = await openai.chat.completions.parse({
+        model: "gpt-5-mini",
         messages: [
             {
                 role: "system",
-                content: systemPrompt 
+                content: systemPrompt,
             },
             {
                 role: "user",
-                content: prompt
-            }
+                content: prompt,
+            },
         ],
-        stream: true,
-        format,
-        options: {
-            temperature: 0.2,
-            top_p: 0.9,
-            num_ctx: 8192,
-            num_predict: 1500
-        }
+        max_completion_tokens: 4000,
+        response_format: zodResponseFormat(schema, schemaName)
     });
 
-    let result = "";
-    for await (const chunk of stream) {
-        result += chunk.message.content;
+    const parsed = completion.choices[0].message.parsed;
+    if (!parsed) {
+        throw new Error("OpenAI returned no parsed response");
     }
-    return result.trim();
+    return parsed;
 }

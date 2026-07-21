@@ -44,11 +44,15 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
                 text: "Textbook doesn't exist or you don't have permissions to edit it.",
                 icon: "error",
                 showCancelButton: false
-            }).then(() => {
-                router.push("/textbooks");
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    router.push("/textbooks");
+                }
             });
         }
     }, [loadError]);
+
+    if (!textbook || loadError || !views) return;
 
     useEffect(() => {
         if (saving || deleting || rewriting) {
@@ -94,8 +98,6 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
 
         return () => clearInterval(interval);
     }, [sectionView]);
-
-    if (!textbook || loadError || !views) return;
 
     async function handleSave(content: Content, editor: Editor) {
         if (saving || deleting || rewriting || !sectionView) return;
@@ -340,8 +342,8 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
                         :
                             <div className="flex flex-col gap-4">
                                 {Object.entries(views).map(([chapterId, chapter], chapterPos) => (
-                                    <>
-                                        <Link key={chapterId} className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterId}`}>
+                                    <div key={chapterId} className="flex flex-col gap-4">
+                                        <Link className="flex items-baseline gap-2 hover:text-blue-600" href={`/textbooks/${textbook.id}?chapter=${chapterId}`}>
                                             <span className="max-w-7xl truncate">{chapter.title}</span>
                                             <span
                                                 className="flex-1 h-px self-end mb-1 bg-[radial-gradient(circle,currentColor_1px,transparent_1px)] bg-[length:8px_2px] text-gray-400"
@@ -360,7 +362,7 @@ export default function TextbookEditor({ loadError, chapterView, sectionView, te
                                                 </Link>
                                             ))}
                                         </div>
-                                    </>
+                                    </div>
                                 ))}
                             </div>
                         }

@@ -55,7 +55,7 @@ async function secretPOST(req: NextRequest, { params }: { params: Promise<{ id: 
        
         return Response.json(
             { success: true },
-            { status: 201 }
+            { status: 200 }
         );
     } catch (err) {
         console.error(err);

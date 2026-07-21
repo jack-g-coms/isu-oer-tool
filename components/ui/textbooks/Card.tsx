@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Info, Trash, School, RotateCcw, Pencil, Eye, SquarePenIcon } from "lucide-react";
 import Button from "../input/Button";
 import TextbookWithSections from "@/lib/types/TextbookWithSections";
+import { getTextbookDraftUrl } from "@/lib/api/publish";
 
 type CardProps = {
     data: TextbookWithSections,
@@ -83,7 +84,18 @@ export default function Card({ data }: CardProps) {
         if (loadingView) return;
         setLoadingView(true);
 
-       
+        try {
+            const res = await getTextbookDraftUrl(data.id);
+            window.open(res.data, "_blank", "noopener,noreferrer")
+        } catch (err) {
+            if (err instanceof Error) {
+                toast.error(`Failed: ${err.message}`);
+            } else {
+                toast.error("Failed: Unknown error");
+            }
+        } finally {
+            setLoadingView(false);
+        } 
     }
 
     return (
@@ -122,9 +134,11 @@ export default function Card({ data }: CardProps) {
 
                 {data.status == "READY" &&
                     <>
-                        <Button onClick={handleView} loading={loadingView} loadingText="Retrieving..." variant="icon">
-                            <Eye width={20} height={20}/>
-                        </Button>
+                        {canDelete &&
+                            <Button onClick={handleView} loading={loadingView} loadingText="Retrieving..." variant="icon">
+                                <Eye width={20} height={20}/>
+                            </Button>
+                        }
 
                         <Button 
                             variant="icon"

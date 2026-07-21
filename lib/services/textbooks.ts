@@ -234,8 +234,8 @@ export async function outlineTextbook(textbookId: string): Promise<void> {
     const prompt = buildPrompt(OUTLINE_PROMPT, {
         "chunks": chunks.map(c => c.text).join("\n\n")
     });
-    const response = await chat(OUTLINE_SYSTEM_PROMPT, prompt, z.toJSONSchema(OutlineResponse));
-    const formattedResponse = OutlineResponse.parse(JSON.parse(response));
+    const formattedResponse = await chat(OUTLINE_SYSTEM_PROMPT, prompt, OutlineResponse, "outline");
+    console.log(formattedResponse);
 
     for (const chapter of formattedResponse.chapters) {
         const dataChapter = await prisma.chapter.create({
@@ -248,7 +248,7 @@ export async function outlineTextbook(textbookId: string): Promise<void> {
         });
 
         await prisma.section.createMany({
-            data: chapter.sections.map((section) => ({
+            data: chapter.sections.map((section: Section) => ({
                 chapterId: dataChapter.id,
                 title: section.title,
                 summary: section.summary,
@@ -316,9 +316,7 @@ export async function writeSection(sectionId: string): Promise<void> {
     });
     console.log(prompt);
 
-    const response = await chat(FULL_WRITE_SYSTEM_PROMPT, prompt, z.toJSONSchema(SectionContentResponse));
-    console.log(response);
-    const formattedResponse = SectionContentResponse.parse(JSON.parse(response));
+    const formattedResponse = await chat(FULL_WRITE_SYSTEM_PROMPT, prompt, SectionContentResponse, "section_content");
 
     console.log(JSON.stringify(formattedResponse, null, 2));
 
@@ -345,6 +343,28 @@ export async function updateTextbook(textbookId: string, properties: TextbookUpd
             title: properties.title,
             description: properties.description,
             class: properties.class
+        }
+    });
+}
+
+export async function publishTextbook(textbookId: string, uploadKey: string): Promise<Textbook> {
+    return await prisma.textbook.update({
+        where: {
+            id: textbookId
+        },
+        data: {
+            publishedUploadKey: uploadKey
+        }
+    });
+}
+
+export async function unpublishTextbook(textbookId: string): Promise<Textbook> {
+    return await prisma.textbook.update({
+        where: {
+            id: textbookId
+        },
+        data: {
+            publishedUploadKey: null
         }
     });
 }

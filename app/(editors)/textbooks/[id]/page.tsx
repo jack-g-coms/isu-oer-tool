@@ -39,7 +39,7 @@ export default async function TextbookEditorPage({ params, searchParams }: Textb
     let loadError = false;
     try {
         textbook = await getTextbookWithSections(id, false, true);
-        if (textbook.authorId != session?.user.id || textbook.status != "READY") {
+        if (textbook?.authorId != session?.user.id || textbook?.status != "READY") {
             throw new Error("Unauthorized");
         }
 

@@ -3,8 +3,8 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import s3 from "../utils/s3";
 
 // Public
-export async function uploadFile(file: File, bucket: string="knowledge-documents"): Promise<string> {
-    const key = `${crypto.randomUUID()}-${file.name}`;
+export async function uploadFile(file: File, bucket: string="knowledge-documents", uploadKey?: string): Promise<string> {
+    const key = uploadKey ?? `${crypto.randomUUID()}-${file.name}`;
     const buffer = Buffer.from(await file.arrayBuffer());
     
     await s3.send(

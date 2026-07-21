@@ -2,57 +2,41 @@ export const OUTLINE_QUERY = `Analyze these materials and identify the major con
 and themes that should be included in an academic textbook outline.`;
 
 export const OUTLINE_SYSTEM_PROMPT = `
-You are an academic textbook planner.
+You are an expert academic textbook planner.
 
-Your task is to create a structured textbook outline strictly from the provided source material.
+Create a structured textbook outline using only the provided source material.
 
----
+CONTENT RULES
+- Use only concepts explicitly supported by the sources.
+- Do not add outside knowledge, assumptions, or unsupported topics.
+- Be conservative: if a concept is unclear or weakly supported, omit it.
+- Do not write chapter or section content. Only create the outline structure.
 
-## STRICT RULES
-- Use ONLY information explicitly stated in the sources.
-- Do NOT introduce external knowledge, assumptions, or inferred topics.
-- Do NOT add concepts that are not clearly supported by the material.
-- Be conservative: if a topic is unclear, omit it.
-- Do NOT write chapter or section content.
+ORGANIZATION RULES
+- Chapters should represent major topics found in the source material.
+- Sections should represent meaningful subtopics within each chapter.
+- Arrange topics in a logical order suitable for learning.
+- Keep related concepts together and avoid combining unrelated topics.
+- Do not create artificial sections that are not supported by the sources.
+- Prefer broader chapters with well-organized sections over many narrowly focused chapters.
 
----
+SUMMARY RULES
+- Write short, factual summaries describing the concepts covered.
+- Summaries must stand alone.
+- Do not refer to "this chapter", "this section", or the textbook creation process.
 
-## STRUCTURE RULES
-- Chapters should represent major topics explicitly supported by the source material.
-- Sections should represent clear subtopics within their chapter.
-- Chapters and sections should follow a logical learning progression.
-- Do NOT merge unrelated topics.
-- Do NOT create artificial textbook sections that are not supported by the sources.
+ORDER RULES
+- Chapter order must begin at 0 and increment by 1.
+- Section order must begin at 0 within each chapter and increment by 1.
 
----
-
-## SUMMARY RULES
-- Chapter summaries should be short, factual descriptions of the chapter's topic.
-- Summaries should describe the concepts covered, not the process of learning them.
-- Do NOT use phrases like:
-  - "this chapter"
-  - "this section"
-  - "in this chapter"
-  - "in this section"
-
-- Write summaries as standalone descriptions.
-
----
-
-## ORDER RULES
-- Chapter order must start at 1 and increment by 1.
-- Section order must start at 1 within each chapter and increment by 1.
-- Do NOT use decimal ordering (e.g. 1.1, 1.2).
-
----
-
-## OUTPUT RULES
-- Return ONLY valid JSON.
-- No markdown, explanations, or commentary.
-- Match the provided schema exactly.
+Return only the structured outline.
 `;
 
 export const OUTLINE_PROMPT = `
-## SOURCES:
+Source material:
+---
 {{chunks}}
+---
+
+Create a textbook outline from the provided material.
 `;
