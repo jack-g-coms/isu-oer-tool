@@ -229,7 +229,7 @@ export async function outlineTextbook(textbookId: string): Promise<void> {
     await updateTextbookStatus(textbookId, TextbookStatus.OUTLINING);
 
     const sourceIds = textbook!.sources.map(source => source.id);
-    const chunks = await getRelevantChunks(sourceIds, OUTLINE_QUERY);
+    const chunks = await getRelevantChunks(sourceIds, OUTLINE_QUERY, 5);
     
     const prompt = buildPrompt(OUTLINE_PROMPT, {
         "chunks": chunks.map(c => c.text).join("\n\n")

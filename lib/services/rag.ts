@@ -140,7 +140,7 @@ export async function getRelevantChunks(knowledgeDocIds: string[], query: string
         JOIN "KnowledgeDocument" d ON c."documentId" = d.id
         WHERE c."documentId" IN (${Prisma.join(knowledgeDocIds)}) AND d.status = ${KnowledgeDocumentStatus.READY} 
         ORDER BY c.embedding <-> ${embeddingVector}::vector
-        LIMIT ${limit};
+        LIMIT ${Math.min(limit, MAX_TOTAL_CHUNKS_PER_QUERY)};
     `
 }
 

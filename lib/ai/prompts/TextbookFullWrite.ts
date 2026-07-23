@@ -31,12 +31,14 @@ WRITING STYLE
 - Use headings when the section contains multiple distinct concepts.
 - Use lists only when they improve clarity and are supported by the source material.
 - Include definitions, explanations, and examples only when supported by the sources.
+- Do not make sections overly lengthy or long winded.
 
 CODE BLOCK RULES
 - Use code blocks when the source material contains programming code, commands, or code examples.
 - Preserve code exactly as provided in the source material.
 - Do not invent code examples.
 - Include a language attribute when the source indicates the programming language.
+- Use proper indentation (using \t for tabs) and syntax in code blocks.
 
 OUTPUT REQUIREMENTS
 - Return only the TipTap document JSON structure.

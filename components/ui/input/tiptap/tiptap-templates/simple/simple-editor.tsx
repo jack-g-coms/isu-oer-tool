@@ -294,6 +294,25 @@ export function SimpleEditor({ initialContent, onSave, saving, deleting, onDelet
           editor={editor}
           role="presentation"
           className="simple-editor-content"
+          onKeyDown={(e) => {
+            if (e.key !== "Tab" || !editor) {
+              return false;
+            }
+
+            e.preventDefault();
+
+            if (editor.isActive("bulletList") || editor.isActive("orderedList") || editor.isActive("taskList")) {
+              return e.shiftKey
+                ? editor.commands.liftListItem("listItem")
+                : editor.commands.sinkListItem("listItem");
+            }
+
+            if (editor.isActive("codeBlock")) {
+              return editor.commands.insertContent("\t");
+            }
+
+            return editor.commands.insertContent("\t");
+          }}
         />
 
         <div
