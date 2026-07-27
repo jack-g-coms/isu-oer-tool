@@ -10,7 +10,8 @@ const worker = new Worker("textbook", async (job: Job) => {
     connection: {
         host: process.env.REDIS_HOST,
         port: Number(process.env.REDIS_PORT)
-    }
+    },
+    concurrency: 5
 });
 
 worker.on("failed", (job, err) => {

@@ -18,10 +18,9 @@ const MarkSchema = z.object({
 
 const TextNodeSchema = z.object({
     type: z.literal("text"),
-    text: z.string(),
+    text: z.string().min(1),
     marks: z.array(MarkSchema).nullable(),
 });
-
 
 const InlineContentSchema = z.array(TextNodeSchema);
 
@@ -37,7 +36,6 @@ const ParagraphSchema = z.object({
     }).nullable(),
     content: InlineContentSchema,
 });
-
 
 const HeadingSchema = z.object({
     type: z.literal("heading"),

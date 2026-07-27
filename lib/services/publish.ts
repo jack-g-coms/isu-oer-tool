@@ -364,7 +364,6 @@ async function generatePDF(html: string, title: string, isDraft: boolean): Promi
     const browser = await puppeteer.launch({
         headless: "shell"
     });
-    console.log(await browser.version());
     const page = await browser.newPage();
 
     await page.setContent(html, {
@@ -422,7 +421,7 @@ export async function generateTextbookPDF(textbookId: string, isDraft: boolean):
     const html = generateFullHTML(textbook as TextbookWithSections & { author: { name: string }});
     const pdf = await generatePDF(html, textbook?.title as string, isDraft);
 
-    const uploadKey = await uploadFile(pdf, "textbooks", `${isDraft ? "DRAFT" : "PUBLISHED"}-${textbook?.title}.pdf`);
+    const uploadKey = await uploadFile(pdf, "textbooks", `${isDraft ? "drafts/" : "published/"}${textbook?.id}.pdf`);
     if (!isDraft) {
         await publishTextbook(textbookId, uploadKey);
     }
@@ -447,4 +446,12 @@ export async function unpublishTextbookPDF(textbookId: string): Promise<void> {
         await deleteFile(textbook.publishedUploadKey, "textbooks");
         await unpublishTextbook(textbookId);
     }
+}
+
+export async function deletePDFs(textbookId: string): Promise<void> {
+    const textbook = await getTextbook(textbookId);
+    if (textbook?.publishedUploadKey) {
+        await deleteFile(textbook.publishedUploadKey, "textbooks");
+    }
+    await deleteFile(`drafts/${textbook?.id}.pdf`, "textbooks")
 }

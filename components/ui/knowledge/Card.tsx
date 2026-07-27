@@ -119,9 +119,9 @@ export default function Card({ data, canSelect, onSelect, canEditDelete, selecte
                     />
                 }
 
-                <div className="flex flex-col flex-1">
+                <div className="flex flex-col flex-1 min-w-0">
                     <div className="flex flex-row justify-between">
-                        <h3 className="text-lg font-semibold">{data.title}</h3>
+                        <h3 className={`${canSelect ? "pr-2" : ""} text-lg font-semibold truncate`}>{data.title}</h3>
                         {canSelect &&
                             <Checkbox
                                 checked={selected}

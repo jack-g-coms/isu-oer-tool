@@ -3,11 +3,11 @@ import { z } from "zod";
 
 import { Textbook, TextbookStatus, Section, SectionStatus, Chapter } from "@/prisma/client";
 import TextbookProperties from "../types/TextbookProperties";
-import { getRelevantChunks } from "./rag";
+import { getRelevantChunks, getRepresentativeSample } from "./rag";
 import { chat } from "./ai";
 import { sectionQueue } from "../queues/section";
 
-import { OUTLINE_PROMPT, OUTLINE_QUERY, OUTLINE_SYSTEM_PROMPT } from "../ai/prompts/TextbookOutline";
+import { OUTLINE_PROMPT, OUTLINE_SYSTEM_PROMPT } from "../ai/prompts/TextbookOutline";
 import { OutlineResponse } from "../ai/schemas/OutlineResponse";
 import { FULL_WRITE_QUERY, FULL_WRITE_SYSTEM_PROMPT, FULL_WRITE_PROMPT } from "../ai/prompts/TextbookFullWrite";
 import { SectionContentResponse } from "../ai/schemas/SectionContentResponse";
@@ -19,6 +19,7 @@ import SectionProperties from "../types/SectionProperties";
 import ChapterUpdateProperties from "../types/ChapterUpdateProperties";
 import TiptapNode from "../types/TiptapNode";
 import { deleteImage } from "./images";
+import { deletePDFs } from "./publish";
 
 // Private
 async function updateTextbookStatus(textbookId: string, status: TextbookStatus): Promise<Textbook> {
@@ -55,6 +56,7 @@ function buildPrompt(template: string, fields: Record<string, any>): string {
 }
 
 // Public
+// Textbooks
 export async function getTextbook(textbookId: string, includeAuthor: boolean=false, includeSources: boolean=false, includeChapters: boolean=false) {
     return await prisma.textbook.findFirst({
         where: {
@@ -112,39 +114,6 @@ export async function createTextbook(properties: TextbookProperties): Promise<Te
     });
 }
 
-export async function createChapter(properties: ChapterProperties): Promise<Chapter> {
-    const textbook = await getTextbook(properties.textbookId, false, false, true);
-    return await prisma.chapter.create({
-        data: {
-            title: properties.title,
-            summary: properties.summary,
-            order: textbook!.chapters[textbook!.chapters.length - 1].order + 1,
-            textbookId: properties.textbookId
-        }
-    });
-}
-
-export async function createSection(properties: SectionProperties, aiWritten: boolean=true): Promise<Section> {
-    const chapter = await getChapter(properties.chapterId, true);
-    const section = await prisma.section.create({
-        data: {
-            title: properties.title,
-            summary: properties.summary,
-            order: chapter!.sections[chapter!.sections.length - 1].order + 1,
-            chapterId: properties.chapterId,
-            status: !aiWritten ? SectionStatus.READY : SectionStatus.QUEUED
-        }
-    });
-
-    if (aiWritten) {
-        await sectionQueue.add("write-section", {
-            sectionId: section.id
-        });
-    }
-
-    return section;
-}
-
 export async function getUserTextbooks(
     authorId: string,
     includeSources: boolean=true,
@@ -200,15 +169,6 @@ export async function getUserTextbooks(
     };
 }
 
-export async function requeueSection(sectionId: string): Promise<Section> {
-    return await prisma.section.update({
-        where: { id: sectionId },
-        data: {
-            status: SectionStatus.QUEUED
-        }
-    });
-}
-
 export async function requeueTextbook(textbookId: string): Promise<Textbook> {
     await prisma.chapter.deleteMany({
         where: {
@@ -225,16 +185,21 @@ export async function requeueTextbook(textbookId: string): Promise<Textbook> {
 }
 
 export async function outlineTextbook(textbookId: string): Promise<void> {
-    const textbook = await getTextbook(textbookId, false, true, false);
+    const textbook = await getTextbookWithSections(textbookId, false, true);
     await updateTextbookStatus(textbookId, TextbookStatus.OUTLINING);
+    for (const chapter of textbook?.chapters!) {
+        for (const section of chapter.sections) {
+            await deleteSectionImages(section.id);
+        }
+    }
 
     const sourceIds = textbook!.sources.map(source => source.id);
-    const chunks = await getRelevantChunks(sourceIds, OUTLINE_QUERY, 5);
+    const chunks = await getRepresentativeSample(sourceIds);
     
     const prompt = buildPrompt(OUTLINE_PROMPT, {
         "chunks": chunks.map(c => c.text).join("\n\n")
     });
-    const formattedResponse = await chat(OUTLINE_SYSTEM_PROMPT, prompt, OutlineResponse, "outline");
+    const formattedResponse = await chat(OUTLINE_SYSTEM_PROMPT, prompt, OutlineResponse, "outline", "gpt-5.5");
     console.log(formattedResponse);
 
     for (const chapter of formattedResponse.chapters) {
@@ -272,63 +237,6 @@ export async function writeFullTextbook(textbookId: string): Promise<void> {
             });
         }
     }
-}
-
-export async function getSection(sectionId: string) {
-    return await prisma.section.findFirst({
-        where: {
-            id: sectionId
-        },
-        include: {
-            chapter: {
-                include: {
-                    textbook: {
-                        include: {
-                            sources: true
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-
-export async function writeSection(sectionId: string): Promise<void> {
-    const section = await getSection(sectionId);
-
-    await updateSectionStatus(sectionId, SectionStatus.WRITING);
-    const sourceIds = section?.chapter.textbook.sources.map(source => source.id);
-
-    const query = buildPrompt(FULL_WRITE_QUERY, {
-        "topic": section?.chapter.textbook.title,
-        "chapter": section?.chapter.title,
-        "chapterSummary": section?.chapter.summary,
-        "section": section?.title,
-        "sectionSummary": section?.summary
-    });
-    const chunks = await getRelevantChunks(sourceIds!, query, 5);
-    const prompt = buildPrompt(FULL_WRITE_PROMPT, {
-        "textbookTitle": section?.chapter.textbook.title,
-        "chapterTitle": section?.chapter.title,
-        "sectionTitle": section?.title,
-        "sectionSummary": section?.summary,
-        "chunks": chunks.map(c => c.text).join("\n\n")
-    });
-    console.log(prompt);
-
-    const formattedResponse = await chat(FULL_WRITE_SYSTEM_PROMPT, prompt, SectionContentResponse, "section_content");
-
-    console.log(JSON.stringify(formattedResponse, null, 2));
-
-    await prisma.section.update({
-        where: {
-            id: sectionId
-        },
-        data: {
-            content: formattedResponse,
-            status: SectionStatus.READY
-        }
-    });
 }
 
 export async function updateTextbook(textbookId: string, properties: TextbookUpdateProperties): Promise<Textbook> {
@@ -369,6 +277,229 @@ export async function unpublishTextbook(textbookId: string): Promise<Textbook> {
     });
 }
 
+export async function markOutlineFailure(textbookId: string): Promise<void> {
+    await prisma.textbook.update({
+        where: {
+            id: textbookId 
+        },
+        data: {
+            status: TextbookStatus.FAILED_OUTLINING
+        }
+    });
+
+    await prisma.chapter.deleteMany({
+        where: {
+            textbookId: textbookId
+        }
+    });
+}
+
+export async function deleteTextbook(textbookId: string): Promise<void> {
+    const textbook = await getTextbookWithSections(textbookId);
+    for (const chapter of textbook?.chapters!) {
+        for (const section of chapter.sections) {
+            await deleteSectionImages(section.id);
+        }
+    }
+    await deletePDFs(textbookId);
+
+    await prisma.textbook.delete({
+        where: {
+            id: textbookId
+        }
+    });
+}
+
+export async function hasTextbookAccess(textbookId: string, userId: string): Promise<boolean> {
+    const textbook = await getTextbook(textbookId, false, false, false);
+    return textbook!.authorId == userId;
+}
+
+// Chapters
+export async function createChapter(properties: ChapterProperties): Promise<Chapter> {
+    const textbook = await getTextbook(properties.textbookId, false, false, true);
+    return await prisma.chapter.create({
+        data: {
+            title: properties.title,
+            summary: properties.summary,
+            order: textbook!.chapters[textbook!.chapters.length - 1].order + 1,
+            textbookId: properties.textbookId
+        }
+    });
+}
+
+export async function moveChapter(
+    chapterId: string,
+    position: "before" | "after",
+    targetChapterId?: string
+) {
+    return prisma.$transaction(async (tx) => {
+        const chapter = await tx.chapter.findUniqueOrThrow({
+            where: {
+                id: chapterId
+            }
+        });
+        let chapters = await tx.chapter.findMany({
+            where: {
+                textbookId: chapter.textbookId
+            },
+            orderBy: {
+                order: "asc"
+            }
+        });
+
+        chapters = chapters.filter(
+            c => c.id != chapter.id
+        );
+        let insertIndex = chapters.length;
+
+        if (targetChapterId) {
+            const targetIndex = chapters.findIndex(
+                c => c.id == targetChapterId
+            );
+
+            insertIndex = position == "before"
+                ? targetIndex
+                : targetIndex + 1;
+        }
+        chapters.splice(insertIndex, 0, chapter);
+
+        await Promise.all(
+            chapters.map((chapter, index) =>
+                tx.chapter.update({
+                    where: {
+                        id: chapter.id
+                    },
+                    data: {
+                        order: index
+                    }
+                })
+            )
+        );
+    });
+}
+
+export async function updateChapter(chapterId: string, properties: ChapterUpdateProperties): Promise<Chapter> {
+    return await prisma.chapter.update({
+        where: {
+            id: chapterId
+        },
+        data: properties
+    });
+}
+
+export async function getChapter(chapterId: string, includeSections: boolean=false, includeTextbook: boolean=false) {
+    return await prisma.chapter.findFirst({
+        where: {
+            id: chapterId
+        },
+        include: {
+            sections: includeSections ? {
+                orderBy: {
+                    order: "asc"
+                }
+            } : false,
+            textbook: includeTextbook
+        }
+    });
+}
+
+export async function deleteChapter(chapterId: string) {
+    return await prisma.chapter.delete({
+        where: {
+            id: chapterId
+        }
+    });
+}
+
+// Sections
+export async function requeueSection(sectionId: string): Promise<Section> {
+    return await prisma.section.update({
+        where: { id: sectionId },
+        data: {
+            status: SectionStatus.QUEUED
+        }
+    });
+}
+
+export async function createSection(properties: SectionProperties, aiWritten: boolean=true): Promise<Section> {
+    const chapter = await getChapter(properties.chapterId, true);
+    const section = await prisma.section.create({
+        data: {
+            title: properties.title,
+            summary: properties.summary,
+            order: chapter!.sections[chapter!.sections.length - 1].order + 1,
+            chapterId: properties.chapterId,
+            status: !aiWritten ? SectionStatus.READY : SectionStatus.QUEUED
+        }
+    });
+
+    if (aiWritten) {
+        await sectionQueue.add("write-section", {
+            sectionId: section.id
+        });
+    }
+
+    return section;
+}
+
+export async function getSection(sectionId: string) {
+    return await prisma.section.findFirst({
+        where: {
+            id: sectionId
+        },
+        include: {
+            chapter: {
+                include: {
+                    textbook: {
+                        include: {
+                            sources: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+export async function writeSection(sectionId: string): Promise<void> {
+    const section = await getSection(sectionId);
+
+    await updateSectionStatus(sectionId, SectionStatus.WRITING);
+    const sourceIds = section?.chapter.textbook.sources.map(source => source.id);
+
+    const query = buildPrompt(FULL_WRITE_QUERY, {
+        "topic": section?.chapter.textbook.title,
+        "chapter": section?.chapter.title,
+        "chapterSummary": section?.chapter.summary,
+        "section": section?.title,
+        "sectionSummary": section?.summary
+    });
+    const chunks = await getRelevantChunks(sourceIds!, query, 8);
+    const prompt = buildPrompt(FULL_WRITE_PROMPT, {
+        "textbookTitle": section?.chapter.textbook.title,
+        "chapterTitle": section?.chapter.title,
+        "sectionTitle": section?.title,
+        "sectionSummary": section?.summary,
+        "chunks": chunks.map(c => c.text).join("\n\n")
+    });
+    console.log(prompt);
+
+    const formattedResponse = await chat(FULL_WRITE_SYSTEM_PROMPT, prompt, SectionContentResponse, "section_content", "gpt-5.5");
+
+    console.log(JSON.stringify(formattedResponse, null, 2));
+
+    await prisma.section.update({
+        where: {
+            id: sectionId
+        },
+        data: {
+            content: formattedResponse,
+            status: SectionStatus.READY
+        }
+    });
+}
+
 export async function updateSection(sectionId: string, properties: SectionUpdateProperties | SectionContentUpdateProperties): Promise<Section> {
     return await prisma.section.update({
         where: {
@@ -379,13 +510,13 @@ export async function updateSection(sectionId: string, properties: SectionUpdate
 }
 
 export async function cleanupContentImages(content: TiptapNode, sectionId: string): Promise<void> {
-    let uploadKeys: string[] = [];
+    const uploadKeys = new Set<string>();
 
     function walk(node: TiptapNode) {
         if (node.type == "image") {
             let splitSrc = (node.attrs?.src as string).split("/api/images/");
             let uploadKey = splitSrc[1];
-            uploadKeys.push(uploadKey);
+            uploadKeys.add(uploadKey);
         }
 
         if (node.content) {
@@ -402,9 +533,20 @@ export async function cleanupContentImages(content: TiptapNode, sectionId: strin
         }
     });
     for (const image of images) {
-        if (!uploadKeys.includes(image.uploadKey)) {
+        if (!uploadKeys.has(image.uploadKey)) {
             await deleteImage(image.uploadKey);
         }
+    }
+}
+
+export async function deleteSectionImages(sectionId: string): Promise<void> {
+    const images = await prisma.image.findMany({
+        where: {
+            sectionId
+        }
+    });
+    for (const image of images) {
+        await deleteImage(image.uploadKey);
     }
 }
 
@@ -491,111 +633,11 @@ export async function moveSection(
     });
 }
 
-export async function moveChapter(
-    chapterId: string,
-    position: "before" | "after",
-    targetChapterId?: string
-) {
-    return prisma.$transaction(async (tx) => {
-        const chapter = await tx.chapter.findUniqueOrThrow({
-            where: {
-                id: chapterId
-            }
-        });
-        let chapters = await tx.chapter.findMany({
-            where: {
-                textbookId: chapter.textbookId
-            },
-            orderBy: {
-                order: "asc"
-            }
-        });
-
-        chapters = chapters.filter(
-            c => c.id != chapter.id
-        );
-        let insertIndex = chapters.length;
-
-        if (targetChapterId) {
-            const targetIndex = chapters.findIndex(
-                c => c.id == targetChapterId
-            );
-
-            insertIndex = position == "before"
-                ? targetIndex
-                : targetIndex + 1;
-        }
-        chapters.splice(insertIndex, 0, chapter);
-
-        await Promise.all(
-            chapters.map((chapter, index) =>
-                tx.chapter.update({
-                    where: {
-                        id: chapter.id
-                    },
-                    data: {
-                        order: index
-                    }
-                })
-            )
-        );
-    });
-}
-
-export async function updateChapter(chapterId: string, properties: ChapterUpdateProperties): Promise<Chapter> {
-    return await prisma.chapter.update({
-        where: {
-            id: chapterId
-        },
-        data: properties
-    });
-}
-
-export async function getChapter(chapterId: string, includeSections: boolean=false, includeTextbook: boolean=false) {
-    return await prisma.chapter.findFirst({
-        where: {
-            id: chapterId
-        },
-        include: {
-            sections: includeSections ? {
-                orderBy: {
-                    order: "asc"
-                }
-            } : false,
-            textbook: includeTextbook
-        }
-    });
-}
-
 export async function deleteSection(sectionId: string) {
+    await deleteSectionImages(sectionId);
     return await prisma.section.delete({
         where: {
             id: sectionId
-        }
-    });
-}
-
-export async function deleteChapter(chapterId: string) {
-    return await prisma.chapter.delete({
-        where: {
-            id: chapterId
-        }
-    });
-}
-
-export async function markOutlineFailure(textbookId: string): Promise<void> {
-    await prisma.textbook.update({
-        where: {
-            id: textbookId 
-        },
-        data: {
-            status: TextbookStatus.FAILED_OUTLINING
-        }
-    });
-
-    await prisma.chapter.deleteMany({
-        where: {
-            textbookId: textbookId
         }
     });
 }
@@ -609,17 +651,4 @@ export async function markSectionFailure(sectionId: string, failureType: Section
             status: failureType
         }
     });
-}
-
-export async function deleteTextbook(textbookId: string): Promise<void> {
-    await prisma.textbook.delete({
-        where: {
-            id: textbookId
-        }
-    });
-}
-
-export async function hasTextbookAccess(textbookId: string, userId: string): Promise<boolean> {
-    const textbook = await getTextbook(textbookId, false, false, false);
-    return textbook!.authorId == userId;
 }

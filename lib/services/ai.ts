@@ -2,6 +2,7 @@ import { Ollama } from "ollama";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { ZodObject } from "zod";
+import { MAX_COMPLETION_TOKENS } from "../constants/ai";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -20,9 +21,9 @@ export async function generateChunkEmbedding(text: string): Promise<number[]> {
     return response.embeddings[0];
 }
 
-export async function chat(systemPrompt: string, prompt: string, schema: ZodObject, schemaName: string): Promise<Record<string, any>> {
+export async function chat(systemPrompt: string, prompt: string, schema: ZodObject, schemaName: string, model: string="gpt-5-mini"): Promise<Record<string, any>> {
     const completion = await openai.chat.completions.parse({
-        model: "gpt-5-mini",
+        model,
         messages: [
             {
                 role: "system",
@@ -33,7 +34,7 @@ export async function chat(systemPrompt: string, prompt: string, schema: ZodObje
                 content: prompt,
             },
         ],
-        max_completion_tokens: 4000,
+        max_completion_tokens: MAX_COMPLETION_TOKENS,
         response_format: zodResponseFormat(schema, schemaName)
     });
 

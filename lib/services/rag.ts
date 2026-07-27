@@ -3,7 +3,6 @@ import { KnowledgeDocumentWhereInput } from "@/prisma/models";
 import { OfficeConverter, OfficeChunk } from "officeparser";
 
 import KnowledgeDocumentProperties from "@/lib/types/KnowledgeDocumentProperties";
-import KnowledgeChunkWithDoc from "@/lib/types/KnowledgeChunkWithDoc";
 
 import prisma from "@/lib/db/prisma";
 import pgvector from "pgvector";
@@ -108,6 +107,20 @@ async function chunkText(document: KnowledgeDocument): Promise<KnowledgeDocument
     return chunks;
 }
 
+export function getOutlineSampleCount(chunkCount: number): number {
+    if (chunkCount <= 0) {
+        return 0;
+    }
+
+    if (chunkCount <= 5) {
+        return chunkCount;
+    }
+
+    const samples = Math.ceil(3 * Math.log2(chunkCount));
+
+    return Math.min(chunkCount, samples);
+}
+
 // Public
 export async function createKnowledgeDocument(file: File, properties: KnowledgeDocumentProperties): Promise<KnowledgeDocument> {
     let knowledgeDocType = getKnowledgeDocumentType(file);
@@ -130,11 +143,11 @@ export async function createKnowledgeDocument(file: File, properties: KnowledgeD
     return knowledgeDoc;
 }
 
-export async function getRelevantChunks(knowledgeDocIds: string[], query: string, limit: number=MAX_TOTAL_CHUNKS_PER_QUERY): Promise<KnowledgeChunkWithDoc[]> {
+export async function getRelevantChunks(knowledgeDocIds: string[], query: string, limit: number=MAX_TOTAL_CHUNKS_PER_QUERY): Promise<KnowledgeDocumentChunk[]> {
     const embedding = await generateChunkEmbedding(query);
     const embeddingVector = pgvector.toSql(embedding);
 
-    return await prisma.$queryRaw<KnowledgeChunkWithDoc[]>`
+    return await prisma.$queryRaw<KnowledgeDocumentChunk[]>`
         SELECT c.id AS "chunkId", c.text, d.id as "documentId", d.title, d.type, d."uploadKey"
         FROM "KnowledgeDocumentChunk" c
         JOIN "KnowledgeDocument" d ON c."documentId" = d.id
@@ -142,6 +155,42 @@ export async function getRelevantChunks(knowledgeDocIds: string[], query: string
         ORDER BY c.embedding <-> ${embeddingVector}::vector
         LIMIT ${Math.min(limit, MAX_TOTAL_CHUNKS_PER_QUERY)};
     `
+}
+
+export async function getRepresentativeSample(knowledgeDocIds: string[]): Promise<KnowledgeDocumentChunk[]> {
+    const representativeSample: KnowledgeDocumentChunk[] = [];
+
+    for (const knowledgeDocId of knowledgeDocIds) {
+        const chunks = await prisma.knowledgeDocumentChunk.findMany({
+            where: {
+                documentId: knowledgeDocId
+            },
+            orderBy: {
+                index: "asc"
+            }
+        });
+        const chunkCount = chunks.length;
+        const samples = getOutlineSampleCount(chunkCount);
+
+        if (samples >= chunkCount) {
+            representativeSample.push(...chunks);
+            continue;
+        }
+
+        const step = (chunks.length - 1) / (samples - 1);
+        const used = new Set<number>();
+        
+        for (let i = 0; i < samples; i++) {
+            const index = Math.round(i * step);
+            if (!used.has(index)) {
+                representativeSample.push(chunks[index]);
+                used.add(index);
+            }
+        }
+        
+    }
+
+    return representativeSample;
 }
 
 export async function getKnowledgeDoc(knowledgeDocId: string, includeChunks: boolean=false) {
