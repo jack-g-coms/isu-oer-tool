@@ -60,7 +60,7 @@ model KnowledgeDocumentChunk {
   index Int
   text String
 
-  embedding Unsupported("vector(768)")
+  embedding Unsupported("vector(1536)")
   createdAt DateTime @default(now())
 
   document KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)

@@ -161,7 +161,7 @@ export default function UpdateTextbookSourcesModal({
                             total={total}
                             limit={16}
                             output="kpage"
-                            pageName="textbooks"
+                            pageName={`textbooks/${textbookData.id}`}
                         />
                     </div>
                     

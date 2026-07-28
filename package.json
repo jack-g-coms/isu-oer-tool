@@ -40,7 +40,6 @@
     "next": "16.2.6",
     "next-auth": "^4.24.14",
     "officeparser": "^7.2.0",
-    "ollama": "^0.6.3",
     "openai": "^6.48.0",
     "pg": "^8.21.0",
     "pgvector": "^0.3.0",

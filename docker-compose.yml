@@ -24,7 +24,6 @@ services:
     env_file:
       - .env.local
     environment:
-      OLLAMA_HOST: http://host.docker.internal:11434
       REDIS_HOST: redis
       DATABASE_URL: postgresql://postgres:postgres@db:5432/oer_dev
       S3_ENDPOINT: http://minio:9000
